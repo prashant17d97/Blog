@@ -36,6 +36,14 @@ fun HomePage() {
                         .fontSize(FontSize.Larger)
                 )
             }
+            H2 {
+                SpanText(
+                    "Prashant Singh", modifier = Modifier
+                        .fontStyle(value = FontStyle.Inherit)
+                        .fontWeight(FontWeight.ExtraBold)
+                        .fontSize(FontSize.Larger)
+                )
+            }
         }
     }
 }
