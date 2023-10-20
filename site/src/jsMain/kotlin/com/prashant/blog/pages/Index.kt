@@ -16,6 +16,7 @@ import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.silk.components.layout.Surface
 import com.varabyte.kobweb.silk.components.text.SpanText
 import org.jetbrains.compose.web.dom.H1
+import org.jetbrains.compose.web.dom.H2
 
 @Page
 @Composable
