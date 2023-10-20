@@ -1,0 +1,14 @@
+{
+  "images" : [
+    {
+      "filename" : "main-logo.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1259x1041"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
