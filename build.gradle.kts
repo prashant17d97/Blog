@@ -10,9 +10,9 @@ plugins {
     // this is necessary to avoid the plugins to be loaded multiple times
     // in each subproject's classloader
     kotlin("multiplatform").apply(false)
-    id("com.android.application").apply(false)
-    id("com.android.library").apply(false)
-    id("org.jetbrains.compose").apply(false)
-    id("com.varabyte.kobweb.application").version("0.14.2").apply(false)
-    id("com.varabyte.kobwebx.markdown").version("0.14.2").apply(false)
+    alias(libs.plugins.android.application).apply(false)
+    alias(libs.plugins.android.library).apply(false)
+    alias(libs.plugins.jetbrains.compose).apply(false)
+    alias(libs.plugins.kobweb.application).apply(false)
+    alias(libs.plugins.kobwebx.markdown).apply(false)
 }
