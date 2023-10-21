@@ -27,23 +27,13 @@ kotlin {
                 implementation(compose.material3)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
-                // Kotlinx
-                with(Dependencies.Kotlinx) {
-                    implementation(coroutines)
-                }
+                // Coroutines
+                implementation(libs.kotlinx.coroutines)
 
                 // Ktor
-                with(Dependencies.Ktor) {
-                    implementation(core)
-                    implementation(contentNegotiation)
-                    implementation(json)
-                }
-
-                // Ballast
-                with(Dependencies.Ballast) {
-                    implementation(core)
-                    implementation(navigation)
-                }
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.negotiation)
+                implementation(libs.ktor.serialization)
             }
         }
         val androidMain by getting {
@@ -82,64 +72,5 @@ android {
     }
     kotlin {
         jvmToolchain(17)
-    }
-}
-
-object Dependencies {
-    object Kotlinx {
-        const val coroutines =
-            "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.Kotlinx.kotlinxVersion}"
-    }
-
-    object Compose {
-        const val navigation =
-            "androidx.navigation:navigation-compose:${Versions.composeNavigation}"
-
-    }
-
-    object Preview {
-        const val preview = "org.jetbrains.compose.ui:ui-tooling-preview:${Versions.composeVersion}"
-    }
-
-    object Ktor {
-        const val core = "io.ktor:ktor-client-core:${Versions.Ktor.ktorVersion}"
-        const val cio = "io.ktor:ktor-client-cio:${Versions.Ktor.ktorVersion}"
-        const val contentNegotiation =
-            "io.ktor:ktor-client-content-negotiation:${Versions.Ktor.ktorVersion}"
-        const val json = "io.ktor:ktor-serialization-kotlinx-json:${Versions.Ktor.ktorVersion}"
-        const val darwin = "io.ktor:ktor-client-darwin:${Versions.Ktor.ktorVersion}"
-    }
-
-    object Ballast {
-        const val core = "io.github.copper-leaf:ballast-core:${Versions.Ballast.ballastVersion}"
-        const val navigation =
-            "io.github.copper-leaf:ballast-navigation:${Versions.Ballast.ballastVersion}"
-    }
-
-    object Coil {
-        const val coil = "io.coil-kt:coil-compose:${Versions.Coil.coilVersion}"
-    }
-
-    // MARK: - Versions -
-    private object Versions {
-        object Ktor {
-            const val ktorVersion = "2.1.3"
-        }
-
-        object Kotlinx {
-            const val kotlinxVersion = "1.6.4"
-        }
-
-        object Ballast {
-            const val ballastVersion = "2.3.0"
-        }
-
-        object Coil {
-            const val coilVersion = "2.2.2"
-        }
-
-        const val composeVersion = "1.5.1"
-        const val composeNavigation = "2.7.2"
-
     }
 }
