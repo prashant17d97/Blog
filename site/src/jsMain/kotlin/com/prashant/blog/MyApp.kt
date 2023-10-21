@@ -9,6 +9,7 @@ import com.varabyte.kobweb.silk.SilkApp
 import com.varabyte.kobweb.silk.components.layout.Surface
 import com.varabyte.kobweb.silk.components.style.common.SmoothColorStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
+import com.model.User
 
 import org.jetbrains.compose.web.css.*
 
@@ -20,6 +21,10 @@ fun initSilk(ctx: InitSilkContext) {
 @App
 @Composable
 fun MyApp(content: @Composable () -> Unit) {
+    val s = User(
+        id=0,
+        name = "PrashantSingh"
+    )
     SilkApp {
         Surface(SmoothColorStyle.toModifier().minHeight(100.vh)) {
             content()
