@@ -24,6 +24,8 @@ silk-icons-mdi = { module = "com.varabyte.kobwebx:silk-icons-mdi", version.ref =
 #Coil
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilVersion" }
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxVersion" }
+
+#Ktor
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktorVersion" }
 ktor-client-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktorVersion" }
 ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktorVersion" }

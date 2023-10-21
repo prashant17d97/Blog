@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform")
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.serialization.plugin)
 }
 
 kotlin {
@@ -32,6 +33,7 @@ kotlin {
 
                 // Ktor
                 implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.cio)
                 implementation(libs.ktor.negotiation)
                 implementation(libs.ktor.serialization)
             }

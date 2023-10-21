@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.kobweb.application)
     alias(libs.plugins.kobwebx.markdown)
+    alias(libs.plugins.serialization.plugin)
 }
 
 group = "com.prashant.blog"
@@ -26,7 +27,6 @@ kotlin {
             dependencies {
                 implementation(compose.runtime)
                 implementation(libs.ktor.serialization)
-                implementation(project(":commondata"))
             }
         }
 

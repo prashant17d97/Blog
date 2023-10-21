@@ -21,10 +21,6 @@ fun initSilk(ctx: InitSilkContext) {
 @App
 @Composable
 fun MyApp(content: @Composable () -> Unit) {
-    val s = User(
-        id=0,
-        name = "PrashantSingh"
-    )
     SilkApp {
         Surface(SmoothColorStyle.toModifier().minHeight(100.vh)) {
             content()

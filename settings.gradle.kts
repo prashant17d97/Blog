@@ -3,7 +3,6 @@ rootProject.name = "Blog"
 include(":androidApp")
 include(":shared")
 include(":site")
-include(":commondata")
 
 pluginManagement {
     repositories {
