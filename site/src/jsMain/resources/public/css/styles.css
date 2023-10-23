@@ -1,0 +1,21 @@
+/* Define styles for h1 to h6 headers */
+.title1 {
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  font-family: 'Playfair Display';
+}
+
+.title2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  font-family: 'Playfair Display';
+}
+
+.title3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-family: 'Playfair Display';
+}

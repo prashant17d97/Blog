@@ -1,4 +1,6 @@
 import com.varabyte.kobweb.gradle.application.util.configAsKobwebApplication
+import kotlinx.html.link
+import kotlinx.html.script
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -14,6 +16,25 @@ version = "1.0-SNAPSHOT"
 kobweb {
     app {
         index {
+            head.add {
+                script {
+                    src = "https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"
+                }
+                script {
+                    src = "/scripts/devicetype.js"
+                }
+                link(
+                    rel = "stylesheet",
+                    href = "https://fonts.googleapis.com/css?family=Playfair+Display",
+                    type = "text/css"
+                )
+
+                link(
+                    rel = "stylesheet",
+                    href = "/css/styles.css",
+                    type = "text/css"
+                )
+            }
             description.set("Powered by Kobweb")
         }
     }

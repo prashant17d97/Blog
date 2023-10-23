@@ -8,32 +8,38 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.ApiResponse
 import com.model.User
+import com.prashant.blog.components.COLOR_MODE_KEY
+import com.prashant.blog.components.ComposeHtmlTags.LottieAnimationPlayer
+import com.prashant.blog.components.ElementBuilderImplementation
 import com.varabyte.kobweb.browser.api
-import com.varabyte.kobweb.compose.css.FontSize
-import com.varabyte.kobweb.compose.css.FontStyle
-import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
-import com.varabyte.kobweb.compose.ui.modifiers.fontSize
-import com.varabyte.kobweb.compose.ui.modifiers.fontStyle
-import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
 import com.varabyte.kobweb.core.Page
+import com.varabyte.kobweb.silk.components.forms.Button
+import com.varabyte.kobweb.silk.components.icons.fa.FaMoon
+import com.varabyte.kobweb.silk.components.icons.fa.FaSun
 import com.varabyte.kobweb.silk.components.layout.Surface
 import com.varabyte.kobweb.silk.components.text.SpanText
+import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import kotlinx.browser.localStorage
 import kotlinx.browser.window
 import kotlinx.coroutines.delay
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.dom.H1
 import org.jetbrains.compose.web.dom.H2
-import org.jetbrains.compose.web.dom.H4
+import org.jetbrains.compose.web.dom.TagElement
 
 @Page
 @Composable
 fun HomePage() {
+
+    var colorMode by ColorMode.currentState
     var isLoading by remember {
         mutableStateOf(true)
     }
@@ -67,36 +73,47 @@ fun HomePage() {
         contentAlignment = Alignment.Center,
     ) {
         if (isLoading) {
-            H4 {
-                SpanText(
-                    text = "Loading! Please Wait....",
-                    modifier = Modifier
-                        .fontStyle(value = FontStyle.Inherit)
-                        .fontWeight(FontWeight.ExtraBold)
-                        .fontSize(FontSize.Larger)
-                )
-            }
+            LottieAnimationPlayer(
+                src = "https://lottie.host/ab2d0b41-6e0e-436e-9d1c-000ee26a2f87/qE0MnnMaj1.json",
+            )
         } else {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
                 H1 {
                     SpanText(
-                        text = users?.get(0)?.name ?: "Prashant Singh", modifier = Modifier
-                            .fontStyle(value = FontStyle.Inherit)
-                            .fontWeight(FontWeight.ExtraBold)
-                            .fontSize(FontSize.Larger)
+                        text = users?.get(0)?.name ?: "Prashant Singh"
                     )
                 }
                 H2 {
                     SpanText(
-                        text = users?.get(1)?.name ?: "Prashant Singh", modifier = Modifier
-                            .fontStyle(value = FontStyle.Inherit)
-                            .fontWeight(FontWeight.ExtraBold)
-                            .fontSize(FontSize.Larger)
+                        text = users?.get(1)?.name ?: "Prashant Singh",
                     )
+                }
+                TagElement(
+                    elementBuilder = ElementBuilderImplementation("blockquote"),
+                    applyAttrs = null
+                ) {
+                    SpanText(
+                        text = users?.get(1)?.name ?: "Prashant Singh",
+                    )
+                }
+
+                Button(
+                    onClick = {
+                        colorMode = colorMode.opposite
+                        localStorage.setItem(COLOR_MODE_KEY, colorMode.name)
+                        console.log(colorMode.toString())
+                    },
+                    Modifier.display(DisplayStyle.InlineBlock)
+                ) {
+                    when (colorMode) {
+                        ColorMode.LIGHT -> FaMoon()
+                        ColorMode.DARK -> FaSun()
+                    }
                 }
             }
         }
