@@ -9,17 +9,23 @@ import androidx.compose.runtime.setValue
 import com.ApiResponse
 import com.model.User
 import com.prashant.blog.components.COLOR_MODE_KEY
-import com.prashant.blog.components.ComposeHtmlTags.LottieAnimationPlayer
+import com.prashant.blog.components.ColorScheme
 import com.prashant.blog.components.ElementBuilderImplementation
+import com.prashant.blog.components.composetags.ButtonsWidgets.CapsuleButton
+import com.prashant.blog.components.composetags.ButtonsWidgets.GeneralButton
+import com.prashant.blog.components.composetags.ButtonsWidgets.OutlinedButton
+import com.prashant.blog.components.composetags.LottieAnimationPlayer
 import com.varabyte.kobweb.browser.api
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
+import com.varabyte.kobweb.compose.ui.modifiers.justifyContent
+import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
-import com.varabyte.kobweb.silk.components.forms.Button
 import com.varabyte.kobweb.silk.components.icons.fa.FaMoon
 import com.varabyte.kobweb.silk.components.icons.fa.FaSun
 import com.varabyte.kobweb.silk.components.layout.Surface
@@ -30,7 +36,10 @@ import kotlinx.browser.window
 import kotlinx.coroutines.delay
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
+import org.jetbrains.compose.web.css.JustifyContent
+import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H1
 import org.jetbrains.compose.web.dom.H2
 import org.jetbrains.compose.web.dom.TagElement
@@ -38,8 +47,8 @@ import org.jetbrains.compose.web.dom.TagElement
 @Page
 @Composable
 fun HomePage() {
-
     var colorMode by ColorMode.currentState
+
     var isLoading by remember {
         mutableStateOf(true)
     }
@@ -49,7 +58,7 @@ fun HomePage() {
     }
 
     LaunchedEffect(Unit) {
-        delay(5000)
+        delay(500)
         val result = window.api.tryGet("getusers")?.decodeToString()
         val user = Json.decodeFromString<ApiResponse>(result.toString())
         isLoading = when (user) {
@@ -101,20 +110,59 @@ fun HomePage() {
                         text = users?.get(1)?.name ?: "Prashant Singh",
                     )
                 }
-
-                Button(
+                OutlinedButton(
+                    outlinedColor = ColorScheme.JasmineYellow.rgb,
+                    selectedOutlineColor = ColorScheme.SelectedItem.rgb,
                     onClick = {
                         colorMode = colorMode.opposite
                         localStorage.setItem(COLOR_MODE_KEY, colorMode.name)
-                        console.log(colorMode.toString())
-                    },
-                    Modifier.display(DisplayStyle.InlineBlock)
+                    }
                 ) {
                     when (colorMode) {
                         ColorMode.LIGHT -> FaMoon()
                         ColorMode.DARK -> FaSun()
                     }
                 }
+
+                CapsuleButton(
+                    onClick = {
+                        colorMode = colorMode.opposite
+                        localStorage.setItem(COLOR_MODE_KEY, colorMode.name)
+                        console.log(colorMode.toString())
+                    }
+                ) {
+                    SpanText(text = " Hey change it into dark or Light!  ")
+                    when (colorMode) {
+                        ColorMode.LIGHT -> FaMoon()
+                        ColorMode.DARK -> FaSun()
+                    }
+                }
+
+                GeneralButton(onClick = {
+                    colorMode = colorMode.opposite
+                    localStorage.setItem(COLOR_MODE_KEY, colorMode.name)
+                    console.log(colorMode.toString())
+                }) {
+                    SpanText(text = " Hey change it into dark or Light!  ")
+                    when (colorMode) {
+                        ColorMode.LIGHT -> FaMoon()
+                        ColorMode.DARK -> FaSun()
+                    }
+                }
+
+
+                Div(
+                    attrs = Modifier
+                        .justifyContent(JustifyContent.Center)
+                        .alignItems(AlignItems.Center)
+                        .display(DisplayStyle.Flex)
+                        .toAttrs()
+                ) {
+                    SpanText(text = "Prashant")
+                    SpanText(text = "Singh")
+                    SpanText(text = "Developer")
+                }
+
             }
         }
     }

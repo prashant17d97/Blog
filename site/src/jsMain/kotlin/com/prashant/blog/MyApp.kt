@@ -2,6 +2,7 @@ package com.prashant.blog
 
 import androidx.compose.runtime.Composable
 import com.prashant.blog.components.COLOR_MODE_KEY
+import com.prashant.blog.components.ColorScheme
 import com.varabyte.kobweb.compose.css.FontStyle
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.Overflow
@@ -10,7 +11,6 @@ import com.varabyte.kobweb.compose.css.color
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.graphics.Colors
-import com.varabyte.kobweb.compose.ui.graphics.lightened
 import com.varabyte.kobweb.compose.ui.modifiers.borderTop
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
@@ -28,6 +28,7 @@ import com.varabyte.kobweb.silk.SilkApp
 import com.varabyte.kobweb.silk.components.graphics.ImageStyle
 import com.varabyte.kobweb.silk.components.layout.DividerStyle
 import com.varabyte.kobweb.silk.components.layout.Surface
+import com.varabyte.kobweb.silk.components.style.StyleModifiers
 import com.varabyte.kobweb.silk.components.style.common.SmoothColorStyle
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.init.InitSilk
@@ -36,6 +37,7 @@ import com.varabyte.kobweb.silk.init.registerStyleBase
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import com.varabyte.kobweb.silk.theme.colors.palette.MutablePalette
 import com.varabyte.kobweb.silk.theme.colors.palette.Palette
+import com.varabyte.kobweb.silk.theme.colors.palette.SilkWidgetColorGroups
 import com.varabyte.kobweb.silk.theme.colors.palette.background
 import com.varabyte.kobweb.silk.theme.colors.palette.border
 import com.varabyte.kobweb.silk.theme.colors.palette.color
@@ -56,17 +58,33 @@ val BLOCK_MARGIN = Modifier.margin(top = 1.cssRem)
 
 private val TEXT_FONT =
     Modifier.fontFamily("Playfair Display").fontSize(18.px)
-private val CODE_FONT =
-    Modifier.fontFamily("Ubuntu Mono", "Roboto Mono", "Lucida Console", "Courier New", "monospace")
+
+fun StyleModifiers.hover(createModifier: () -> Modifier) {
+    this.cssRule(":hover") {
+        createModifier.invoke()
+    }
+}
+
+val StyleModifiers.TextHover: Unit
+    get() = hover {
+        Modifier.styleModifier {
+            color(
+                ColorScheme.PrimaryOrHover.hex
+            )
+        }
+    }
 
 
 @InitSilk
 fun initSilk(ctx: InitSilkContext) {
+
     ctx.apply {
         config.apply {
-            initialColorMode = localStorage.getItem(COLOR_MODE_KEY)?.let { ColorMode.valueOf(it) }
-                ?: ColorMode.DARK
+            initialColorMode =
+                localStorage.getItem(COLOR_MODE_KEY)?.let { ColorMode.valueOf(it) }
+                    ?: ColorMode.DARK
         }
+
 
         stylesheet.apply {
             registerStyleBase("html") {
@@ -76,58 +94,68 @@ fun initSilk(ctx: InitSilkContext) {
                     .scrollBehavior(ScrollBehavior.Smooth)
                     .overflow { y(Overflow.Scroll) }
             }
-            registerStyleBase("code") { CODE_FONT }
             registerStyleBase("canvas") { BLOCK_MARGIN }
 
-            registerStyleBase("p") { BLOCK_MARGIN }
             registerStyleBase("pre") { BLOCK_MARGIN }
-            registerStyleBase("h1") {
-                TEXT_FONT
+            registerStyle(
+                cssSelector = "h1", extraModifiers = TEXT_FONT
                     .fontSize(48.px)
                     .fontWeight(600)
-                    .margin(bottom = 10.px)
+                    .margin(bottom = 10.px),
+                init = { TextHover }
+            )
 
-            }
-
-            registerStyleBase("h2") {
-                TEXT_FONT
+            registerStyle(
+                cssSelector = "h2",
+                extraModifiers = TEXT_FONT
                     .fontSize(36.px)
                     .fontWeight(600)
-                    .margin(bottom = 8.px)
+                    .margin(bottom = 8.px),
+                init = { TextHover }
+            )
 
-            }
-
-            registerStyleBase("h3") {
-                TEXT_FONT
+            registerStyle(
+                cssSelector = "h3", extraModifiers = TEXT_FONT
                     .fontSize(28.px)
                     .fontWeight(600)
-                    .margin(bottom = 6.px)
+                    .margin(bottom = 6.px),
+                init = { TextHover }
+            )
 
-            }
-
-            registerStyleBase("h4") {
-                TEXT_FONT
+            registerStyle(
+                cssSelector = "h4", extraModifiers = TEXT_FONT
                     .fontSize(18.px)
                     .fontWeight(FontWeight.Bold)
-                    .margin(bottom = 4.px)
+                    .margin(bottom = 4.px),
+                init = { TextHover }
+            )
 
-            }
-
-            registerStyleBase("h5") {
-                TEXT_FONT
+            registerStyle(
+                cssSelector = "h5",
+                extraModifiers = TEXT_FONT
                     .fontSize(16.px)
                     .fontWeight(FontWeight.Normal)
-                    .margin(bottom = 2.px)
+                    .margin(bottom = 2.px),
+                init = { TextHover }
+            )
 
-            }
-
-            registerStyleBase("h6") {
-                TEXT_FONT
+            registerStyle(
+                cssSelector = "h6",
+                extraModifiers = TEXT_FONT
                     .fontSize(14.px)
                     .fontWeight(FontWeight.Normal)
-                    .margin(bottom = 2.px)
+                    .margin(bottom = 2.px),
+                init = { TextHover }
+            )
 
-            }
+            registerStyle(
+                cssSelector = "span",
+                extraModifiers = TEXT_FONT
+                    .fontSize(16.px)
+                    .fontWeight(FontWeight.Medium)
+                    .margin(bottom = 2.px),
+                init = { TextHover }
+            )
 
             registerStyleBase("blockquote") {
                 TEXT_FONT
@@ -140,9 +168,19 @@ fun initSilk(ctx: InitSilkContext) {
 
             }
 
-            registerStyleBase("body") {
-                TEXT_FONT
-                    .fontSize(16.px)
+            registerStyleBase(
+                cssSelector = "body",
+            )
+            {
+                TEXT_FONT.fontSize(16.px)
+                    .fontWeight(FontWeight.Normal)
+                    .margin(bottom = 20.px)
+            }
+            registerStyleBase(
+                cssSelector = "p",
+            )
+            {
+                TEXT_FONT.fontSize(16.px)
                     .fontWeight(FontWeight.Normal)
                     .margin(bottom = 20.px)
             }
@@ -154,24 +192,37 @@ fun initSilk(ctx: InitSilkContext) {
         // just setting them to the same value as the default color. We might revisit this later.
         theme.palettes.apply {
             light.apply {
-                color = Colors.Black.lightened(0.2f)
-                background = Colors.WhiteSmoke
+                color = ColorScheme.LightText.rgb
+                background = ColorScheme.LightBG.rgb
                 border = Colors.DarkSlateGray
                 link.visited = ctx.theme.palettes.light.link.default
-                brand = Color.rgb(0x009900)
+                brand = ColorScheme.PrimaryOrHover.rgb
             }
 
             dark.apply {
-                color = Colors.White.darkened(0.1f)
-                background = Color.rgb(15, 15, 25)
+                color = ColorScheme.NightText.rgb
+                background = ColorScheme.NightBG.rgb
                 border = Colors.LightSlateGray
                 link.apply {
                     val linkDark = Color.rgb(0x1a85ff)
                     default = linkDark
                     visited = linkDark
                 }
-                brand = Color.rgb(0x04f904)
+                brand = ColorScheme.PrimaryOrHover.rgb
             }
+
+            SilkWidgetColorGroups.MutableButton(light).set(
+                default = ColorScheme.SelectedItem.rgb,
+                hover = ColorScheme.PrimaryOrHover.rgb,
+                focus = ColorScheme.JasmineYellow.rgb,
+                pressed = ColorScheme.SelectedItem.rgb,
+            )
+            SilkWidgetColorGroups.MutableButton(dark).set(
+                default = ColorScheme.SelectedItem.rgb,
+                hover = ColorScheme.PrimaryOrHover.rgb,
+                focus = ColorScheme.JasmineYellow.rgb,
+                pressed = ColorScheme.SelectedItem.rgb,
+            )
         }
 
         theme.replaceComponentStyleBase(ImageStyle) {
