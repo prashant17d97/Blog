@@ -5,7 +5,11 @@ core-ktx = "1.12.0"
 jetbrains-compose = "1.5.1"
 kobweb = "0.14.2"
 kotlin = "1.9.10"
-androidGradlePlugin = "8.1.1"
+androidGradlePlugin = "8.1.2"
+kotlinxVersion = "1.7.3"
+kotlinxSerialization = "1.9.0"
+coilVersion = "2.4.0"
+ktorVersion = "2.1.3"
 
 [libraries]
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
@@ -17,6 +21,16 @@ kobweb-silk = { module = "com.varabyte.kobweb:kobweb-silk", version.ref = "kobwe
 kobwebx-markdown = { module = "com.varabyte.kobwebx:kobwebx-markdown", version.ref = "kobweb" }
 silk-icons-fa = { module = "com.varabyte.kobwebx:silk-icons-fa", version.ref = "kobweb" }
 silk-icons-mdi = { module = "com.varabyte.kobwebx:silk-icons-mdi", version.ref = "kobweb" }
+#Coil
+coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilVersion" }
+kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxVersion" }
+
+#Ktor
+ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktorVersion" }
+ktor-client-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktorVersion" }
+ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktorVersion" }
+ktor-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktorVersion" }
+ktor-serialization = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktorVersion" }
 
 [plugins]
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrains-compose" }
@@ -26,4 +40,4 @@ kobwebx-markdown = { id = "com.varabyte.kobwebx.markdown", version.ref = "kobweb
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
-
+serialization-plugin = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinxSerialization" }

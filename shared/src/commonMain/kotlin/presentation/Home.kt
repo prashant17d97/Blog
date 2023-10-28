@@ -2,6 +2,7 @@ package presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,4 +26,5 @@ fun Home(navHostController: NavHostController) {
             Text(text = "Prashant Singh at Home", style = MaterialTheme.typography.headlineLarge)
         }
     }
+    Row {  }
 }
