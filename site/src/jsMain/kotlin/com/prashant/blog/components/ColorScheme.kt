@@ -11,6 +11,7 @@ sealed class ColorScheme(val hex: String, val rgb: Color.Rgb) {
     data object LightSalmonPink : ColorScheme(hex = "#FFA599", rgb = Color.rgb(0xFFA599))
 
     val BrinkPink = PrimaryOrHover
+
     data object JasmineYellow : ColorScheme(hex = "#FFD581", rgb = Color.rgb(0xFFD581))
     data object Blue : ColorScheme(hex = "#27AEFF", rgb = Color.rgb(0x27AEFF))
     data object Green : ColorScheme(hex = "#00DC90", rgb = Color.rgb(0x00DC90))
@@ -18,8 +19,12 @@ sealed class ColorScheme(val hex: String, val rgb: Color.Rgb) {
     data object NightBG : ColorScheme(hex = "#001f2a", rgb = Color.rgb(0x001f2a))
 
     data object LightText : ColorScheme(hex = "#000000", rgb = Color.rgb(0x000000))
+    data object Black : ColorScheme(hex = "#000000", rgb = Color.rgb(0x000000))
+    data object TransparentBlack : ColorScheme(hex = "#00000000", rgb = Color.rgba(a = 0.5f, r = 0, g = 0, b = 0))
     data object NightText : ColorScheme(hex = "#FFFFFF", rgb = Color.rgb(0xFFFFFF))
-    data object Transparent : ColorScheme(hex = "#00000000", rgb = Color.rgba(a = 0, r = 0, g = 0, b = 0))
+    data object White : ColorScheme(hex = "#FFFFFF", rgb = Color.rgb(0xFFFFFF))
+    data object Transparent :
+        ColorScheme(hex = "#00000000", rgb = Color.rgba(a = 0, r = 0, g = 0, b = 0))
 
     data object PassiveText : ColorScheme(hex = "#9B9B9B", rgb = Color.rgb(0x9B9B9B))
 

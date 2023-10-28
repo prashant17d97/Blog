@@ -18,10 +18,22 @@ kobweb {
         index {
             head.add {
                 script {
-                    src = "https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"
+                    src =
+                        "https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"
                 }
                 script {
                     src = "/scripts/devicetype.js"
+                }
+                script {
+                    src = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+                }
+                link {
+                    rel = "stylesheet"
+                    href = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+                }
+                link {
+                    rel = "stylesheet"
+                    href = "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
                 }
                 link(
                     rel = "stylesheet",

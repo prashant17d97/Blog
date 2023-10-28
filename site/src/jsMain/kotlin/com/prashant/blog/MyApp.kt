@@ -11,12 +11,15 @@ import com.varabyte.kobweb.compose.css.color
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.graphics.Colors
+import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
+import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.borderTop
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontStyle
 import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
+import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.minHeight
 import com.varabyte.kobweb.compose.ui.modifiers.overflow
@@ -77,7 +80,6 @@ val StyleModifiers.TextHover: Unit
 
 @InitSilk
 fun initSilk(ctx: InitSilkContext) {
-
     ctx.apply {
         config.apply {
             initialColorMode =
@@ -115,18 +117,35 @@ fun initSilk(ctx: InitSilkContext) {
             )
 
             registerStyle(
+                cssSelector = ".menuButton",
+                extraModifiers = Modifier
+            ) {
+                base {
+                    Modifier
+                }
+                hover {
+                    Modifier
+                        .height(35.px)
+                        .backgroundColor(ColorScheme.PrimaryOrHover.rgb)
+                        .borderRadius(10.px)
+                }
+            }
+
+            registerStyle(
                 cssSelector = "h3", extraModifiers = TEXT_FONT
                     .fontSize(28.px)
-                    .fontWeight(600)
+                    .fontWeight(FontWeight.Bold)
                     .margin(bottom = 6.px),
-                init = { TextHover }
+                init = {
+
+                }
             )
 
             registerStyle(
                 cssSelector = "h4", extraModifiers = TEXT_FONT
                     .fontSize(18.px)
                     .fontWeight(FontWeight.Bold)
-                    .margin(bottom = 4.px),
+                    .margin(bottom = 2.px),
                 init = { TextHover }
             )
 
@@ -176,13 +195,10 @@ fun initSilk(ctx: InitSilkContext) {
                     .fontWeight(FontWeight.Normal)
                     .margin(bottom = 20.px)
             }
-            registerStyleBase(
-                cssSelector = "p",
-            )
+            registerStyleBase(cssSelector = "p")
             {
                 TEXT_FONT.fontSize(16.px)
                     .fontWeight(FontWeight.Normal)
-                    .margin(bottom = 20.px)
             }
 
 

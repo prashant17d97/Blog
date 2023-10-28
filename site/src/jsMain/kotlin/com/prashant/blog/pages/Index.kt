@@ -1,171 +1,151 @@
 package com.prashant.blog.pages
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import com.ApiResponse
-import com.model.User
-import com.prashant.blog.components.COLOR_MODE_KEY
 import com.prashant.blog.components.ColorScheme
-import com.prashant.blog.components.ElementBuilderImplementation
-import com.prashant.blog.components.composetags.ButtonsWidgets.CapsuleButton
-import com.prashant.blog.components.composetags.ButtonsWidgets.GeneralButton
-import com.prashant.blog.components.composetags.ButtonsWidgets.OutlinedButton
-import com.prashant.blog.components.composetags.LottieAnimationPlayer
-import com.varabyte.kobweb.browser.api
+import com.prashant.blog.components.composetags.BlogLayout
+import com.prashant.blog.components.constants.ResourceConstants.FooterSocialIcons.Pic
+import com.prashant.blog.components.constants.ResourceConstants.MenuItems.New
+import com.prashant.blog.components.constants.ResourceConstants.contentDescription
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
+import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
+import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.modifiers.alignItems
-import com.varabyte.kobweb.compose.ui.modifiers.display
-import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
-import com.varabyte.kobweb.compose.ui.modifiers.justifyContent
+import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
+import com.varabyte.kobweb.compose.ui.modifiers.classNames
+import com.varabyte.kobweb.compose.ui.modifiers.color
+import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.height
+import com.varabyte.kobweb.compose.ui.modifiers.margin
+import com.varabyte.kobweb.compose.ui.modifiers.padding
+import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
-import com.varabyte.kobweb.silk.components.icons.fa.FaMoon
-import com.varabyte.kobweb.silk.components.icons.fa.FaSun
-import com.varabyte.kobweb.silk.components.layout.Surface
+import com.varabyte.kobweb.silk.components.layout.Divider
 import com.varabyte.kobweb.silk.components.text.SpanText
-import com.varabyte.kobweb.silk.theme.colors.ColorMode
-import kotlinx.browser.localStorage
-import kotlinx.browser.window
-import kotlinx.coroutines.delay
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import org.jetbrains.compose.web.css.AlignItems
-import org.jetbrains.compose.web.css.DisplayStyle
-import org.jetbrains.compose.web.css.JustifyContent
-import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.H1
-import org.jetbrains.compose.web.dom.H2
-import org.jetbrains.compose.web.dom.TagElement
+import org.jetbrains.compose.web.css.keywords.auto
+import org.jetbrains.compose.web.css.percent
+import org.jetbrains.compose.web.css.px
+import org.jetbrains.compose.web.dom.H3
+import org.jetbrains.compose.web.dom.H5
+import org.jetbrains.compose.web.dom.Img
+import org.jetbrains.compose.web.dom.P
+import org.jetbrains.compose.web.dom.Text
 
 @Page
 @Composable
 fun HomePage() {
-    var colorMode by ColorMode.currentState
-
-    var isLoading by remember {
-        mutableStateOf(true)
-    }
-
-    var users by remember {
-        mutableStateOf<List<User>?>(emptyList())
-    }
-
-    LaunchedEffect(Unit) {
-        delay(500)
-        val result = window.api.tryGet("getusers")?.decodeToString()
-        val user = Json.decodeFromString<ApiResponse>(result.toString())
-        isLoading = when (user) {
-            is ApiResponse.Error -> {
-                false
-            }
-
-            ApiResponse.Idle -> {
-                true
-            }
-
-            is ApiResponse.Success -> {
-                users = user.data
-                false
-            }
-        }
-
-    }
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        if (isLoading) {
-            LottieAnimationPlayer(
-                src = "https://lottie.host/ab2d0b41-6e0e-436e-9d1c-000ee26a2f87/qE0MnnMaj1.json",
-            )
+    BlogLayout { isBreakPoint, pageContext ->
+        if (isBreakPoint) {
+            SmallScreenHome { }
         } else {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-
-                H1 {
-                    SpanText(
-                        text = users?.get(0)?.name ?: "Prashant Singh"
-                    )
-                }
-                H2 {
-                    SpanText(
-                        text = users?.get(1)?.name ?: "Prashant Singh",
-                    )
-                }
-                TagElement(
-                    elementBuilder = ElementBuilderImplementation("blockquote"),
-                    applyAttrs = null
-                ) {
-                    SpanText(
-                        text = users?.get(1)?.name ?: "Prashant Singh",
-                    )
-                }
-                OutlinedButton(
-                    outlinedColor = ColorScheme.JasmineYellow.rgb,
-                    selectedOutlineColor = ColorScheme.SelectedItem.rgb,
-                    onClick = {
-                        colorMode = colorMode.opposite
-                        localStorage.setItem(COLOR_MODE_KEY, colorMode.name)
-                    }
-                ) {
-                    when (colorMode) {
-                        ColorMode.LIGHT -> FaMoon()
-                        ColorMode.DARK -> FaSun()
-                    }
-                }
-
-                CapsuleButton(
-                    onClick = {
-                        colorMode = colorMode.opposite
-                        localStorage.setItem(COLOR_MODE_KEY, colorMode.name)
-                        console.log(colorMode.toString())
-                    }
-                ) {
-                    SpanText(text = " Hey change it into dark or Light!  ")
-                    when (colorMode) {
-                        ColorMode.LIGHT -> FaMoon()
-                        ColorMode.DARK -> FaSun()
-                    }
-                }
-
-                GeneralButton(onClick = {
-                    colorMode = colorMode.opposite
-                    localStorage.setItem(COLOR_MODE_KEY, colorMode.name)
-                    console.log(colorMode.toString())
-                }) {
-                    SpanText(text = " Hey change it into dark or Light!  ")
-                    when (colorMode) {
-                        ColorMode.LIGHT -> FaMoon()
-                        ColorMode.DARK -> FaSun()
-                    }
-                }
-
-
-                Div(
-                    attrs = Modifier
-                        .justifyContent(JustifyContent.Center)
-                        .alignItems(AlignItems.Center)
-                        .display(DisplayStyle.Flex)
-                        .toAttrs()
-                ) {
-                    SpanText(text = "Prashant")
-                    SpanText(text = "Singh")
-                    SpanText(text = "Developer")
-                }
-
-            }
+            LargeScreenHome { }
         }
     }
 }
 
+
+@Composable
+private fun SmallScreenHome(onClick: () -> Unit) {
+    Column(
+        modifier = Modifier.fillMaxWidth().margin(top = 60.px),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Top
+    ) {
+
+        Box(
+            modifier = Modifier
+                .classNames("img-fluid")
+                .width(100.percent)
+                .height(auto)
+                .borderRadius(5.px),
+            contentAlignment = Alignment.TopStart
+        ) {
+            Img(
+                src = Pic,
+                alt = Pic.contentDescription,
+                attrs = Modifier.classNames("img-fluid")
+                    .toAttrs()
+            )
+        }
+        Column(modifier = Modifier.fillMaxWidth().padding(leftRight = 10.px)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                H3 {
+                    Text(value = New)
+                }
+                H5(attrs = Modifier.color(ColorScheme.PassiveText.rgb).toAttrs()) {
+                    SpanText(text = "View all new")
+                }
+            }
+            Divider(
+                modifier = Modifier.color(ColorScheme.PassiveText.rgb).fillMaxWidth().height(1.px)
+            )
+
+            P(attrs = Modifier.color(ColorScheme.PassiveText.rgb).toAttrs()) {
+                SpanText(text = "SEP  04  2018")
+            }
+
+            SpanText(text = "Our 15 favorite websites from August 2018")
+        }
+    }
+}
+
+@Composable
+fun LargeScreenHome(onClick: () -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth().margin(top = 60.px),
+        verticalAlignment = Alignment.Top,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+
+        Box(
+            modifier = Modifier
+                .classNames("img-fluid")
+                .width(100.percent)
+                .height(auto)
+                .borderRadius(5.px)
+                .margin(right = 45.px),
+            contentAlignment = Alignment.TopStart
+        ) {
+            Img(
+                src = Pic, alt = Pic.contentDescription,
+                attrs = Modifier.classNames("img-fluid")
+                    .toAttrs()
+            )
+        }
+        Column(
+            modifier = Modifier
+                .width(50.percent).padding(right = 10.px),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                H3 {
+                    Text(value = New)
+                }
+                H5(attrs = Modifier.color(ColorScheme.PassiveText.rgb).toAttrs()) {
+                    SpanText(text = "View all new")
+                }
+            }
+            Divider(
+                modifier = Modifier.color(ColorScheme.PassiveText.rgb).fillMaxWidth().height(1.px)
+            )
+
+            P(attrs = Modifier.color(ColorScheme.PassiveText.rgb).toAttrs()) {
+                SpanText(text = "SEP  04  2018")
+            }
+
+            SpanText(text = "Our 15 favorite websites from August 2018")
+        }
+    }
+}
 

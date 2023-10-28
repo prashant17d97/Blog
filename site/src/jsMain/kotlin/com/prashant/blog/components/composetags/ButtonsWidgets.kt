@@ -7,8 +7,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.web.events.SyntheticMouseEvent
 import com.prashant.blog.components.ColorScheme
-import com.prashant.blog.components.composetags.Constants.ButtonHeight
-import com.prashant.blog.components.composetags.Constants.ButtonHorizontalPadding
+import com.prashant.blog.components.constants.Constants
+import com.prashant.blog.components.constants.Constants.ButtonHeight
+import com.prashant.blog.components.constants.Constants.ButtonHorizontalPadding
 import com.varabyte.kobweb.compose.foundation.layout.RowScope
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
