@@ -3,8 +3,10 @@ package com.prashant.blog.components.composetags
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import com.prashant.blog.components.ColorScheme
+import com.prashant.blog.components.composetags.Widgets.SocialMediaIcons
 import com.prashant.blog.components.constants.Constants
 import com.prashant.blog.components.constants.ResourceConstants
+import com.prashant.blog.components.constants.ResourceConstants.CSSIds.cssImgClassId
 import com.prashant.blog.components.constants.ResourceConstants.contentDescription
 import com.varabyte.kobweb.compose.css.TextAlign
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
@@ -28,6 +30,7 @@ import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
+import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.H6
 import org.jetbrains.compose.web.dom.Img
 
@@ -38,7 +41,10 @@ import org.jetbrains.compose.web.dom.Img
  * @param pageContext The context of the page.
  */
 @Composable
-fun Footer(isBreakpointActive: Boolean, pageContext: PageContext) {
+fun Footer(
+    isBreakpointActive: Boolean,
+    pageContext: PageContext
+) {
     val colorMode by ColorMode.currentState
 
     if (isBreakpointActive) {
@@ -69,7 +75,9 @@ private fun SmallerScreenFooter(colorMode: ColorMode) {
                 Img(
                     src = it,
                     alt = it.contentDescription,
-                    attrs = Modifier.size(40.px).padding(leftRight = 5.px).toAttrs()
+                    attrs = Modifier.size(40.px)
+                        .classNames(cssImgClassId)
+                        .padding(leftRight = 5.px).toAttrs()
                 )
             }
         }
@@ -91,43 +99,38 @@ private fun SmallerScreenFooter(colorMode: ColorMode) {
  */
 @Composable
 private fun LargerScreenFooter(colorMode: ColorMode) {
-    Box(modifier = Modifier.fillMaxWidth().height(100.px)
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .height(100.px)
         .backgroundColor(ColorScheme.White.rgb.takeIf { colorMode.isLight }
             ?: ColorScheme.Black.rgb),
         contentAlignment = Alignment.Center) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(10.px)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.px)
                 .maxWidth(Constants.MaxWidth)
                 .height(100.px),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Img(
-                src = ResourceConstants.FooterSocialIcons.SiteIcon,
-                alt = ResourceConstants.FooterSocialIcons.SiteIcon.contentDescription,
-                attrs = Modifier.classNames("img-fluid")
-                    .size(80.px)
-                    .borderRadius(50.percent)
-                    .toAttrs()
-            )
-            Row(
-                modifier = Modifier.weight(0.7f),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                ResourceConstants.FooterSocialIcons.socialMediaIcons.forEach {
-                    Img(
-                        src = it,
-                        alt = it.contentDescription,
-                        attrs = Modifier.size(40.px).padding(leftRight = 5.px).toAttrs()
-                    )
-                }
+            A(href = "http://localhost:8080/"){
+                Img(
+                    src = ResourceConstants.FooterSocialIcons.SiteIcon,
+                    alt = ResourceConstants.FooterSocialIcons.SiteIcon.contentDescription,
+                    attrs = Modifier.classNames(cssImgClassId)
+                        .size(80.px)
+                        .borderRadius(50.percent)
+                        .toAttrs()
+                )
             }
+            SocialMediaIcons {}
             H6 {
                 SpanText(
-                    text = "All Rights Reserved 2018 3layers", modifier = Modifier.textAlign(
-                        TextAlign.End
-                    )
+                    text = "All Rights Reserved 2023 layers", modifier = Modifier
+                        .textAlign(
+                            TextAlign.End
+                        )
                 )
             }
         }

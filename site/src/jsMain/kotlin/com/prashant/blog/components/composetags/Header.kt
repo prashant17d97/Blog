@@ -8,7 +8,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.prashant.blog.components.ColorScheme
 import com.prashant.blog.components.constants.Constants
+import com.prashant.blog.components.constants.ResourceConstants.CSSIds.cssImgClassId
 import com.prashant.blog.components.constants.ResourceConstants.FooterSocialIcons.SiteIcon
+import com.prashant.blog.components.constants.ResourceConstants.MenuItems.DarkMode
 import com.prashant.blog.components.constants.ResourceConstants.MenuItems.menuLists
 import com.prashant.blog.components.constants.ResourceConstants.contentDescription
 import com.varabyte.kobweb.compose.css.CSSTransition
@@ -40,11 +42,15 @@ import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.compose.ui.modifiers.zIndex
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.PageContext
+import com.varabyte.kobweb.silk.components.forms.Button
 import com.varabyte.kobweb.silk.components.icons.fa.FaBars
+import com.varabyte.kobweb.silk.components.icons.fa.FaMoon
 import com.varabyte.kobweb.silk.components.icons.fa.FaSearchengin
+import com.varabyte.kobweb.silk.components.icons.fa.FaSun
 import com.varabyte.kobweb.silk.components.icons.fa.FaXmark
 import com.varabyte.kobweb.silk.components.icons.fa.IconSize
 import com.varabyte.kobweb.silk.components.layout.Divider
+import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.CSSSizeValue
@@ -54,6 +60,7 @@ import org.jetbrains.compose.web.css.ms
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
+import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Img
 import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Text
@@ -71,12 +78,16 @@ import org.jetbrains.compose.web.dom.Text
  */
 @Composable
 fun Header(isBreakPoint: Boolean, pageContext: PageContext) {
+    var colorMode by ColorMode.currentState
     if (isBreakPoint) {
-        SmallScreenHeader()
+        SmallScreenHeader {
+            if (it == DarkMode) {
+                colorMode = colorMode.opposite
+            }
+        }
     } else {
         LargeScreenHeader()
     }
-
 }
 
 /**
@@ -84,8 +95,9 @@ fun Header(isBreakPoint: Boolean, pageContext: PageContext) {
  */
 @Composable
 private fun LargeScreenHeader() {
+    var colorMode: ColorMode by ColorMode.currentState
     Row(
-        modifier = Modifier.fillMaxWidth().maxWidth(Constants.MaxWidth).padding(10.px)
+        modifier = Modifier.fillMaxWidth().maxWidth(Constants.MaxWidth)
             .margin(top = 20.px).height(80.px),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -95,14 +107,15 @@ private fun LargeScreenHeader() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Img(
-                src = SiteIcon, alt = SiteIcon.contentDescription,
-                attrs = Modifier.classNames("img-fluid")
-                    .size(60.px)
-                    .margin(right = 20.px)
-                    .borderRadius(50.percent)
-                    .toAttrs()
-            )
+            A(href = "http://localhost:8080/") {
+                Img(
+                    src = SiteIcon, alt = SiteIcon.contentDescription,
+                    attrs = Modifier.classNames(cssImgClassId)
+                        .size(60.px)
+                        .borderRadius(50.percent)
+                        .toAttrs()
+                )
+            }
             LargeScreenMenuItems {}
         }
 
@@ -110,7 +123,19 @@ private fun LargeScreenHeader() {
             modifier = Modifier.weight(0.5f),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End
-        ) { FaSearchengin(size = IconSize.XL) }
+        ) {
+            FaSearchengin(size = IconSize.XL, modifier = Modifier.margin(right = 10.px))
+
+            Button(onClick = {
+                colorMode = colorMode.opposite
+            }) {
+                when (colorMode) {
+                    ColorMode.LIGHT -> FaMoon()
+                    ColorMode.DARK -> FaSun()
+                }
+            }
+
+        }
     }
 }
 
@@ -118,7 +143,9 @@ private fun LargeScreenHeader() {
  * Composable function to display the header for small screens.
  */
 @Composable
-private fun SmallScreenHeader() {
+private fun SmallScreenHeader(
+    onMenuItemClick: (menu: String) -> Unit
+) {
     var visibility by remember {
         mutableStateOf(true)
     }
@@ -142,7 +169,7 @@ private fun SmallScreenHeader() {
             visibility = !visibility
         }
     }
-    ExpandedMenu(visibility = !visibility, translateX) {
+    ExpandedMenu(visibility = !visibility, translateX, onMenuItemClick = onMenuItemClick) {
         translateX = (-100).percent
         coroutineScope.launch {
             delay(200)
@@ -190,7 +217,7 @@ private fun Collapsed(
         }.cursor(Cursor.Pointer))
         Img(
             src = SiteIcon, alt = SiteIcon.contentDescription,
-            attrs = Modifier.classNames("img-fluid")
+            attrs = Modifier.classNames(cssImgClassId)
                 .size(40.px)
                 .borderRadius(50.percent)
                 .margin(leftRight = 20.px)
@@ -211,7 +238,8 @@ private fun Collapsed(
 fun ExpandedMenu(
     visibility: Boolean,
     translateX: CSSSizeValue<CSSUnit.percent>,
-    onClick: () -> Unit
+    onMenuItemClick: (menu: String) -> Unit,
+    onClick: () -> Unit,
 ) {
 
     Column(
@@ -243,17 +271,17 @@ fun ExpandedMenu(
             )
             Img(
                 src = SiteIcon, alt = SiteIcon.contentDescription,
-                attrs = Modifier.classNames("img-fluid")
+                attrs = Modifier
+                    .classNames(cssImgClassId)
                     .size(40.px)
                     .borderRadius(50.percent)
-                    .margin(leftRight = 20.px)
                     .toAttrs()
             )
 
         }
 
-        Divider(modifier = Modifier.fillMaxWidth().height(0.5.px))
-        SmallScreenMenuItems {}
+        Divider(modifier = Modifier.fillMaxWidth().height(1.px))
+        SmallScreenMenuItems(onClick = onMenuItemClick)
     }
 }
 
@@ -263,11 +291,11 @@ fun ExpandedMenu(
  * @param onClick A callback function to handle click events.
  */
 @Composable
-private fun SmallScreenMenuItems(onClick: () -> Unit) {
+private fun SmallScreenMenuItems(onClick: (menu: String) -> Unit) {
     menuLists.forEach { menu ->
         P(
             attrs = Modifier.padding(leftRight = 20.px, topBottom = 5.px)
-                .onClick { onClick.invoke() }
+                .onClick { onClick.invoke(menu) }
                 .classNames("menuButton").toAttrs()
         ) {
             Text(value = menu)
@@ -283,7 +311,6 @@ private fun SmallScreenMenuItems(onClick: () -> Unit) {
  */
 @Composable
 private fun LargeScreenMenuItems(onClick: () -> Unit) {
-
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Start,
@@ -292,7 +319,7 @@ private fun LargeScreenMenuItems(onClick: () -> Unit) {
         menuLists.forEach { menu ->
             P(
                 attrs = Modifier.padding(leftRight = 20.px, top = 5.px)
-                    .margin(0.px)
+                    .margin(leftRight = 5.px)
                     .onClick { onClick.invoke() }
                     .classNames("menuButton").toAttrs()
             ) {

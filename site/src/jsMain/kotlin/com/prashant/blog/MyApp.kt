@@ -5,8 +5,6 @@ import com.prashant.blog.components.COLOR_MODE_KEY
 import com.prashant.blog.components.ColorScheme
 import com.varabyte.kobweb.compose.css.FontStyle
 import com.varabyte.kobweb.compose.css.FontWeight
-import com.varabyte.kobweb.compose.css.Overflow
-import com.varabyte.kobweb.compose.css.ScrollBehavior
 import com.varabyte.kobweb.compose.css.color
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
@@ -22,8 +20,6 @@ import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
 import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.minHeight
-import com.varabyte.kobweb.compose.ui.modifiers.overflow
-import com.varabyte.kobweb.compose.ui.modifiers.scrollBehavior
 import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.core.App
@@ -89,13 +85,7 @@ fun initSilk(ctx: InitSilkContext) {
 
 
         stylesheet.apply {
-            registerStyleBase("html") {
-                // Always show a vertical scroller, or else our page content shifts when switching from one page that
-                // can scroll to one that can't
-                Modifier
-                    .scrollBehavior(ScrollBehavior.Smooth)
-                    .overflow { y(Overflow.Scroll) }
-            }
+
             registerStyleBase("canvas") { BLOCK_MARGIN }
 
             registerStyleBase("pre") { BLOCK_MARGIN }
@@ -104,7 +94,7 @@ fun initSilk(ctx: InitSilkContext) {
                     .fontSize(48.px)
                     .fontWeight(600)
                     .margin(bottom = 10.px),
-                init = { TextHover }
+                init = { }
             )
 
             registerStyle(
@@ -113,7 +103,7 @@ fun initSilk(ctx: InitSilkContext) {
                     .fontSize(36.px)
                     .fontWeight(600)
                     .margin(bottom = 8.px),
-                init = { TextHover }
+                init = { }
             )
 
             registerStyle(
@@ -132,6 +122,16 @@ fun initSilk(ctx: InitSilkContext) {
             }
 
             registerStyle(
+                cssSelector = ".Icon",
+                extraModifiers = Modifier
+            ) {
+                base {
+                    Modifier
+                }
+                TextHover
+            }
+
+            registerStyle(
                 cssSelector = "h3", extraModifiers = TEXT_FONT
                     .fontSize(28.px)
                     .fontWeight(FontWeight.Bold)
@@ -146,7 +146,7 @@ fun initSilk(ctx: InitSilkContext) {
                     .fontSize(18.px)
                     .fontWeight(FontWeight.Bold)
                     .margin(bottom = 2.px),
-                init = { TextHover }
+                init = { }
             )
 
             registerStyle(
@@ -155,7 +155,7 @@ fun initSilk(ctx: InitSilkContext) {
                     .fontSize(16.px)
                     .fontWeight(FontWeight.Normal)
                     .margin(bottom = 2.px),
-                init = { TextHover }
+                init = { }
             )
 
             registerStyle(
@@ -164,7 +164,7 @@ fun initSilk(ctx: InitSilkContext) {
                     .fontSize(14.px)
                     .fontWeight(FontWeight.Normal)
                     .margin(bottom = 2.px),
-                init = { TextHover }
+                init = { }
             )
 
             registerStyle(
@@ -173,7 +173,7 @@ fun initSilk(ctx: InitSilkContext) {
                     .fontSize(16.px)
                     .fontWeight(FontWeight.Medium)
                     .margin(bottom = 2.px),
-                init = { TextHover }
+                init = { }
             )
 
             registerStyleBase("blockquote") {

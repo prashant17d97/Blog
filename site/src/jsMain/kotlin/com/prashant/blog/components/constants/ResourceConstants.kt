@@ -10,8 +10,19 @@ object ResourceConstants {
         const val Pintrest = "/iconres/Pinterest.svg"
         const val Pic = "/iconres/Pic.png"
         const val SiteIcon = "/iconres/SiteIcon.jpg"
+        const val RandomImg = "/iconres/random.png"
+        const val ReadingCard = "/iconres/ReadingCard.png"
+        const val Popular = "/iconres/Popular.png"
+        const val SuggestionOne = "/iconres/SuggestionOne.png"
+        const val SuggestionTwo = "/iconres/SuggestionTwo.png"
+        const val EssentialsCard = "/iconres/EssentialsCard.png"
 
         val socialMediaIcons = listOf(Facebook, Twitter, Instagram, Vk, Pintrest)
+    }
+
+    object CSSIds {
+        const val cssImgClassId = "img-fluid"
+        const val cssCardIt ="card"
 
     }
 
@@ -20,10 +31,14 @@ object ResourceConstants {
         const val Popular = "Popular"
         const val New = "New"
         const val ReadingList = "Reading List"
+        const val Essentials = "Essentials"
+        const val Suggested = "Suggested"
         const val Topics = "Topics"
         const val Subscribe = "Subscribe"
+        const val Random = "Random"
+        const val DarkMode = "Dark mode"
 
-        val menuLists = listOf(Popular, New, ReadingList, Topics, Subscribe)
+        val menuLists = listOf(Popular, New, ReadingList, Topics, Subscribe, DarkMode)
     }
 
     val String.contentDescription: String

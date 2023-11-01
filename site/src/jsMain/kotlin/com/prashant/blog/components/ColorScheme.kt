@@ -1,6 +1,8 @@
 package com.prashant.blog.components
 
+import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.ui.graphics.Color
+import com.varabyte.kobweb.silk.theme.colors.ColorMode
 
 
 sealed class ColorScheme(val hex: String, val rgb: Color.Rgb) {
@@ -20,11 +22,22 @@ sealed class ColorScheme(val hex: String, val rgb: Color.Rgb) {
 
     data object LightText : ColorScheme(hex = "#000000", rgb = Color.rgb(0x000000))
     data object Black : ColorScheme(hex = "#000000", rgb = Color.rgb(0x000000))
-    data object TransparentBlack : ColorScheme(hex = "#00000000", rgb = Color.rgba(a = 0.5f, r = 0, g = 0, b = 0))
+    data object TransparentBlack :
+        ColorScheme(hex = "#00000000", rgb = Color.rgba(a = 0.5f, r = 0, g = 0, b = 0))
+
     data object NightText : ColorScheme(hex = "#FFFFFF", rgb = Color.rgb(0xFFFFFF))
     data object White : ColorScheme(hex = "#FFFFFF", rgb = Color.rgb(0xFFFFFF))
+    data object NightCardColor : ColorScheme(hex = "#004f58", rgb = Color.rgb(0x004f58))
+
+
     data object Transparent :
         ColorScheme(hex = "#00000000", rgb = Color.rgba(a = 0, r = 0, g = 0, b = 0))
+
+    @Composable
+    fun ColorMode.cardColor(): Color.Rgb = when (this) {
+        ColorMode.LIGHT -> White.rgb
+        ColorMode.DARK -> NightCardColor.rgb
+    }
 
     data object PassiveText : ColorScheme(hex = "#9B9B9B", rgb = Color.rgb(0x9B9B9B))
 

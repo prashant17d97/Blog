@@ -2,6 +2,8 @@ package com.prashant.blog.components.composetags
 
 import androidx.compose.runtime.Composable
 import com.prashant.blog.components.constants.Constants
+import com.varabyte.kobweb.compose.css.Overflow
+import com.varabyte.kobweb.compose.css.ScrollBehavior
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.ColumnScope
@@ -10,6 +12,8 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.overflow
+import com.varabyte.kobweb.compose.ui.modifiers.scrollBehavior
 import com.varabyte.kobweb.core.PageContext
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
@@ -54,7 +58,9 @@ fun BlogLayout(
 
         // Create a nested column for the content with provided parameters.
         Column(
-            modifier = columnModifier.fillMaxSize().maxWidth(Constants.MaxWidth)
+            modifier = columnModifier.fillMaxSize()
+                .scrollBehavior(ScrollBehavior.Smooth)
+                .overflow { y(Overflow.Scroll) }.maxWidth(Constants.MaxWidth)
                 .margin(topBottom = 60.px),
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment,
