@@ -6,6 +6,7 @@ import com.prashant.blog.components.ColorScheme
 import com.varabyte.kobweb.compose.css.FontStyle
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.color
+import com.varabyte.kobweb.compose.css.functions.blur
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.graphics.Colors
@@ -13,6 +14,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.borderTop
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.filter
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontStyle
@@ -29,6 +31,7 @@ import com.varabyte.kobweb.silk.components.layout.DividerStyle
 import com.varabyte.kobweb.silk.components.layout.Surface
 import com.varabyte.kobweb.silk.components.style.StyleModifiers
 import com.varabyte.kobweb.silk.components.style.common.SmoothColorStyle
+import com.varabyte.kobweb.silk.components.style.hover
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.init.InitSilk
 import com.varabyte.kobweb.silk.init.InitSilkContext
@@ -51,7 +54,6 @@ import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
-
 
 val BLOCK_MARGIN = Modifier.margin(top = 1.cssRem)
 
@@ -128,7 +130,9 @@ fun initSilk(ctx: InitSilkContext) {
                 base {
                     Modifier
                 }
-                TextHover
+                hover {
+                    Modifier.filter(blur(5.px))
+                }
             }
 
             registerStyle(
@@ -211,7 +215,10 @@ fun initSilk(ctx: InitSilkContext) {
                 color = ColorScheme.LightText.rgb
                 background = ColorScheme.LightBG.rgb
                 border = Colors.DarkSlateGray
-                link.visited = ctx.theme.palettes.light.link.default
+                link.apply {
+                    default = ColorScheme.LightText.rgb
+                    visited = ColorScheme.PrimaryOrHover.rgb
+                }
                 brand = ColorScheme.PrimaryOrHover.rgb
             }
 
@@ -220,9 +227,8 @@ fun initSilk(ctx: InitSilkContext) {
                 background = ColorScheme.NightBG.rgb
                 border = Colors.LightSlateGray
                 link.apply {
-                    val linkDark = Color.rgb(0x1a85ff)
-                    default = linkDark
-                    visited = linkDark
+                    default = ColorScheme.NightText.rgb
+                    visited = ColorScheme.PrimaryOrHover.rgb
                 }
                 brand = ColorScheme.PrimaryOrHover.rgb
             }

@@ -22,7 +22,7 @@ object ResourceConstants {
 
     object CSSIds {
         const val cssImgClassId = "img-fluid"
-        const val cssCardIt ="card"
+        const val cssCardId ="card"
 
     }
 

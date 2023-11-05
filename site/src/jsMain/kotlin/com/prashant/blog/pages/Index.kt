@@ -52,6 +52,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.scrollBehavior
 import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
+import com.varabyte.kobweb.core.PageContext
 import com.varabyte.kobweb.silk.components.layout.Divider
 import com.varabyte.kobweb.silk.components.layout.SimpleGrid
 import com.varabyte.kobweb.silk.components.layout.numColumns
@@ -77,7 +78,7 @@ fun HomePage() {
         if (isBreakPoint) {
             SmallScreenHome(colorMode = colorMode) { }
         } else {
-            LargeScreenHome(colorMode = colorMode) { }
+            LargeScreenHome(colorMode = colorMode, pageContext = pageContext) { }
         }
     }
 }
@@ -303,7 +304,7 @@ private fun SmallScreenHome(colorMode: ColorMode, onClick: () -> Unit) {
 }
 
 @Composable
-fun LargeScreenHome(colorMode: ColorMode, onClick: () -> Unit) {
+fun LargeScreenHome(colorMode: ColorMode, pageContext: PageContext, onClick: () -> Unit) {
     val readingList = listOf("UI Design", "UX Design", "SEO", "Popular", "Essentials")
     Column(modifier = Modifier.fillMaxWidth()) {
 
@@ -503,8 +504,10 @@ fun LargeScreenHome(colorMode: ColorMode, onClick: () -> Unit) {
                 }
                 SimpleGrid(numColumns(base = 2), modifier = Modifier.fillMaxWidth().gap(10.px)) {
                     repeat(1) {
-                        VerticalBlogCard(src = SuggestionOne) {}
-                        VerticalBlogCard(src = SuggestionTwo) {}
+                        VerticalBlogCard(src = SuggestionOne) {
+                            pageContext.router.navigateTo("/post")
+                        }
+                        VerticalBlogCard(src = SuggestionTwo) { pageContext.router.navigateTo("/post") }
                     }
 
                 }

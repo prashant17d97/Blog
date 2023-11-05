@@ -19,5 +19,5 @@ function detectDeviceType() {
 }
 
 // Example usage:
-const deviceType = detectDeviceType();
-console.log('Device type: ' + deviceType);
+//const deviceType = detectDeviceType();
+//console.log('Device type: ' + deviceType);

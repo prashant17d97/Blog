@@ -1,22 +1,33 @@
 package com.prashant.blog.components.composetags
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.prashant.blog.components.ColorScheme
 import com.prashant.blog.components.ColorScheme.Black.cardColor
+import com.prashant.blog.components.composetags.ButtonsWidgets.CapsuleButton
+import com.prashant.blog.components.composetags.ButtonsWidgets.OutlinedButton
 import com.prashant.blog.components.constants.Constants
+import com.prashant.blog.components.constants.Constants.borderRadiusMedium
 import com.prashant.blog.components.constants.ResourceConstants
-import com.prashant.blog.components.constants.ResourceConstants.CSSIds.cssCardIt
+import com.prashant.blog.components.constants.ResourceConstants.CSSIds.cssCardId
 import com.prashant.blog.components.constants.ResourceConstants.CSSIds.cssImgClassId
 import com.prashant.blog.components.constants.ResourceConstants.contentDescription
+import com.prashant.blog.repo.GlobalRepository
 import com.varabyte.kobweb.compose.css.CSSFloat
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.TextAlign
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
+import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.ColumnScope
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.modifiers.alignItems
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.boxShadow
@@ -26,6 +37,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.cursor
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.flexGrow
 import com.varabyte.kobweb.compose.ui.modifiers.float
+import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxHeight
@@ -37,31 +49,37 @@ import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.size
 import com.varabyte.kobweb.compose.ui.modifiers.textAlign
 import com.varabyte.kobweb.compose.ui.modifiers.width
+import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.components.icons.fa.FaEye
 import com.varabyte.kobweb.silk.components.icons.fa.FaHeart
 import com.varabyte.kobweb.silk.components.icons.fa.IconSize
 import com.varabyte.kobweb.silk.components.icons.fa.IconStyle
+import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
+import org.jetbrains.compose.web.attributes.InputType
+import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.keywords.auto
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.A
+import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H3
 import org.jetbrains.compose.web.dom.H4
 import org.jetbrains.compose.web.dom.H5
 import org.jetbrains.compose.web.dom.Img
+import org.jetbrains.compose.web.dom.Input
 import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Text
+import org.jetbrains.compose.web.dom.TextArea
 
 object Widgets {
-
     //Card
     @Composable
     fun Card(colorMode: ColorMode, content: @Composable ColumnScope.() -> Unit) {
         Column(
-            modifier = Modifier.classNames(cssCardIt).flexGrow(1f)
+            modifier = Modifier.classNames(cssCardId).flexGrow(1f)
                 .backgroundColor(colorMode.cardColor()).boxShadow(
                     blurRadius = 10.px, color = ColorScheme.TransparentBlack.rgb
                 ).borderRadius(Constants.borderRadiusLarge).margin(5.px).padding(10.px)
@@ -82,17 +100,24 @@ object Widgets {
             Img(
                 src = src,
                 alt = src.contentDescription,
-                attrs = Modifier.fillMaxWidth().margin(topBottom = 10.px)
-                    .classNames(cssImgClassId).toAttrs()
+                attrs = Modifier.fillMaxWidth().margin(topBottom = 10.px).classNames(cssImgClassId)
+                    .toAttrs()
             )
             H5(
                 attrs = Modifier.color(
                     ColorScheme.PassiveText.rgb
                 ).toAttrs()
             ) {
-                SpanText(text = "BY   TOMAS LAURINAVICIUS   IN   RESOURCE")
+                AuthorNameWithCategory(
+                    author = "TOMAS LAURINAVICIUS",
+                    authorLink = "",
+                    category = "RESOURCE",
+                    categoryLink = ""
+                )
             }
-            H3 {
+            H3(attrs = Modifier.styleModifier {
+
+            }.cursor(Cursor.Pointer).toAttrs()) {
                 SpanText(text = "Website Downtime: Applicable Tips on How to Prevent It")
             }
 
@@ -146,9 +171,7 @@ object Widgets {
                 blurRadius = 10.px, color = ColorScheme.TransparentBlack.rgb
             ).backgroundColor(colorMode.cardColor()).borderRadius(
                 Constants.borderRadiusLarge
-            ),
-            verticalAlignment = Alignment.Top,
-            horizontalArrangement = Arrangement.SpaceBetween
+            ), verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.SpaceBetween
         ) {
             if (isImageInRight) {
                 Column(
@@ -166,19 +189,17 @@ object Widgets {
                 Img(
                     src = ResourceConstants.FooterSocialIcons.RandomImg,
                     alt = ResourceConstants.FooterSocialIcons.RandomImg.contentDescription,
-                    attrs = Modifier.classNames(cssImgClassId)
-                        .padding(0.px).borderRadius(
-                            Constants.borderRadiusLarge
-                        ).float(CSSFloat.Right).height(auto).maxWidth(638.px).toAttrs()
+                    attrs = Modifier.classNames(cssImgClassId).padding(0.px).borderRadius(
+                        Constants.borderRadiusLarge
+                    ).float(CSSFloat.Right).height(auto).maxWidth(638.px).toAttrs()
                 )
             } else {
                 Img(
                     src = ResourceConstants.FooterSocialIcons.RandomImg,
                     alt = ResourceConstants.FooterSocialIcons.RandomImg.contentDescription,
-                    attrs = Modifier.classNames(cssImgClassId)
-                        .padding(0.px).borderRadius(
-                            Constants.borderRadiusLarge
-                        ).float(CSSFloat.Right).height(auto).maxWidth(638.px).toAttrs()
+                    attrs = Modifier.classNames(cssImgClassId).padding(0.px).borderRadius(
+                        Constants.borderRadiusLarge
+                    ).float(CSSFloat.Right).height(auto).maxWidth(638.px).toAttrs()
                 )
                 Column(
                     modifier = Modifier.fillMaxWidth().weight(1f).padding(20.px)
@@ -224,7 +245,7 @@ object Widgets {
 
     @Composable
     fun AuthorNameWithCategory(
-        modifier: Modifier,
+        modifier: Modifier = Modifier,
         author: String,
         authorLink: String,
         category: String,
@@ -273,14 +294,11 @@ object Widgets {
         ) {
             ResourceConstants.FooterSocialIcons.socialMediaIcons.forEach {
                 A(href = it) {
-                    Img(
-                        src = it,
+                    Img(src = it,
                         alt = it.contentDescription,
-                        attrs = Modifier.size(40.px)
-                            .onClick { onClick.invoke() }
-                            .cursor(Cursor.Pointer)
-                            .classNames("Icon").padding(leftRight = 5.px).toAttrs()
-                    )
+                        attrs = Modifier.size(40.px).onClick { onClick.invoke() }
+                            .cursor(Cursor.Pointer).classNames("Icon").padding(leftRight = 5.px)
+                            .toAttrs())
                 }
             }
         }
@@ -291,19 +309,20 @@ object Widgets {
         modifier: Modifier = Modifier,
         onLikeClick: () -> Unit,
     ) {
-        Column(modifier = modifier) {
-            FaHeart(
-                style = IconStyle.FILLED,
+        Column(
+            modifier = modifier,
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            FaHeart(style = IconStyle.FILLED,
                 size = IconSize.LG,
                 modifier = Modifier.color(ColorScheme.Green.rgb).onClick { onLikeClick.invoke() }
-                    .margin(bottom = 10.px)
-            )
+                    .margin(bottom = 10.px))
             P { SpanText("100 K") }
             FaEye(
                 style = IconStyle.FILLED,
                 size = IconSize.LG,
-                modifier = Modifier
-                    .margin(topBottom = 10.px)
+                modifier = Modifier.margin(topBottom = 10.px)
             )
             P { SpanText("100 K") }
         }
@@ -315,30 +334,28 @@ object Widgets {
         onLikeClick: () -> Unit,
     ) {
         Row(
-            modifier = modifier,
-            verticalAlignment = Alignment.Top,
+            modifier = modifier.alignItems(AlignItems.Center).gap(10.px),
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
-            FaHeart(
-                style = IconStyle.FILLED,
+            FaHeart(style = IconStyle.FILLED,
                 size = IconSize.LG,
-                modifier = Modifier.color(ColorScheme.Green.rgb).onClick { onLikeClick.invoke() }
-            )
-            P {
+                modifier = Modifier.color(ColorScheme.Green.rgb).onClick { onLikeClick.invoke() })
+            P(
+                attrs = Modifier.margin(0.px).textAlign(TextAlign.Center).toAttrs()
+            ) {
                 SpanText(
-                    "100 K",
-                    modifier = Modifier.margin(leftRight = 10.px).textAlign(TextAlign.Start)
+                    "100 K"
                 )
             }
             FaEye(
-                style = IconStyle.FILLED,
-                size = IconSize.LG,
-                modifier = Modifier
+                style = IconStyle.FILLED, size = IconSize.LG, modifier = Modifier.margin(0.px)
             )
-            P {
+            P(
+                attrs = Modifier.margin(0.px).textAlign(TextAlign.Center).toAttrs()
+            ) {
                 SpanText(
                     "100 K",
-                    modifier = Modifier.margin(leftRight = 10.px)
                 )
             }
         }
@@ -357,20 +374,216 @@ object Widgets {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Img(
-                src = authorImage, attrs = Modifier
-                    .margin(20.px)
-                    .borderRadius(50.percent)
-                    .size(60.px)
+                src = authorImage,
+                attrs = Modifier.margin(20.px).borderRadius(50.percent).size(60.px)
                     .classNames(cssImgClassId).toAttrs()
             )
 
-            H4 {
-                SpanText(author, modifier = Modifier.onClick {
-                    authorLink
-                }.cursor(Cursor.Pointer))
+            Link(path = authorLink) {
+                H4 {
+                    SpanText(author)
+                }
             }
             SpanText(text = "Follow me on my social handles below")
             SocialMediaIcons(modifier = Modifier.margin(10.px)) {}
         }
     }
+
+    @Composable
+    fun PostComment(
+        heading: String = "Leave a comment",
+        isReply: Boolean = false,
+        isUserLoggedIn: Boolean = false,
+        padding: Int = 0,
+        colorMode: ColorMode = ColorMode.current,
+        isBreakpoint: Boolean = false,
+        onClick: (comment: String, name: String, email: String) -> Unit
+    ) {
+        var comments by remember { mutableStateOf("") }
+        var name by remember { mutableStateOf("") }
+        var email by remember { mutableStateOf("") }
+        val modifier = if (isBreakpoint) {
+            Modifier.width(97.percent).margin(
+                top = 60.px,
+                leftRight = 10.px,
+                bottom = 20.px
+            )
+        } else {
+            Modifier.width(60.percent).margin(
+                top = 60.px
+            )
+        }
+
+        Box(
+            modifier = modifier.backgroundColor(colorMode.cardColor())
+                .classNames(cssCardId)
+                .boxShadow(
+                    blurRadius = 10.px, color = ColorScheme.TransparentBlack.rgb
+                ).borderRadius(Constants.borderRadiusLarge).padding(padding.px)
+                .padding(topBottom = 40.px, leftRight = 60.px),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                modifier = Modifier.gap(10.px)
+                    .fillMaxWidth()
+            ) {
+                H4 { SpanText(heading) }
+
+                TextArea(value = comments,
+                    attrs = Modifier.fillMaxWidth().borderRadius(borderRadiusMedium).padding(20.px)
+                        .classNames("comment").toAttrs {
+                            value(comments.trim())
+                            onInput {
+                                comments = it.value.trim()
+                            }
+                            attr("placeholder", "Comments")
+                        })
+
+                if (!isUserLoggedIn) {
+                    Input(InputType.Text,
+                        attrs = Modifier.fillMaxWidth().borderRadius(borderRadiusMedium)
+                            .padding(20.px)
+                            .classNames("name").toAttrs {
+                                value(name)
+                                onInput {
+                                    name = it.value.trim()
+                                }
+                                attr("placeholder", "Name")
+                            })
+                    Input(InputType.Email,
+                        attrs = Modifier.fillMaxWidth().borderRadius(borderRadiusMedium)
+                            .padding(20.px)
+                            .classNames("email").toAttrs {
+                                value(email)
+                                onInput {
+                                    email = it.value.trim()
+                                }
+                                attr("placeholder", "Email")
+                            })
+                }
+                if (!isReply) {
+                    CapsuleButton(
+                        modifier = Modifier.backgroundColor(ColorScheme.PrimaryOrHover.rgb),
+                        onClick = {
+                            onClick(comments.trim(), name.trim(), email.trim())
+                            comments = ""
+                            name = ""
+                            email = ""
+
+                        }) {
+                        SpanText("Post comment")
+                    }
+                } else {
+                    OutlinedButton(outlinedColor = ColorScheme.PassiveText.rgb,
+                        selectedOutlineColor = ColorScheme.SelectedItem.rgb,
+                        height = 35.px,
+                        onClick = {
+                            onClick(comments.trim(), name.trim(), email.trim())
+                            comments = ""
+                            name = ""
+                            email = ""
+                        }) {
+                        SpanText("Reply")
+                    }
+                }
+            }
+        }
+
+    }
+
+    @Composable
+    fun CommentsThread(
+        repository: GlobalRepository,
+        widthPercent: Int = 60,
+        padding: Int = 0,
+        onClick: (isReplying: Boolean) -> Unit,
+        replyThread: @Composable ColumnScope.(parentCommentId: Int) -> Unit,
+    ) {
+        val comments by repository.comments.collectAsState()
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(padding.px).width(widthPercent.percent)
+                .margin(top = 60.px)
+        ) {
+            comments.forEachIndexed { index, comment ->
+                Row(
+                    modifier = Modifier.fillMaxWidth().gap(10.px),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Img(
+                        src = comment.userImage,
+                        attrs = Modifier.size(40.px).borderRadius(50.percent)
+                            .classNames(cssImgClassId)
+                            .toAttrs()
+                    )
+
+                    P(
+                        attrs = Modifier.margin(0.px).textAlign(TextAlign.Start).toAttrs()
+                    ) {
+                        SpanText(comment.userName)
+                    }
+                    P(
+                        attrs = Modifier.weight(1f).margin(0.px).textAlign(TextAlign.Start)
+                            .toAttrs()
+                    ) {
+                        SpanText(comment.commentDate)
+                    }
+                    OutlinedButton(outlinedColor = ColorScheme.PassiveText.rgb,
+                        height = 35.px,
+                        selectedOutlineColor = ColorScheme.SelectedItem.rgb,
+                        onClick = {
+                            repository.updateReplyChatWindow(index)
+                            onClick.invoke(comment.isReplyingForThisThread)
+                        }) {
+                        SpanText("Reply")
+                    }
+                }
+                Column(
+                    modifier = Modifier.width(100.percent).padding(left = 50.px)
+                ) {
+                    P {
+                        SpanText(comment.comment)
+                    }
+                    comment.childComments.forEach { childComment ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(left = 50.px)
+                                .margin(top = 20.px).gap(10.px),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Img(
+                                src = childComment.userImage,
+                                attrs = Modifier.size(40.px).borderRadius(50.percent)
+                                    .classNames(cssImgClassId)
+                                    .toAttrs()
+                            )
+                            P(
+                                attrs = Modifier.margin(0.px).textAlign(TextAlign.Start).toAttrs()
+                            ) {
+                                SpanText(childComment.userName)
+                            }
+                            P(
+                                attrs = Modifier.weight(1f).margin(0.px).textAlign(TextAlign.Start)
+                                    .toAttrs()
+                            ) { SpanText(childComment.commentDate) }
+                        }
+                        P(
+                            attrs = Modifier.fillMaxWidth()
+                                .padding(left = 100.px).toAttrs()
+                        ) {
+                            SpanText(childComment.comment)
+                        }
+                    }
+                    replyThread.invoke(this, comment.id)
+
+                }
+            }
+            Div(
+                attrs = Modifier.fillMaxWidth()
+                    .margin(top = 20.px)
+                    .backgroundColor(ColorScheme.PassiveText.rgb).height(1.px).toAttrs()
+            )
+        }
+    }
+
 }
