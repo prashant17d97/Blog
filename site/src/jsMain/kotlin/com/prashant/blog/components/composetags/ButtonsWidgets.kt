@@ -6,10 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.web.events.SyntheticMouseEvent
-import com.prashant.blog.components.ColorScheme
-import com.prashant.blog.components.constants.Constants
-import com.prashant.blog.components.constants.Constants.ButtonHeight
-import com.prashant.blog.components.constants.Constants.ButtonHorizontalPadding
+import com.prashant.blog.utils.CssStyleRegistration
+import com.prashant.blog.utils.constants.Constants
+import com.prashant.blog.utils.constants.Constants.ButtonHeight
+import com.prashant.blog.utils.constants.Constants.ButtonHorizontalPadding
+import com.prashant.theme.MaterialTheme
 import com.varabyte.kobweb.compose.foundation.layout.RowScope
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
@@ -21,6 +22,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.onMouseDown
 import com.varabyte.kobweb.compose.ui.modifiers.onMouseLeave
 import com.varabyte.kobweb.compose.ui.modifiers.onMouseOver
+import com.varabyte.kobweb.compose.ui.modifiers.outlineColor
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.silk.components.forms.Button
 import org.jetbrains.compose.web.attributes.ButtonType
@@ -47,7 +49,7 @@ object ButtonsWidgets {
         }
 
         var backgroundColor by remember {
-            mutableStateOf(ColorScheme.Transparent.rgb)
+            mutableStateOf(outlinedColor)
         }
 
         Button(
@@ -56,12 +58,13 @@ object ButtonsWidgets {
             modifier = modifier
                 .height(height)
                 .padding(leftRight = ButtonHorizontalPadding)
-                .backgroundColor(backgroundColor)
+                .backgroundColor(MaterialTheme.colorScheme.unspecified)
+                .outlineColor(backgroundColor)
                 .onMouseLeave {
-                    backgroundColor = ColorScheme.Transparent.rgb
+                    backgroundColor = CssStyleRegistration.colorScheme.unspecified
                 }
                 .onMouseOver {
-                    backgroundColor = ColorScheme.PrimaryOrHover.rgb
+                    backgroundColor = CssStyleRegistration.colorScheme.action
                 }
                 .onMouseDown {
                     isClicked = !isClicked
@@ -77,7 +80,7 @@ object ButtonsWidgets {
                     width(2.px)
                 }
                 .display(DisplayStyle.InlineBlock),
-            focusBorderColor = ColorScheme.JasmineYellow.rgb,
+            focusBorderColor = MaterialTheme.colorScheme.action,
             onClick = onClick,
             content = content
         )

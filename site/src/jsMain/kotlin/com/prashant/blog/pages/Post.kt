@@ -15,14 +15,14 @@ import com.prashant.blog.components.composetags.Widgets.HorizontalLikeView
 import com.prashant.blog.components.composetags.Widgets.PostAuthorView
 import com.prashant.blog.components.composetags.Widgets.PostComment
 import com.prashant.blog.components.composetags.Widgets.VerticalLikeView
-import com.prashant.blog.components.constants.ResourceConstants
-import com.prashant.blog.components.constants.ResourceConstants.FooterSocialIcons.SuggestionOne
-import com.prashant.blog.components.constants.ResourceConstants.FooterSocialIcons.SuggestionTwo
 import com.prashant.blog.components.model.ChildComment
 import com.prashant.blog.components.model.TopComment
 import com.prashant.blog.repo.GlobalRepository
 import com.prashant.blog.repo.rememberGlobalRepository
-import com.prashant.blog.utils.Utils.findLastId
+import com.prashant.blog.utils.CssAttributesUtils.findLastId
+import com.prashant.blog.utils.constants.ResourceConstants
+import com.prashant.blog.utils.constants.ResourceConstants.FooterSocialIcons.SuggestionOne
+import com.prashant.blog.utils.constants.ResourceConstants.FooterSocialIcons.SuggestionTwo
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -50,7 +50,7 @@ fun Post() {
     val repository = rememberGlobalRepository()
     BlogLayout { isBreakPoint, pageContext ->
 
-        Column(modifier = Modifier.margin(top = 60.px).padding(leftRight = 10.px)) {
+        Column(modifier = Modifier.margin(top = 10.px).padding(leftRight = 10.px)) {
             H1 {
                 SpanText(text = "10 Reason to Build Your Website with US!")
             }
@@ -60,7 +60,6 @@ fun Post() {
             AuthorNameWithCategory(
                 modifier = Modifier.margin(topBottom = 20.px),
                 author = "Prashant",
-                authorLink = "Prashant",
                 category = "Prashant",
                 categoryLink = "Prashant"
             )
@@ -91,13 +90,14 @@ private fun SmallScreen(
         PostAuthorView(
             authorImage = SuggestionTwo,
             author = "Prashant",
-            authorLink = "Prashant"
         )
         HeadingViewAll(
             modifier = Modifier.margin(topBottom = 20.px).padding(leftRight = 10.px),
             heading = "You might also like....",
             headingSecond = "More"
-        ) {}
+        ) {
+            console.log("Click for more")
+        }
 
         Column(modifier = Modifier.fillMaxWidth().padding(leftRight = 10.px)) {
             Widgets.VerticalBlogCard(src = SuggestionOne) {}
@@ -168,82 +168,84 @@ fun LargeScreen(pageContext: PageContext, repository: GlobalRepository) {
     var isReplying by remember {
         mutableStateOf(false)
     }
-    Row(modifier = Modifier.fillMaxWidth().margin(top = 30.px)) {
-        Column(
-            modifier = Modifier.weight(1f), verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
+
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(10.px), verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(modifier = Modifier.fillMaxWidth().margin(top = 30.px), horizontalArrangement = Arrangement.End) {
+            VerticalLikeView(modifier = Modifier.width(100.px)) {}
+
+        }
+        PostAuthorView(
+            authorImage = SuggestionTwo,
+            author = "Prashant",
+        )
+        HeadingViewAll(
+            modifier = Modifier.margin(topBottom = 20.px),
+            heading = "You might also like....",
+            headingSecond = "More"
         ) {
-            PostAuthorView(
-                authorImage = SuggestionTwo,
-                author = "Prashant",
-                authorLink = "Prashant"
-            )
-            HeadingViewAll(
-                modifier = Modifier.margin(topBottom = 20.px),
-                heading = "You might also like....",
-                headingSecond = "More"
-            ) {}
+            console.info("Click for more")
+        }
 
-            SimpleGrid(
-                numColumns(base = 2), modifier = Modifier.fillMaxWidth().margin(bottom = 20.px)
-                    .gap(10.px)
-            ) {
+        SimpleGrid(
+            numColumns(base = 2), modifier = Modifier.fillMaxWidth().margin(bottom = 20.px)
+                .gap(10.px)
+        ) {
 
-                Widgets.VerticalBlogCard(src = SuggestionOne) {}
-                Widgets.VerticalBlogCard(src = SuggestionTwo) {}
+            Widgets.VerticalBlogCard(src = SuggestionOne) {}
+            Widgets.VerticalBlogCard(src = SuggestionTwo) {}
 
-            }
+        }
 
-            if (topComment.isNotEmpty()) {
-                CommentsThread(
-                    repository = repository,
-                    onClick = { isReplying = it }) { parentCommentId ->
-                    if (isReplying) {
-                        PostComment(
-                            heading = "Leave a reply",
-                            isReply = true,
-                            isBreakpoint = true
-                        ) { comment, name, email ->
-                            console.info("Reply Before:---$comment-->, $name---> $email")
+        if (topComment.isNotEmpty()) {
+            CommentsThread(
+                repository = repository,
+                onClick = { isReplying = it }) { parentCommentId ->
+                if (isReplying) {
+                    PostComment(
+                        heading = "Leave a reply",
+                        isReply = true,
+                        isBreakpoint = true
+                    ) { comment, name, email ->
+                        console.info("Reply Before:---$comment-->, $name---> $email")
 
-                            repository.addChildComment(
-                                childComment = ChildComment(
-                                    userName = name,
-                                    userImage = ResourceConstants.FooterSocialIcons.RandomImg,
-                                    userEmail = email,
-                                    commentDate = "November 02 2023 at 8:30 AM",
-                                    comment = comment
-                                ),
-                                id = parentCommentId
-                            )
-                            console.info("Reply:---$comment-->, $name---> $email")
-                            isReplying = false
-                        }
-                    }
-                }
-            }
-            if (!isReplying) {
-                PostComment { comment, name, email ->
-                    console.info("Before:-----$comment-->, $name---> $email")
-                    if (comment.isNotEmpty() && name.isNotEmpty() && email.isNotEmpty()) {
-                        repository.addComment(
-                            TopComment(
-                                id = topComment.findLastId() + 1,
+                        repository.addChildComment(
+                            childComment = ChildComment(
                                 userName = name,
                                 userImage = ResourceConstants.FooterSocialIcons.RandomImg,
                                 userEmail = email,
                                 commentDate = "November 02 2023 at 8:30 AM",
-                                comment = comment,
-                                childComments = arrayListOf()
-                            )
+                                comment = comment
+                            ),
+                            id = parentCommentId
                         )
-                        console.info("After:-----$comment-->, $name---> $email")
+                        console.info("Reply:---$comment-->, $name---> $email")
+                        isReplying = false
                     }
                 }
             }
         }
-
-        VerticalLikeView(modifier = Modifier.width(100.px)) {}
-
+        if (!isReplying) {
+            PostComment { comment, name, email ->
+                console.info("Before:-----$comment-->, $name---> $email")
+                if (comment.isNotEmpty() && name.isNotEmpty() && email.isNotEmpty()) {
+                    repository.addComment(
+                        TopComment(
+                            id = topComment.findLastId() + 1,
+                            userName = name,
+                            userImage = ResourceConstants.FooterSocialIcons.RandomImg,
+                            userEmail = email,
+                            commentDate = "November 02 2023 at 8:30 AM",
+                            comment = comment,
+                            childComments = arrayListOf()
+                        )
+                    )
+                    console.info("After:-----$comment-->, $name---> $email")
+                }
+            }
+        }
     }
+
 }

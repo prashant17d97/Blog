@@ -9,6 +9,7 @@ const val COLOR_MODE_KEY = "blog:app:colorMode"
 class ElementBuilderImplementation<TElement : Element>(private val tagName: String) :
     ElementBuilder<TElement> {
     private val el: Element by lazy { document.createElement(tagName) }
+
     @Suppress("UNCHECKED_CAST")
     override fun create(): TElement = el.cloneNode() as TElement
 }

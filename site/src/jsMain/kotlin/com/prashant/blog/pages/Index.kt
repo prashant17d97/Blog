@@ -2,8 +2,6 @@ package com.prashant.blog.pages
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import com.prashant.blog.components.ColorScheme
-import com.prashant.blog.components.ColorScheme.Black.cardColor
 import com.prashant.blog.components.composetags.BlogLayout
 import com.prashant.blog.components.composetags.Widgets.Card
 import com.prashant.blog.components.composetags.Widgets.CategoryViewItem
@@ -11,20 +9,21 @@ import com.prashant.blog.components.composetags.Widgets.HeadingViewAll
 import com.prashant.blog.components.composetags.Widgets.HorizontalBlogCard
 import com.prashant.blog.components.composetags.Widgets.NewBlogItems
 import com.prashant.blog.components.composetags.Widgets.VerticalBlogCard
-import com.prashant.blog.components.constants.Constants.borderRadiusLarge
-import com.prashant.blog.components.constants.ResourceConstants
-import com.prashant.blog.components.constants.ResourceConstants.CSSIds.cssImgClassId
-import com.prashant.blog.components.constants.ResourceConstants.FooterSocialIcons.EssentialsCard
-import com.prashant.blog.components.constants.ResourceConstants.FooterSocialIcons.Pic
-import com.prashant.blog.components.constants.ResourceConstants.FooterSocialIcons.SuggestionOne
-import com.prashant.blog.components.constants.ResourceConstants.FooterSocialIcons.SuggestionTwo
-import com.prashant.blog.components.constants.ResourceConstants.MenuItems.Essentials
-import com.prashant.blog.components.constants.ResourceConstants.MenuItems.New
-import com.prashant.blog.components.constants.ResourceConstants.MenuItems.Popular
-import com.prashant.blog.components.constants.ResourceConstants.MenuItems.Random
-import com.prashant.blog.components.constants.ResourceConstants.MenuItems.ReadingList
-import com.prashant.blog.components.constants.ResourceConstants.MenuItems.Suggested
-import com.prashant.blog.components.constants.ResourceConstants.contentDescription
+import com.prashant.blog.utils.constants.Constants.borderRadiusLarge
+import com.prashant.blog.utils.constants.ResourceConstants
+import com.prashant.blog.utils.constants.ResourceConstants.CSSIds.cssImgClassId
+import com.prashant.blog.utils.constants.ResourceConstants.FooterSocialIcons.EssentialsCard
+import com.prashant.blog.utils.constants.ResourceConstants.FooterSocialIcons.Pic
+import com.prashant.blog.utils.constants.ResourceConstants.FooterSocialIcons.SuggestionOne
+import com.prashant.blog.utils.constants.ResourceConstants.FooterSocialIcons.SuggestionTwo
+import com.prashant.blog.utils.constants.ResourceConstants.MenuItems.Essentials
+import com.prashant.blog.utils.constants.ResourceConstants.MenuItems.New
+import com.prashant.blog.utils.constants.ResourceConstants.MenuItems.Popular
+import com.prashant.blog.utils.constants.ResourceConstants.MenuItems.Random
+import com.prashant.blog.utils.constants.ResourceConstants.MenuItems.ReadingList
+import com.prashant.blog.utils.constants.ResourceConstants.MenuItems.Suggested
+import com.prashant.blog.utils.constants.ResourceConstants.contentDescription
+import com.prashant.theme.MaterialTheme
 import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.ScrollBehavior
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
@@ -110,7 +109,8 @@ private fun SmallScreenHome(colorMode: ColorMode, onClick: () -> Unit) {
 
             }
             Divider(
-                modifier = Modifier.color(ColorScheme.PassiveText.rgb).fillMaxWidth().height(1.px)
+                modifier = Modifier.color(MaterialTheme.colorScheme.onContainer).fillMaxWidth()
+                    .height(1.px)
             )
 
             NewBlogItems {}
@@ -177,11 +177,17 @@ private fun SmallScreenHome(colorMode: ColorMode, onClick: () -> Unit) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 repeat(4) {
-                    Card(colorMode = colorMode) {
-                        H5(attrs = Modifier.color(ColorScheme.PassiveText.rgb).toAttrs()) {
+                    Card(modifier = Modifier.margin(5.px).padding(10.px)) {
+                        H5(
+                            attrs = Modifier.color(MaterialTheme.colorScheme.onContainer)
+                                .toAttrs()
+                        ) {
                             SpanText(text = "View all new")
                         }
-                        H4 {
+                        H4(
+                            attrs = Modifier.color(MaterialTheme.colorScheme.text)
+                                .toAttrs()
+                        ) {
                             SpanText(text = "View all new")
                         }
                     }
@@ -201,10 +207,10 @@ private fun SmallScreenHome(colorMode: ColorMode, onClick: () -> Unit) {
         Div(
             attrs = Modifier.margin(10.px)
                 .grid { rows { size(1.fr); size(1.fr) } }
-                .backgroundColor(colorMode.cardColor())
+                .backgroundColor(MaterialTheme.colorScheme.container)
                 .boxShadow(
                     blurRadius = 10.px,
-                    color = ColorScheme.TransparentBlack.rgb
+                    color = MaterialTheme.colorScheme.unspecified.copyf(alpha = 0.5f)
                 )
                 .borderRadius(borderRadiusLarge)
                 .display(DisplayStyle.InlineBlock)
@@ -225,7 +231,7 @@ private fun SmallScreenHome(colorMode: ColorMode, onClick: () -> Unit) {
                 H2 {
                     Text(value = Popular)
                 }
-                H5(attrs = Modifier.color(ColorScheme.PassiveText.rgb).toAttrs()) {
+                H5(attrs = Modifier.color(MaterialTheme.colorScheme.onContainer).toAttrs()) {
                     SpanText(text = "View all new")
                 }
 
@@ -261,11 +267,17 @@ private fun SmallScreenHome(colorMode: ColorMode, onClick: () -> Unit) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 repeat(4) {
-                    Card(colorMode = colorMode) {
-                        H5(attrs = Modifier.color(ColorScheme.PassiveText.rgb).toAttrs()) {
+                    Card(modifier = Modifier.margin(5.px).padding(10.px)) {
+                        H5(
+                            attrs = Modifier.color(MaterialTheme.colorScheme.onContainer)
+                                .toAttrs()
+                        ) {
                             SpanText(text = "View all new")
                         }
-                        H4 {
+                        H4(
+                            attrs = Modifier.color(MaterialTheme.colorScheme.text)
+                                .toAttrs()
+                        ) {
                             SpanText(text = "View all new")
                         }
                     }
@@ -334,7 +346,8 @@ fun LargeScreenHome(colorMode: ColorMode, pageContext: PageContext, onClick: () 
 
                 }
                 Divider(
-                    modifier = Modifier.color(ColorScheme.PassiveText.rgb).fillMaxWidth()
+                    modifier = Modifier.color(MaterialTheme.colorScheme.onContainer)
+                        .fillMaxWidth()
                         .height(1.px)
                 )
 
@@ -409,11 +422,17 @@ fun LargeScreenHome(colorMode: ColorMode, pageContext: PageContext, onClick: () 
 
                     SimpleGrid(numColumns(base = 2)) {
                         repeat(4) {
-                            Card(colorMode = colorMode) {
-                                H5(attrs = Modifier.color(ColorScheme.PassiveText.rgb).toAttrs()) {
+                            Card(modifier = Modifier.margin(5.px).padding(10.px)) {
+                                H5(
+                                    attrs = Modifier.color(MaterialTheme.colorScheme.onContainer)
+                                        .toAttrs()
+                                ) {
                                     SpanText(text = "View all new")
                                 }
-                                H4 {
+                                H4(
+                                    attrs = Modifier.color(MaterialTheme.colorScheme.text)
+                                        .toAttrs()
+                                ) {
                                     SpanText(text = "View all new")
                                 }
                             }
@@ -430,7 +449,7 @@ fun LargeScreenHome(colorMode: ColorMode, pageContext: PageContext, onClick: () 
                 Text(value = Random)
             }
 
-            HorizontalBlogCard(colorMode = colorMode) {
+            HorizontalBlogCard {
 
             }
         }
@@ -462,11 +481,17 @@ fun LargeScreenHome(colorMode: ColorMode, pageContext: PageContext, onClick: () 
                             .weight(1f)
                     ) {
                         repeat(4) {
-                            Card(colorMode = colorMode) {
-                                H5(attrs = Modifier.color(ColorScheme.PassiveText.rgb).toAttrs()) {
+                            Card(modifier = Modifier.margin(5.px).padding(10.px)) {
+                                H5(
+                                    attrs = Modifier.color(MaterialTheme.colorScheme.onContainer)
+                                        .toAttrs()
+                                ) {
                                     SpanText(text = "View all new")
                                 }
-                                H4 {
+                                H4(
+                                    attrs = Modifier.color(MaterialTheme.colorScheme.text)
+                                        .toAttrs()
+                                ) {
                                     SpanText(text = "View all new")
                                 }
                             }

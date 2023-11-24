@@ -13,10 +13,13 @@ plugins {
 group = "com.prashant.blog"
 version = "1.0-SNAPSHOT"
 
+
 kobweb {
     app {
         index {
             head.add {
+
+                //External JavaScripts
                 script {
                     src =
                         "https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"
@@ -25,15 +28,19 @@ kobweb {
                     src = "/scripts/devicetype.js"
                 }
                 script {
-                    src = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+                    src =
+                        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
                 }
+
+                //External CSS
                 link {
                     rel = "stylesheet"
                     href = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
                 }
                 link {
                     rel = "stylesheet"
-                    href = "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
+                    href =
+                        "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
                 }
                 link(
                     rel = "stylesheet",
@@ -41,18 +48,18 @@ kobweb {
                     type = "text/css"
                 )
 
-                link(
-                    rel = "stylesheet",
-                    href = "/css/styles.css",
-                    type = "text/css"
-                )
             }
-            description.set("Powered by Kobweb")
+            description.set("Debug Desk")
         }
     }
 }
 
 kotlin {
+
+    js(IR) { // or: LEGACY, BOTH
+        // ...
+        binaries.executable() // not applicable to BOTH, see details below
+    }
     configAsKobwebApplication("blog", includeServer = true)
 
     sourceSets {

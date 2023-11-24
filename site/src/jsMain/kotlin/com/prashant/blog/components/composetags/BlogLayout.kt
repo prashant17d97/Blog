@@ -1,7 +1,7 @@
 package com.prashant.blog.components.composetags
 
 import androidx.compose.runtime.Composable
-import com.prashant.blog.components.constants.Constants
+import com.prashant.blog.utils.constants.Constants
 import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.ScrollBehavior
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement

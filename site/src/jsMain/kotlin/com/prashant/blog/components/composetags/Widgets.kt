@@ -6,17 +6,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.prashant.blog.components.ColorScheme
-import com.prashant.blog.components.ColorScheme.Black.cardColor
 import com.prashant.blog.components.composetags.ButtonsWidgets.CapsuleButton
 import com.prashant.blog.components.composetags.ButtonsWidgets.OutlinedButton
-import com.prashant.blog.components.constants.Constants
-import com.prashant.blog.components.constants.Constants.borderRadiusMedium
-import com.prashant.blog.components.constants.ResourceConstants
-import com.prashant.blog.components.constants.ResourceConstants.CSSIds.cssCardId
-import com.prashant.blog.components.constants.ResourceConstants.CSSIds.cssImgClassId
-import com.prashant.blog.components.constants.ResourceConstants.contentDescription
 import com.prashant.blog.repo.GlobalRepository
+import com.prashant.blog.utils.CssAttributesUtils.anchorTextColor
+import com.prashant.blog.utils.CssAttributesUtils.hoverFilter
+import com.prashant.blog.utils.CssAttributesUtils.onHover
+import com.prashant.blog.utils.CssAttributesUtils.textColor
+import com.prashant.blog.utils.CssAttributesUtils.textDecor
+import com.prashant.blog.utils.constants.Constants
+import com.prashant.blog.utils.constants.Constants.borderRadiusMedium
+import com.prashant.blog.utils.constants.ResourceConstants
+import com.prashant.blog.utils.constants.ResourceConstants.CSSIds.cssCardId
+import com.prashant.blog.utils.constants.ResourceConstants.CSSIds.cssIconId
+import com.prashant.blog.utils.constants.ResourceConstants.CSSIds.cssImgClassId
+import com.prashant.blog.utils.constants.ResourceConstants.contentDescription
+import com.prashant.theme.MaterialTheme
 import com.varabyte.kobweb.compose.css.CSSFloat
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.TextAlign
@@ -49,7 +54,6 @@ import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.size
 import com.varabyte.kobweb.compose.ui.modifiers.textAlign
 import com.varabyte.kobweb.compose.ui.modifiers.width
-import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.components.icons.fa.FaEye
 import com.varabyte.kobweb.silk.components.icons.fa.FaHeart
@@ -57,7 +61,6 @@ import com.varabyte.kobweb.silk.components.icons.fa.IconSize
 import com.varabyte.kobweb.silk.components.icons.fa.IconStyle
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.text.SpanText
-import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.keywords.auto
@@ -68,6 +71,7 @@ import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.H3
 import org.jetbrains.compose.web.dom.H4
 import org.jetbrains.compose.web.dom.H5
+import org.jetbrains.compose.web.dom.H6
 import org.jetbrains.compose.web.dom.Img
 import org.jetbrains.compose.web.dom.Input
 import org.jetbrains.compose.web.dom.P
@@ -75,17 +79,23 @@ import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.dom.TextArea
 
 object Widgets {
+
     //Card
     @Composable
-    fun Card(colorMode: ColorMode, content: @Composable ColumnScope.() -> Unit) {
+    fun Card(
+        modifier: Modifier = Modifier,
+        verticalArrangement: Arrangement.Vertical = Arrangement.SpaceEvenly,
+        horizontalAlignment: Alignment.Horizontal = Alignment.Start,
+        content: @Composable (ColumnScope.() -> Unit)
+    ) {
         Column(
-            modifier = Modifier.classNames(cssCardId).flexGrow(1f)
-                .backgroundColor(colorMode.cardColor()).boxShadow(
-                    blurRadius = 10.px, color = ColorScheme.TransparentBlack.rgb
-                ).borderRadius(Constants.borderRadiusLarge).margin(5.px).padding(10.px)
+            modifier = modifier.classNames(cssCardId).flexGrow(1f)
+                .backgroundColor(MaterialTheme.colorScheme.container).boxShadow(
+                    blurRadius = 10.px, color = MaterialTheme.colorScheme.primary
+                ).borderRadius(Constants.borderRadiusLarge)
                 .minWidth(276.px).minHeight(169.px),
-            verticalArrangement = Arrangement.SpaceEvenly,
-            horizontalAlignment = Alignment.Start,
+            verticalArrangement = verticalArrangement,
+            horizontalAlignment = horizontalAlignment,
             content = content
         )
     }
@@ -101,23 +111,23 @@ object Widgets {
                 src = src,
                 alt = src.contentDescription,
                 attrs = Modifier.fillMaxWidth().margin(topBottom = 10.px).classNames(cssImgClassId)
+                    /*.maxWidth(775.px)
+                    .maxHeight(550.px)*/
                     .toAttrs()
             )
             H5(
                 attrs = Modifier.color(
-                    ColorScheme.PassiveText.rgb
+                    MaterialTheme.colorScheme.onContainer
                 ).toAttrs()
             ) {
                 AuthorNameWithCategory(
                     author = "TOMAS LAURINAVICIUS",
-                    authorLink = "",
+                    authorLink = "/author",
                     category = "RESOURCE",
                     categoryLink = ""
                 )
             }
-            H3(attrs = Modifier.styleModifier {
-
-            }.cursor(Cursor.Pointer).toAttrs()) {
+            H3(attrs = Modifier.cursor(Cursor.Pointer).toAttrs()) {
                 SpanText(text = "Website Downtime: Applicable Tips on How to Prevent It")
             }
 
@@ -131,7 +141,7 @@ object Widgets {
     @Composable
     fun NewBlogItems(onClick: () -> Unit) {
         Column(modifier = Modifier.fillMaxWidth().onClick { onClick.invoke() }) {
-            P(attrs = Modifier.color(ColorScheme.PassiveText.rgb).toAttrs()) {
+            P(attrs = Modifier.color(MaterialTheme.colorScheme.onContainer).toAttrs()) {
                 SpanText(text = "SEP  04  2018")
             }
 
@@ -146,16 +156,22 @@ object Widgets {
         headingSecond: String = "View all new",
         onClick: () -> Unit,
     ) {
+        var onMouseHover by remember { mutableStateOf(false) }
         Row(
             modifier = modifier.fillMaxWidth(),
             verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            H3 {
+            H4 {
                 Text(value = heading)
             }
-            H5(attrs = Modifier.color(ColorScheme.PassiveText.rgb).onClick { onClick.invoke() }
-                .toAttrs()) {
+            H5(attrs = Modifier
+                .onClick { onClick.invoke() }
+                .textColor(onMouseHover)
+                .onHover(onHover = { onMouseHover = it })
+                .textDecor(onMouseHover)
+                .cursor(Cursor.Pointer).toAttrs()
+            ) {
                 SpanText(text = headingSecond)
             }
         }
@@ -164,12 +180,13 @@ object Widgets {
 
     @Composable
     fun HorizontalBlogCard(
-        colorMode: ColorMode, isImageInRight: Boolean = true, onClick: () -> Unit
+        isImageInRight: Boolean = true, onClick: () -> Unit
     ) {
         Row(
             modifier = Modifier.fillMaxWidth().onClick { onClick.invoke() }.margin(0.px).boxShadow(
-                blurRadius = 10.px, color = ColorScheme.TransparentBlack.rgb
-            ).backgroundColor(colorMode.cardColor()).borderRadius(
+                blurRadius = 10.px,
+                color = MaterialTheme.colorScheme.unspecified.copyf(alpha = 0.5f)
+            ).backgroundColor(MaterialTheme.colorScheme.container).borderRadius(
                 Constants.borderRadiusLarge
             ), verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -179,7 +196,7 @@ object Widgets {
                     verticalArrangement = Arrangement.SpaceEvenly,
                     horizontalAlignment = Alignment.Start
                 ) {
-                    H5(attrs = Modifier.color(ColorScheme.PassiveText.rgb).toAttrs()) {
+                    H5(attrs = Modifier.color(MaterialTheme.colorScheme.onContainer).toAttrs()) {
                         SpanText(text = "View all new")
                     }
                     H4 {
@@ -207,7 +224,7 @@ object Widgets {
                     verticalArrangement = Arrangement.SpaceEvenly,
                     horizontalAlignment = Alignment.Start
                 ) {
-                    H5(attrs = Modifier.color(ColorScheme.PassiveText.rgb).toAttrs()) {
+                    H5(attrs = Modifier.color(MaterialTheme.colorScheme.onContainer).toAttrs()) {
                         SpanText(text = "View all new")
                     }
                     H4 {
@@ -247,38 +264,47 @@ object Widgets {
     fun AuthorNameWithCategory(
         modifier: Modifier = Modifier,
         author: String,
-        authorLink: String,
+        authorLink: String = "/author",
         category: String,
         categoryLink: String,
     ) {
+        var onAnchorMouseHover by remember { mutableStateOf(false) }
+        var onAnchorCategoryMouseHover by remember { mutableStateOf(false) }
+
         Row(
             modifier = modifier,
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
-            H4(
-                attrs = Modifier.color(ColorScheme.PassiveText.rgb).toAttrs()
+            H6(
+                attrs = Modifier.color(MaterialTheme.colorScheme.text).toAttrs()
             ) {
-                SpanText(text = "BY ")
+                SpanText(text = "By ")
             }
 
 
             A(
                 href = authorLink,
+                attrs = Modifier.anchorTextColor(onAnchorMouseHover)
+                    .onHover(onHover = { onAnchorMouseHover = it })
+                    .textDecor(onAnchorMouseHover).toAttrs()
             ) {
-                H4 {
+                H6 {
                     SpanText(text = author)
                 }
             }
-            H4(
-                attrs = Modifier.color(ColorScheme.PassiveText.rgb).toAttrs()
+            H6(
+                attrs = Modifier.color(MaterialTheme.colorScheme.text).hoverFilter().toAttrs()
             ) {
-                SpanText(text = " IN ")
+                SpanText(text = " In ")
             }
             A(
                 href = categoryLink,
+                attrs = Modifier.anchorTextColor(onAnchorCategoryMouseHover)
+                    .onHover(onHover = { onAnchorCategoryMouseHover = it })
+                    .textDecor(onAnchorCategoryMouseHover).toAttrs()
             ) {
-                H4 {
+                H6 {
                     SpanText(text = category)
                 }
             }
@@ -287,18 +313,20 @@ object Widgets {
 
     @Composable
     fun SocialMediaIcons(modifier: Modifier = Modifier, onClick: () -> Unit) {
+        var visited by remember {
+            mutableStateOf(false)
+        }
         Row(
-            modifier = modifier.flexGrow(0.7f),
+            modifier = modifier.flexGrow(0.7f).gap(10.px),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            ResourceConstants.FooterSocialIcons.socialMediaIcons.forEach {
-                A(href = it) {
-                    Img(src = it,
-                        alt = it.contentDescription,
+            ResourceConstants.FooterSocialIcons.socialMediaIcons.forEach { icon ->
+                A(href = icon) {
+                    Img(src = icon,
+                        alt = icon.contentDescription,
                         attrs = Modifier.size(40.px).onClick { onClick.invoke() }
-                            .cursor(Cursor.Pointer).classNames("Icon").padding(leftRight = 5.px)
-                            .toAttrs())
+                            .cursor(Cursor.Pointer).classNames(cssIconId).toAttrs())
                 }
             }
         }
@@ -314,15 +342,18 @@ object Widgets {
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            FaHeart(style = IconStyle.FILLED,
+            FaHeart(
+                style = IconStyle.FILLED,
                 size = IconSize.LG,
-                modifier = Modifier.color(ColorScheme.Green.rgb).onClick { onLikeClick.invoke() }
-                    .margin(bottom = 10.px))
+                modifier = Modifier.color(MaterialTheme.colorScheme.onContainer)
+                    .classNames(cssIconId)
+                    .onClick { onLikeClick.invoke() }.margin(bottom = 10.px)
+            )
             P { SpanText("100 K") }
             FaEye(
                 style = IconStyle.FILLED,
                 size = IconSize.LG,
-                modifier = Modifier.margin(topBottom = 10.px)
+                modifier = Modifier.classNames(cssIconId).margin(topBottom = 10.px)
             )
             P { SpanText("100 K") }
         }
@@ -340,7 +371,8 @@ object Widgets {
         ) {
             FaHeart(style = IconStyle.FILLED,
                 size = IconSize.LG,
-                modifier = Modifier.color(ColorScheme.Green.rgb).onClick { onLikeClick.invoke() })
+                modifier = Modifier.color(MaterialTheme.colorScheme.onContainer)
+                    .onClick { onLikeClick.invoke() })
             P(
                 attrs = Modifier.margin(0.px).textAlign(TextAlign.Center).toAttrs()
             ) {
@@ -365,11 +397,12 @@ object Widgets {
     fun PostAuthorView(
         modifier: Modifier = Modifier,
         author: String,
+        noActionPerformed: Boolean = true,
         authorImage: String,
-        authorLink: String,
+        authorLink: String="/author",
     ) {
         Column(
-            modifier = modifier.fillMaxWidth(),
+            modifier = modifier.fillMaxWidth().padding(10.px),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -379,12 +412,20 @@ object Widgets {
                     .classNames(cssImgClassId).toAttrs()
             )
 
-            Link(path = authorLink) {
-                H4 {
-                    SpanText(author)
+            if (noActionPerformed) {
+                Link(path = authorLink) {
+                    H3(attrs = Modifier.color(MaterialTheme.colorScheme.action).toAttrs()) {
+                        Text(author)
+                    }
+                }
+            } else {
+                H3(attrs = Modifier.color(MaterialTheme.colorScheme.secondary).toAttrs()) {
+                    Text(author)
                 }
             }
-            SpanText(text = "Follow me on my social handles below")
+            P {
+                SpanText(text = "Follow me on my social handles below")
+            }
             SocialMediaIcons(modifier = Modifier.margin(10.px)) {}
         }
     }
@@ -395,7 +436,6 @@ object Widgets {
         isReply: Boolean = false,
         isUserLoggedIn: Boolean = false,
         padding: Int = 0,
-        colorMode: ColorMode = ColorMode.current,
         isBreakpoint: Boolean = false,
         onClick: (comment: String, name: String, email: String) -> Unit
     ) {
@@ -404,9 +444,7 @@ object Widgets {
         var email by remember { mutableStateOf("") }
         val modifier = if (isBreakpoint) {
             Modifier.width(97.percent).margin(
-                top = 60.px,
-                leftRight = 10.px,
-                bottom = 20.px
+                top = 60.px, leftRight = 10.px, bottom = 20.px
             )
         } else {
             Modifier.width(60.percent).margin(
@@ -415,19 +453,21 @@ object Widgets {
         }
 
         Box(
-            modifier = modifier.backgroundColor(colorMode.cardColor())
+            modifier = modifier
+                .backgroundColor(MaterialTheme.colorScheme.container)
                 .classNames(cssCardId)
                 .boxShadow(
-                    blurRadius = 10.px, color = ColorScheme.TransparentBlack.rgb
+                    blurRadius = 10.px,
+                    color = MaterialTheme.colorScheme.unspecified.copyf(alpha = 0.5f)
                 ).borderRadius(Constants.borderRadiusLarge).padding(padding.px)
-                .padding(topBottom = 40.px, leftRight = 60.px),
-            contentAlignment = Alignment.Center
+                .padding(topBottom = 40.px, leftRight = 60.px), contentAlignment = Alignment.Center
         ) {
             Column(
-                modifier = Modifier.gap(10.px)
-                    .fillMaxWidth()
+                modifier = Modifier.gap(10.px).fillMaxWidth()
             ) {
-                H4 { SpanText(heading) }
+                H4(
+                    attrs = Modifier.color(MaterialTheme.colorScheme.onContainer).toAttrs()
+                ) { SpanText(heading) }
 
                 TextArea(value = comments,
                     attrs = Modifier.fillMaxWidth().borderRadius(borderRadiusMedium).padding(20.px)
@@ -442,8 +482,7 @@ object Widgets {
                 if (!isUserLoggedIn) {
                     Input(InputType.Text,
                         attrs = Modifier.fillMaxWidth().borderRadius(borderRadiusMedium)
-                            .padding(20.px)
-                            .classNames("name").toAttrs {
+                            .padding(20.px).classNames("name").toAttrs {
                                 value(name)
                                 onInput {
                                     name = it.value.trim()
@@ -452,8 +491,7 @@ object Widgets {
                             })
                     Input(InputType.Email,
                         attrs = Modifier.fillMaxWidth().borderRadius(borderRadiusMedium)
-                            .padding(20.px)
-                            .classNames("email").toAttrs {
+                            .padding(20.px).classNames("email").toAttrs {
                                 value(email)
                                 onInput {
                                     email = it.value.trim()
@@ -462,8 +500,7 @@ object Widgets {
                             })
                 }
                 if (!isReply) {
-                    CapsuleButton(
-                        modifier = Modifier.backgroundColor(ColorScheme.PrimaryOrHover.rgb),
+                    CapsuleButton(modifier = Modifier.backgroundColor(MaterialTheme.colorScheme.action),
                         onClick = {
                             onClick(comments.trim(), name.trim(), email.trim())
                             comments = ""
@@ -474,8 +511,8 @@ object Widgets {
                         SpanText("Post comment")
                     }
                 } else {
-                    OutlinedButton(outlinedColor = ColorScheme.PassiveText.rgb,
-                        selectedOutlineColor = ColorScheme.SelectedItem.rgb,
+                    OutlinedButton(outlinedColor = MaterialTheme.colorScheme.onContainer,
+                        selectedOutlineColor = MaterialTheme.colorScheme.action,
                         height = 35.px,
                         onClick = {
                             onClick(comments.trim(), name.trim(), email.trim())
@@ -513,8 +550,7 @@ object Widgets {
                     Img(
                         src = comment.userImage,
                         attrs = Modifier.size(40.px).borderRadius(50.percent)
-                            .classNames(cssImgClassId)
-                            .toAttrs()
+                            .classNames(cssImgClassId).toAttrs()
                     )
 
                     P(
@@ -528,9 +564,9 @@ object Widgets {
                     ) {
                         SpanText(comment.commentDate)
                     }
-                    OutlinedButton(outlinedColor = ColorScheme.PassiveText.rgb,
+                    OutlinedButton(outlinedColor = MaterialTheme.colorScheme.onContainer,
                         height = 35.px,
-                        selectedOutlineColor = ColorScheme.SelectedItem.rgb,
+                        selectedOutlineColor = MaterialTheme.colorScheme.action,
                         onClick = {
                             repository.updateReplyChatWindow(index)
                             onClick.invoke(comment.isReplyingForThisThread)
@@ -554,8 +590,7 @@ object Widgets {
                             Img(
                                 src = childComment.userImage,
                                 attrs = Modifier.size(40.px).borderRadius(50.percent)
-                                    .classNames(cssImgClassId)
-                                    .toAttrs()
+                                    .classNames(cssImgClassId).toAttrs()
                             )
                             P(
                                 attrs = Modifier.margin(0.px).textAlign(TextAlign.Start).toAttrs()
@@ -568,8 +603,7 @@ object Widgets {
                             ) { SpanText(childComment.commentDate) }
                         }
                         P(
-                            attrs = Modifier.fillMaxWidth()
-                                .padding(left = 100.px).toAttrs()
+                            attrs = Modifier.fillMaxWidth().padding(left = 100.px).toAttrs()
                         ) {
                             SpanText(childComment.comment)
                         }
@@ -579,9 +613,8 @@ object Widgets {
                 }
             }
             Div(
-                attrs = Modifier.fillMaxWidth()
-                    .margin(top = 20.px)
-                    .backgroundColor(ColorScheme.PassiveText.rgb).height(1.px).toAttrs()
+                attrs = Modifier.fillMaxWidth().margin(top = 20.px)
+                    .backgroundColor(MaterialTheme.colorScheme.onContainer).height(1.px).toAttrs()
             )
         }
     }

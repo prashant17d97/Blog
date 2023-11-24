@@ -1,13 +1,12 @@
 package com.prashant.blog.components.composetags
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import com.prashant.blog.components.ColorScheme
 import com.prashant.blog.components.composetags.Widgets.SocialMediaIcons
-import com.prashant.blog.components.constants.Constants
-import com.prashant.blog.components.constants.ResourceConstants
-import com.prashant.blog.components.constants.ResourceConstants.CSSIds.cssImgClassId
-import com.prashant.blog.components.constants.ResourceConstants.contentDescription
+import com.prashant.blog.utils.constants.Constants
+import com.prashant.blog.utils.constants.ResourceConstants
+import com.prashant.blog.utils.constants.ResourceConstants.CSSIds.cssImgClassId
+import com.prashant.blog.utils.constants.ResourceConstants.contentDescription
+import com.prashant.theme.MaterialTheme
 import com.varabyte.kobweb.compose.css.TextAlign
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
@@ -17,6 +16,7 @@ import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
+import com.varabyte.kobweb.compose.ui.modifiers.boxShadow
 import com.varabyte.kobweb.compose.ui.modifiers.classNames
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.height
@@ -27,7 +27,6 @@ import com.varabyte.kobweb.compose.ui.modifiers.textAlign
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.PageContext
 import com.varabyte.kobweb.silk.components.text.SpanText
-import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.A
@@ -45,12 +44,11 @@ fun Footer(
     isBreakpointActive: Boolean,
     pageContext: PageContext
 ) {
-    val colorMode by ColorMode.currentState
 
     if (isBreakpointActive) {
-        SmallerScreenFooter(colorMode = colorMode)
+        SmallerScreenFooter()
     } else {
-        LargerScreenFooter(colorMode = colorMode)
+        LargerScreenFooter()
     }
 }
 
@@ -60,12 +58,17 @@ fun Footer(
  * @param colorMode The color mode for the footer, indicating light or dark theme.
  */
 @Composable
-private fun SmallerScreenFooter(colorMode: ColorMode) {
-    Column(modifier = Modifier.fillMaxWidth().padding(20.px)
-        .backgroundColor(ColorScheme.White.rgb.takeIf { colorMode.isLight }
-            ?: ColorScheme.Black.rgb),
+private fun SmallerScreenFooter() {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(20.px)
+            .backgroundColor(MaterialTheme.colorScheme.container)
+            .boxShadow(
+                blurRadius = 10.px,
+                color = MaterialTheme.colorScheme.unspecified.copyf(alpha = 0.5f)
+            ),
         verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally) {
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(20.px),
             verticalAlignment = Alignment.CenterVertically,
@@ -98,13 +101,18 @@ private fun SmallerScreenFooter(colorMode: ColorMode) {
  * @param colorMode The color mode for the footer, indicating light or dark theme.
  */
 @Composable
-private fun LargerScreenFooter(colorMode: ColorMode) {
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .height(100.px)
-        .backgroundColor(ColorScheme.White.rgb.takeIf { colorMode.isLight }
-            ?: ColorScheme.Black.rgb),
-        contentAlignment = Alignment.Center) {
+private fun LargerScreenFooter() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(100.px)
+            .backgroundColor(MaterialTheme.colorScheme.container)
+            .boxShadow(
+                blurRadius = 10.px,
+                color = MaterialTheme.colorScheme.unspecified.copyf(alpha = 0.5f)
+            ),
+        contentAlignment = Alignment.Center
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -114,7 +122,7 @@ private fun LargerScreenFooter(colorMode: ColorMode) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            A(href = "http://localhost:8080/"){
+            A(href = "http://localhost:8080/") {
                 Img(
                     src = ResourceConstants.FooterSocialIcons.SiteIcon,
                     alt = ResourceConstants.FooterSocialIcons.SiteIcon.contentDescription,

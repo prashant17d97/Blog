@@ -1,4 +1,4 @@
-package com.prashant.blog.components.constants
+package com.prashant.blog.utils.constants
 
 import org.jetbrains.compose.web.css.px
 
@@ -16,4 +16,7 @@ object Constants {
     val borderRadiusSmall = 5.px
     val borderRadiusMedium = 8.px
     val borderRadiusLarge = 12.px
+
+    val readingItemWidth = 280.px
+    val readingItemHeight = 320.px
 }
