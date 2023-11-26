@@ -5,11 +5,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.prashant.blog.widgets.BlogLayout
-import com.prashant.blog.widgets.VerticalBlogCard
+import com.prashant.blog.navigation.NavigationRoute
 import com.prashant.blog.utils.commonfunctions.CommonFunctions.capitalize
 import com.prashant.blog.utils.commonfunctions.CommonFunctions.findKey
 import com.prashant.blog.utils.constants.ResourceConstants
+import com.prashant.blog.utils.navigation.navigateTo
+import com.prashant.blog.widgets.BlogLayout
+import com.prashant.blog.widgets.VerticalBlogCard
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.TextAlign
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
@@ -52,7 +54,7 @@ fun New() {
         val categoryValue = pageQuery.queryParams[category]
         val categoryFinalValue =
             categoryValue.toString().capitalize()
-                .takeIf { category == "category" && categoryValue?.isNotEmpty()==true }
+                .takeIf { category == "category" && categoryValue?.isNotEmpty() == true }
                 ?: "New"
 
         H2 {
@@ -66,12 +68,10 @@ fun New() {
             modifier = Modifier.fillMaxWidth().padding(top = 30.px).gap(10.px)) {
             repeat(count) {
                 VerticalBlogCard(src = ResourceConstants.FooterSocialIcons.SuggestionOne) {
-                    pageContext.router.navigateTo("/post")
+                    pageContext.navigateTo(NavigationRoute.Post)
                 }
                 VerticalBlogCard(src = ResourceConstants.FooterSocialIcons.SuggestionTwo) {
-                    pageContext.router.navigateTo(
-                        "/post"
-                    )
+                    pageContext.navigateTo(NavigationRoute.Post)
                 }
             }
         }

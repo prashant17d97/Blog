@@ -1,10 +1,12 @@
 package com.prashant.blog.navigation
 
 import com.prashant.blog.utils.constants.ResourceConstants.MenuItems
+import com.prashant.blog.utils.urlbuilder.UrlBuilder
+import com.prashant.blog.utils.urlbuilder.UrlBuilderImpl
 
-sealed class NavigationRoute(val name: String, val route: Route) {
+sealed class NavigationRoute(val name: String, val routeData: Route) {
     data object Popular : NavigationRoute(
-        name = MenuItems.Popular, route = Route(
+        name = MenuItems.Popular, routeData = Route(
             route = "/${MenuItems.Popular.lowercase()}",
             action = RouteAction.PromptAction
         )
@@ -12,28 +14,43 @@ sealed class NavigationRoute(val name: String, val route: Route) {
 
     data object New : NavigationRoute(
         name = MenuItems.New,
-        route = Route(
+        routeData = Route(
             route = "/${MenuItems.New.lowercase()}",
             action = RouteAction.Navigate
         )
     )
 
+    data object Post : NavigationRoute(
+        name = MenuItems.Post,
+        routeData = Route(
+            route = "/${MenuItems.Post.lowercase()}",
+            action = RouteAction.Navigate
+        )
+    )
+    data object Author : NavigationRoute(
+        name = MenuItems.Author,
+        routeData = Route(
+            route = "/${MenuItems.Author.lowercase()}",
+            action = RouteAction.Navigate
+        )
+    )
+
     data object ReadingList : NavigationRoute(
-        name = MenuItems.ReadingList, route = Route(
+        name = MenuItems.ReadingList, routeData = Route(
             route = "/${MenuItems.ReadingList.replace(" ", "").lowercase()}",
             action = RouteAction.Navigate
         )
     )
 
     data object Essentials : NavigationRoute(
-        name = MenuItems.Essentials, route = Route(
+        name = MenuItems.Essentials, routeData = Route(
             route = "/${MenuItems.Essentials.lowercase()}",
             action = RouteAction.PromptAction
         )
     )
 
     data object Suggested : NavigationRoute(
-        name = MenuItems.Suggested, route = Route(
+        name = MenuItems.Suggested, routeData = Route(
             route = "/${MenuItems.Suggested.lowercase()}",
             action = RouteAction.PromptAction
         )
@@ -41,14 +58,14 @@ sealed class NavigationRoute(val name: String, val route: Route) {
 
     data object Topics : NavigationRoute(
         name = MenuItems.Topics,
-        route = Route(
+        routeData = Route(
             route = "/${MenuItems.Topics.lowercase()}",
             action = RouteAction.PromptAction
         )
     )
 
     data object Subscribe : NavigationRoute(
-        name = MenuItems.Subscribe, route = Route(
+        name = MenuItems.Subscribe, routeData = Route(
             route = "/${MenuItems.Subscribe.lowercase()}",
             action = RouteAction.PromptAction
         )
@@ -56,18 +73,24 @@ sealed class NavigationRoute(val name: String, val route: Route) {
 
     data object Random : NavigationRoute(
         name = MenuItems.Random,
-        route = Route(
+        routeData = Route(
             route = "/${MenuItems.Random.lowercase()}",
             action = RouteAction.Navigate
         )
     )
 
     data object DarkMode : NavigationRoute(
-        name = MenuItems.DarkMode, route = Route(
+        name = MenuItems.DarkMode, routeData = Route(
             route = "/${MenuItems.DarkMode.lowercase()}",
             action = RouteAction.PromptAction
         )
     )
+
+    fun buildUrl(urlBuilder: UrlBuilder.() -> UrlBuilder): String {
+        val builder = UrlBuilderImpl(this.routeData.route)
+        urlBuilder(builder)
+        return builder.build()
+    }
 }
 
 val menuLists = listOf(

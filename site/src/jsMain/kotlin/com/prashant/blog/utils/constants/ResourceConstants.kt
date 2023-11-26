@@ -40,6 +40,8 @@ object ResourceConstants {
         const val Subscribe = "Subscribe"
         const val Random = "Random"
         const val DarkMode = "Dark mode"
+        const val Author = "Author"
+        const val Post = "Post"
     }
 
     val String.contentDescription: String

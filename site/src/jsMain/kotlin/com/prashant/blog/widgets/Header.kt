@@ -14,6 +14,7 @@ import com.prashant.blog.utils.constants.ResourceConstants.CSSIds.cssImgClassId
 import com.prashant.blog.utils.constants.ResourceConstants.CSSIds.cssInputId
 import com.prashant.blog.utils.constants.ResourceConstants.FooterSocialIcons.SiteIcon
 import com.prashant.blog.utils.constants.ResourceConstants.contentDescription
+import com.prashant.blog.utils.navigation.navigateTo
 import com.prashant.theme.MaterialTheme
 import com.varabyte.kobweb.compose.css.CSSTransition
 import com.varabyte.kobweb.compose.css.Cursor
@@ -95,12 +96,12 @@ import org.jetbrains.compose.web.dom.Text
 fun Header(isBreakPoint: Boolean, pageContext: PageContext) {
     var colorMode by ColorMode.currentState
     HeaderContainer(isBreakPoint = isBreakPoint) { navigationRoute ->
-        val route = navigationRoute.route
+        val route = navigationRoute.routeData
         if (navigationRoute == NavigationRoute.DarkMode) {
             colorMode = colorMode.opposite
         } else {
             when (route.action) {
-                Navigate -> pageContext.router.navigateTo(route.route)
+                Navigate -> pageContext.navigateTo(route.route)
                 PromptAction -> {
 
                 }

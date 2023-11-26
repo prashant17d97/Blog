@@ -5,9 +5,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.prashant.blog.navigation.NavigationRoute
 import com.prashant.blog.utils.commonfunctions.CommonFunctions.findKey
-import com.prashant.blog.utils.commonfunctions.DateTimeUtil.toUTCWithTime
 import com.prashant.blog.utils.constants.ResourceConstants
+import com.prashant.blog.utils.navigation.navigateTo
 import com.prashant.blog.widgets.AuthorPopularRecentPost
 import com.prashant.blog.widgets.BlogLayout
 import com.prashant.blog.widgets.Calendar
@@ -24,6 +25,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.padding
+import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.silk.components.layout.SimpleGrid
@@ -31,6 +33,8 @@ import com.varabyte.kobweb.silk.components.layout.numColumns
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
+import kotlinx.datetime.internal.JSJoda.LocalDate
+import kotlinx.datetime.internal.JSJoda.ZoneId
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.H4
 
@@ -42,7 +46,12 @@ fun Author() {
     var currentPage by remember {
         mutableStateOf(1)
     }
-    var selectedDate by remember { mutableStateOf("") }
+    val localDate = LocalDate.now(clockOrZone = ZoneId.SYSTEM)
+    var selectedDate by remember { mutableStateOf(LocalDate.of(
+        localDate.year().toInt(),
+        localDate.month().value().toInt(),
+        localDate.dayOfMonth().toInt()
+    ).toString()) }
 
     BlogLayout { _, pageContext ->
 
@@ -71,23 +80,32 @@ fun Author() {
                     modifier = Modifier.gap(15.px)
                 ) {
                     repeat(3) {
-                        VerticalBlogCard(src = ResourceConstants.FooterSocialIcons.SuggestionOne) {}
+                        VerticalBlogCard(src = ResourceConstants.FooterSocialIcons.SuggestionOne) {
+                            pageContext.navigateTo(
+                                NavigationRoute.Post
+                            )
+                        }
                     }
                 }
 
                 PaginationCarousel(
-                    totalPages = totalPage,
-                    currentPage = currentPage
+                    totalPages = totalPage, currentPage = currentPage
                 ) {
-                    pageContext.router.navigateTo("/author?page=$it")
-                    console.info(currentPage)
+                    pageContext.navigateTo(
+                        NavigationRoute.Author.buildUrl {
+                            addQueryParam("page", it.toString())
+                            addQueryParam("date", selectedDate)
+                        }
+                    )
                 }
             }
 
             //Right widget column
             Column(modifier = Modifier.weight(0.6f).gap(10.px)) {
                 Card(
-                    modifier = Modifier.fillMaxWidth().padding(15.px),
+                    modifier = Modifier.fillMaxWidth().padding(15.px).styleModifier {
+
+                    },
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -112,8 +130,8 @@ fun Author() {
                     }
                 }
                 Card {
-                    Calendar {
-                        selectedDate = it.toUTCWithTime().toString()
+                    Calendar(localDate) {
+                        selectedDate = it.toString()
                         console.info(selectedDate)
                     }
                 }

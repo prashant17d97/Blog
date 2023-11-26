@@ -5,6 +5,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.prashant.blog.navigation.NavigationRoute
+import com.prashant.blog.utils.navigation.navigateTo
 import com.prashant.blog.widgets.BlogLayout
 import com.prashant.blog.widgets.ReadingListItem
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
@@ -50,7 +52,9 @@ fun ReadingList() {
         ) {
             repeat(8) {
                 ReadingListItem {
-                    pageContext.router.navigateTo("/new?category=latest")
+                    pageContext.navigateTo(NavigationRoute.New.buildUrl {
+                        addQueryParam("category", "latest")
+                    })
                     console.info("Item clicked index: ${window.history.state}")
                 }
             }

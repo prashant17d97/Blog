@@ -1,6 +1,7 @@
 package com.prashant.blog.pages
 
 import androidx.compose.runtime.Composable
+import com.prashant.blog.navigation.NavigationRoute
 import com.prashant.blog.utils.constants.Constants.borderRadiusLarge
 import com.prashant.blog.utils.constants.ResourceConstants
 import com.prashant.blog.utils.constants.ResourceConstants.CSSIds.cssImgClassId
@@ -15,6 +16,7 @@ import com.prashant.blog.utils.constants.ResourceConstants.MenuItems.Random
 import com.prashant.blog.utils.constants.ResourceConstants.MenuItems.ReadingList
 import com.prashant.blog.utils.constants.ResourceConstants.MenuItems.Suggested
 import com.prashant.blog.utils.constants.ResourceConstants.contentDescription
+import com.prashant.blog.utils.navigation.navigateTo
 import com.prashant.blog.widgets.BlogLayout
 import com.prashant.blog.widgets.Card
 import com.prashant.blog.widgets.CategoryViewItem
@@ -527,9 +529,13 @@ fun LargeScreenHome(pageContext: PageContext) {
                 SimpleGrid(numColumns(base = 2), modifier = Modifier.fillMaxWidth().gap(10.px)) {
                     repeat(1) {
                         VerticalBlogCard(src = SuggestionOne) {
-                            pageContext.router.navigateTo("/post")
+                            pageContext.navigateTo(NavigationRoute.Post)
                         }
-                        VerticalBlogCard(src = SuggestionTwo) { pageContext.router.navigateTo("/post") }
+                        VerticalBlogCard(src = SuggestionTwo) {
+                            pageContext.navigateTo(
+                                NavigationRoute.Post
+                            )
+                        }
                     }
 
                 }

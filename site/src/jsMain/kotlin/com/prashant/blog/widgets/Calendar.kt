@@ -1,7 +1,6 @@
 package com.prashant.blog.widgets
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -46,15 +45,10 @@ import org.jetbrains.compose.web.dom.Text
  * @param onSelectedDate Callback to handle the selection of a date.
  */
 @Composable
-fun Calendar(onSelectedDate: (LocalDate) -> Unit) {
-    val localDate = LocalDate.now(clockOrZone = ZoneId.SYSTEM)
+fun Calendar(localDate: LocalDate, onSelectedDate: (LocalDate) -> Unit) {
     var selectedMonth by remember { mutableIntStateOf(localDate.month().value().toInt()) }
     var selectedYear by remember { mutableIntStateOf(localDate.year().toInt()) }
     var selectedDay by remember { mutableIntStateOf(localDate.dayOfMonth().toInt()) }
-
-    LaunchedEffect(Unit) {
-        onSelectedDate(LocalDate.of(selectedYear, selectedMonth, selectedDay))
-    }
 
     CalendarContainer(
         month = selectedMonth,
@@ -215,7 +209,7 @@ private fun CalendarHeader(
  * Composable for displaying the names of the weekdays.
  */
 @Composable
-fun WeekDayNames() {
+private fun WeekDayNames() {
     val weekDayNames = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
     Row(
         modifier = Modifier.fillMaxWidth().padding(top = 8.px),
@@ -239,7 +233,7 @@ fun WeekDayNames() {
  * @param onDayClick Callback for a day click.
  */
 @Composable
-fun CalendarDay(
+private fun CalendarDay(
     day: Int,
     isCurrentDate: Boolean,
     isSelected: Boolean,
@@ -281,7 +275,7 @@ fun CalendarDay(
  * @param month The month.
  * @return The number of days in the specified month.
  */
-fun getDaysInMonth(year: Int, month: Int): Int {
+private fun getDaysInMonth(year: Int, month: Int): Int {
     return LocalDate.of(year, month, 1).lengthOfMonth().toInt()
 }
 
@@ -293,7 +287,7 @@ fun getDaysInMonth(year: Int, month: Int): Int {
  * @param month The month.
  * @return The index of the first day of the week (0-6).
  */
-fun getFirstDayOfWeek(year: Int, month: Int): Int {
+private fun getFirstDayOfWeek(year: Int, month: Int): Int {
     return LocalDate.of(year, month, 1).dayOfWeek().value().toInt() % 7
 }
 
@@ -305,7 +299,7 @@ fun getFirstDayOfWeek(year: Int, month: Int): Int {
  * @param daysInMonth The number of days in the month.
  * @return The list of days.
  */
-fun generateDays(firstDayOfWeek: Int, daysInMonth: Int): List<Int> {
+private fun generateDays(firstDayOfWeek: Int, daysInMonth: Int): List<Int> {
     val days = mutableListOf<Int>()
 
     for (i in 0 until firstDayOfWeek) {
