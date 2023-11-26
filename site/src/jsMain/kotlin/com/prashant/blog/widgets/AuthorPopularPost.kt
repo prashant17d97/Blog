@@ -1,4 +1,4 @@
-package com.prashant.blog.components.composetags.widgets
+package com.prashant.blog.widgets
 
 import androidx.compose.runtime.Composable
 import com.prashant.blog.utils.constants.ResourceConstants

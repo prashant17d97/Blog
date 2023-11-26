@@ -5,8 +5,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.prashant.blog.components.composetags.BlogLayout
-import com.prashant.blog.components.composetags.Widgets
+import com.prashant.blog.widgets.BlogLayout
+import com.prashant.blog.widgets.VerticalBlogCard
+import com.prashant.blog.utils.commonfunctions.CommonFunctions.capitalize
+import com.prashant.blog.utils.commonfunctions.CommonFunctions.findKey
 import com.prashant.blog.utils.constants.ResourceConstants
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.TextAlign
@@ -63,10 +65,10 @@ fun New() {
         SimpleGrid(numColumns(base = 1.takeIf { isBreakPoint } ?: 2),
             modifier = Modifier.fillMaxWidth().padding(top = 30.px).gap(10.px)) {
             repeat(count) {
-                Widgets.VerticalBlogCard(src = ResourceConstants.FooterSocialIcons.SuggestionOne) {
+                VerticalBlogCard(src = ResourceConstants.FooterSocialIcons.SuggestionOne) {
                     pageContext.router.navigateTo("/post")
                 }
-                Widgets.VerticalBlogCard(src = ResourceConstants.FooterSocialIcons.SuggestionTwo) {
+                VerticalBlogCard(src = ResourceConstants.FooterSocialIcons.SuggestionTwo) {
                     pageContext.router.navigateTo(
                         "/post"
                     )
@@ -96,13 +98,3 @@ fun New() {
 
     }
 }
-
-private fun <E> Set<E>.findKey(key: String): E? {
-    return this.find {
-        it == key
-    }
-}
-
-private fun String.capitalize() =
-    this.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
-

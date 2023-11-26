@@ -6,20 +6,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.prashant.blog.components.composetags.BlogLayout
-import com.prashant.blog.components.composetags.Widgets
-import com.prashant.blog.components.composetags.Widgets.AuthorNameWithCategory
-import com.prashant.blog.components.composetags.Widgets.CommentsThread
-import com.prashant.blog.components.composetags.Widgets.HeadingViewAll
-import com.prashant.blog.components.composetags.Widgets.HorizontalLikeView
-import com.prashant.blog.components.composetags.Widgets.PostAuthorView
-import com.prashant.blog.components.composetags.Widgets.PostComment
-import com.prashant.blog.components.composetags.Widgets.VerticalLikeView
-import com.prashant.blog.components.model.ChildComment
-import com.prashant.blog.components.model.TopComment
+import com.prashant.blog.widgets.BlogLayout
+import com.prashant.blog.widgets.AuthorNameWithCategory
+import com.prashant.blog.widgets.CommentsThread
+import com.prashant.blog.widgets.HeadingViewAll
+import com.prashant.blog.widgets.HorizontalLikeView
+import com.prashant.blog.widgets.PostAuthorView
+import com.prashant.blog.widgets.PostComment
+import com.prashant.blog.widgets.VerticalBlogCard
+import com.prashant.blog.widgets.VerticalLikeView
+import com.prashant.blog.model.ChildComment
+import com.prashant.blog.model.TopComment
 import com.prashant.blog.repo.GlobalRepository
 import com.prashant.blog.repo.rememberGlobalRepository
-import com.prashant.blog.utils.CssAttributesUtils.findLastId
+import com.prashant.blog.utils.css.CssAttributesUtils.findLastId
 import com.prashant.blog.utils.constants.ResourceConstants
 import com.prashant.blog.utils.constants.ResourceConstants.FooterSocialIcons.SuggestionOne
 import com.prashant.blog.utils.constants.ResourceConstants.FooterSocialIcons.SuggestionTwo
@@ -100,8 +100,8 @@ private fun SmallScreen(
         }
 
         Column(modifier = Modifier.fillMaxWidth().padding(leftRight = 10.px)) {
-            Widgets.VerticalBlogCard(src = SuggestionOne) {}
-            Widgets.VerticalBlogCard(src = SuggestionTwo) {}
+            VerticalBlogCard(src = SuggestionOne) {}
+            VerticalBlogCard(src = SuggestionTwo) {}
 
         }
 
@@ -194,8 +194,8 @@ fun LargeScreen(pageContext: PageContext, repository: GlobalRepository) {
                 .gap(10.px)
         ) {
 
-            Widgets.VerticalBlogCard(src = SuggestionOne) {}
-            Widgets.VerticalBlogCard(src = SuggestionTwo) {}
+            VerticalBlogCard(src = SuggestionOne) {}
+            VerticalBlogCard(src = SuggestionTwo) {}
 
         }
 

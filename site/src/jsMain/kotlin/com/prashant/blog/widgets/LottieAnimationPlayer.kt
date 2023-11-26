@@ -1,4 +1,4 @@
-package com.prashant.blog.components.composetags
+package com.prashant.blog.widgets
 
 import androidx.compose.runtime.Composable
 import com.varabyte.kobweb.compose.ui.Modifier

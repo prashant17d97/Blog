@@ -1,4 +1,4 @@
-package com.prashant.blog.components.composetags
+package com.prashant.blog.widgets
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -6,10 +6,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.web.events.SyntheticMouseEvent
-import com.prashant.blog.utils.CssStyleRegistration
 import com.prashant.blog.utils.constants.Constants
 import com.prashant.blog.utils.constants.Constants.ButtonHeight
 import com.prashant.blog.utils.constants.Constants.ButtonHorizontalPadding
+import com.prashant.blog.utils.css.CssStyleRegistration
 import com.prashant.theme.MaterialTheme
 import com.varabyte.kobweb.compose.foundation.layout.RowScope
 import com.varabyte.kobweb.compose.ui.Modifier

@@ -1,7 +1,7 @@
 package com.prashant.blog.repo
 
-import com.prashant.blog.components.model.ChildComment
-import com.prashant.blog.components.model.TopComment
+import com.prashant.blog.model.ChildComment
+import com.prashant.blog.model.TopComment
 import kotlinx.coroutines.flow.StateFlow
 
 interface GlobalRepository {

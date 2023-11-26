@@ -6,6 +6,7 @@ jetbrains-compose = "1.5.1"
 kobweb = "0.14.2"
 kotlin = "1.9.10"
 androidGradlePlugin = "8.1.2"
+kotlinxDatetime = "0.4.1"
 kotlinxVersion = "1.7.3"
 kotlinxSerialization = "1.9.0"
 coilVersion = "2.4.0"
@@ -19,6 +20,7 @@ kobweb-api = { module = "com.varabyte.kobweb:kobweb-api", version.ref = "kobweb"
 kobweb-core = { module = "com.varabyte.kobweb:kobweb-core ", version.ref = "kobweb" }
 kobweb-silk = { module = "com.varabyte.kobweb:kobweb-silk", version.ref = "kobweb" }
 kobwebx-markdown = { module = "com.varabyte.kobwebx:kobwebx-markdown", version.ref = "kobweb" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 silk-icons-fa = { module = "com.varabyte.kobwebx:silk-icons-fa", version.ref = "kobweb" }
 silk-icons-mdi = { module = "com.varabyte.kobwebx:silk-icons-mdi", version.ref = "kobweb" }
 #Coil

@@ -1,7 +1,6 @@
-package com.prashant.blog.components.composetags
+package com.prashant.blog.widgets
 
 import androidx.compose.runtime.Composable
-import com.prashant.blog.components.composetags.Widgets.SocialMediaIcons
 import com.prashant.blog.utils.constants.Constants
 import com.prashant.blog.utils.constants.ResourceConstants
 import com.prashant.blog.utils.constants.ResourceConstants.CSSIds.cssImgClassId

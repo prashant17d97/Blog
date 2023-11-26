@@ -1,10 +1,8 @@
-package com.prashant.blog.components
+package com.prashant.blog.utils
 
 import kotlinx.browser.document
 import org.jetbrains.compose.web.dom.ElementBuilder
 import org.w3c.dom.Element
-
-const val COLOR_MODE_KEY = "blog:app:colorMode"
 
 class ElementBuilderImplementation<TElement : Element>(private val tagName: String) :
     ElementBuilder<TElement> {

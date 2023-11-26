@@ -27,7 +27,7 @@ object ResourceConstants {
         const val cssInputId = "input"
         const val cssHoverAttribute = ":hover"
         const val cssFocusAttribute = ":focus"
-
+        const val cssSurfaceId = "surface"
     }
 
     object MenuItems {
@@ -40,8 +40,6 @@ object ResourceConstants {
         const val Subscribe = "Subscribe"
         const val Random = "Random"
         const val DarkMode = "Dark mode"
-
-
     }
 
     val String.contentDescription: String

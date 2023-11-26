@@ -1,14 +1,6 @@
 package com.prashant.blog.pages
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import com.prashant.blog.components.composetags.BlogLayout
-import com.prashant.blog.components.composetags.Widgets.Card
-import com.prashant.blog.components.composetags.Widgets.CategoryViewItem
-import com.prashant.blog.components.composetags.Widgets.HeadingViewAll
-import com.prashant.blog.components.composetags.Widgets.HorizontalBlogCard
-import com.prashant.blog.components.composetags.Widgets.NewBlogItems
-import com.prashant.blog.components.composetags.Widgets.VerticalBlogCard
 import com.prashant.blog.utils.constants.Constants.borderRadiusLarge
 import com.prashant.blog.utils.constants.ResourceConstants
 import com.prashant.blog.utils.constants.ResourceConstants.CSSIds.cssImgClassId
@@ -23,6 +15,13 @@ import com.prashant.blog.utils.constants.ResourceConstants.MenuItems.Random
 import com.prashant.blog.utils.constants.ResourceConstants.MenuItems.ReadingList
 import com.prashant.blog.utils.constants.ResourceConstants.MenuItems.Suggested
 import com.prashant.blog.utils.constants.ResourceConstants.contentDescription
+import com.prashant.blog.widgets.BlogLayout
+import com.prashant.blog.widgets.Card
+import com.prashant.blog.widgets.CategoryViewItem
+import com.prashant.blog.widgets.HeadingViewAll
+import com.prashant.blog.widgets.HorizontalBlogCard
+import com.prashant.blog.widgets.NewBlogItems
+import com.prashant.blog.widgets.VerticalBlogCard
 import com.prashant.theme.MaterialTheme
 import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.ScrollBehavior
@@ -56,7 +55,6 @@ import com.varabyte.kobweb.silk.components.layout.Divider
 import com.varabyte.kobweb.silk.components.layout.SimpleGrid
 import com.varabyte.kobweb.silk.components.layout.numColumns
 import com.varabyte.kobweb.silk.components.text.SpanText
-import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.css.keywords.auto
@@ -72,19 +70,18 @@ import org.jetbrains.compose.web.dom.Text
 @Page
 @Composable
 fun HomePage() {
-    val colorMode: ColorMode by ColorMode.currentState
     BlogLayout { isBreakPoint, pageContext ->
         if (isBreakPoint) {
-            SmallScreenHome(colorMode = colorMode) { }
+            SmallScreenHome()
         } else {
-            LargeScreenHome(colorMode = colorMode, pageContext = pageContext) { }
+            LargeScreenHome(pageContext = pageContext)
         }
     }
 }
 
 
 @Composable
-private fun SmallScreenHome(colorMode: ColorMode, onClick: () -> Unit) {
+private fun SmallScreenHome() {
     val readingList = listOf("UI Design", "UX Design", "SEO", "Popular", "Essentials")
 
     Column(
@@ -316,7 +313,7 @@ private fun SmallScreenHome(colorMode: ColorMode, onClick: () -> Unit) {
 }
 
 @Composable
-fun LargeScreenHome(colorMode: ColorMode, pageContext: PageContext, onClick: () -> Unit) {
+fun LargeScreenHome(pageContext: PageContext) {
     val readingList = listOf("UI Design", "UX Design", "SEO", "Popular", "Essentials")
     Column(modifier = Modifier.fillMaxWidth()) {
 

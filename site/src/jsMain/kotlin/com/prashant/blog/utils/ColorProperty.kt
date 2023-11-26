@@ -1,4 +1,4 @@
-package com.prashant.blog.components
+package com.prashant.blog.utils
 
 /*
 

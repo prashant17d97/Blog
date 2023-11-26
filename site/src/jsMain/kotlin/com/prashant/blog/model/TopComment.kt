@@ -1,4 +1,4 @@
-package com.prashant.blog.components.model
+package com.prashant.blog.model
 
 data class TopComment(
     val id: Int,

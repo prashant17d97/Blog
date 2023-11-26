@@ -1,7 +1,7 @@
-package com.prashant.blog.utils
+package com.prashant.blog.utils.css
 
 import androidx.compose.runtime.Composable
-import com.prashant.blog.components.model.TopComment
+import com.prashant.blog.model.TopComment
 import com.prashant.theme.MaterialTheme
 import com.varabyte.kobweb.compose.css.TextDecorationLine
 import com.varabyte.kobweb.compose.css.functions.brightness

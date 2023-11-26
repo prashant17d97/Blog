@@ -67,6 +67,7 @@ kotlin {
             dependencies {
                 implementation(compose.runtime)
                 implementation(libs.ktor.serialization)
+                implementation(libs.kotlinx.datetime)
             }
         }
 
@@ -77,6 +78,7 @@ kotlin {
                 implementation(libs.kobweb.silk)
                 implementation(libs.silk.icons.fa)
                 implementation(libs.kobwebx.markdown)
+//                implementation(npm("@js-joda/timezone", "2.3.0"))
             }
         }
         val jvmMain by getting {

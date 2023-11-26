@@ -5,8 +5,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.prashant.blog.components.composetags.BlogLayout
-import com.prashant.blog.components.composetags.widgets.ReadingListItem
+import com.prashant.blog.widgets.BlogLayout
+import com.prashant.blog.widgets.ReadingListItem
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier

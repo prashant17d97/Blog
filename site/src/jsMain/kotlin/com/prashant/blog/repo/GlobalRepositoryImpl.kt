@@ -2,8 +2,8 @@ package com.prashant.blog.repo
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.prashant.blog.components.model.ChildComment
-import com.prashant.blog.components.model.TopComment
+import com.prashant.blog.model.ChildComment
+import com.prashant.blog.model.TopComment
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 

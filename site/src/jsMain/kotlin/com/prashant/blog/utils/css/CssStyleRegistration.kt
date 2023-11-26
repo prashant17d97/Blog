@@ -1,10 +1,10 @@
-package com.prashant.blog.utils
+package com.prashant.blog.utils.css
 
-import com.prashant.blog.components.COLOR_MODE_KEY
 import com.prashant.blog.utils.constants.ResourceConstants
 import com.prashant.blog.utils.constants.ResourceConstants.CSSIds.cssFocusAttribute
 import com.prashant.blog.utils.constants.ResourceConstants.CSSIds.cssHoverAttribute
 import com.prashant.blog.utils.constants.ResourceConstants.CSSIds.cssInputId
+import com.prashant.blog.utils.localstorage.LocalStorageKeys.COLOR_MODE_KEY
 import com.prashant.theme.MaterialTheme.colorPalette
 import com.prashant.theme.colorscheme.hex
 import com.varabyte.kobweb.compose.css.FontStyle

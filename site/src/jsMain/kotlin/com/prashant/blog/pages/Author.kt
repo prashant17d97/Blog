@@ -5,12 +5,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.prashant.blog.components.composetags.BlogLayout
-import com.prashant.blog.components.composetags.Widgets
-import com.prashant.blog.components.composetags.Widgets.Card
-import com.prashant.blog.components.composetags.widgets.AuthorPopularRecentPost
-import com.prashant.blog.components.composetags.widgets.PaginationCarousel
+import com.prashant.blog.utils.commonfunctions.CommonFunctions.findKey
+import com.prashant.blog.utils.commonfunctions.DateTimeUtil.toUTCWithTime
 import com.prashant.blog.utils.constants.ResourceConstants
+import com.prashant.blog.widgets.AuthorPopularRecentPost
+import com.prashant.blog.widgets.BlogLayout
+import com.prashant.blog.widgets.Calendar
+import com.prashant.blog.widgets.Card
+import com.prashant.blog.widgets.PaginationCarousel
+import com.prashant.blog.widgets.PostAuthorView
+import com.prashant.blog.widgets.VerticalBlogCard
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -34,17 +38,27 @@ import org.jetbrains.compose.web.dom.H4
 @Page
 @Composable
 fun Author() {
-    val breakPoint = rememberBreakpoint()
-    val totalPage by remember { mutableStateOf(5) }
-    var currentPage by remember { mutableStateOf(0) }
+    val totalPage by remember { mutableStateOf(18) }
+    var currentPage by remember {
+        mutableStateOf(1)
+    }
+    var selectedDate by remember { mutableStateOf("") }
 
-    BlogLayout { isBreakPoint, pageContext ->
+    BlogLayout { _, pageContext ->
+
+        val pageQuery = pageContext.route
+        val page = pageQuery.queryParams.keys.findKey(
+            "page"
+        )
+        currentPage = pageQuery.queryParams[page]?.toInt() ?: 1
+
+
         Row(modifier = Modifier.fillMaxWidth().padding(leftRight = 10.px).gap(10.px)) {
 
             //Left profile & article Column
             Column(modifier = Modifier.weight(1.4f).gap(10.px)) {
                 Card(modifier = Modifier.fillMaxWidth()) {
-                    Widgets.PostAuthorView(
+                    PostAuthorView(
                         authorImage = ResourceConstants.FooterSocialIcons.SuggestionTwo,
                         noActionPerformed = false,
                         author = "Prashant",
@@ -53,16 +67,20 @@ fun Author() {
                 }
 
                 SimpleGrid(
-                    numColumns(breakPoint.getColumnCount()),
+                    numColumns(rememberBreakpoint().getColumnCount()),
                     modifier = Modifier.gap(15.px)
                 ) {
                     repeat(3) {
-                        Widgets.VerticalBlogCard(src = ResourceConstants.FooterSocialIcons.SuggestionOne) {}
+                        VerticalBlogCard(src = ResourceConstants.FooterSocialIcons.SuggestionOne) {}
                     }
                 }
 
-                PaginationCarousel(totalPages = totalPage, currentPage = currentPage) {
-                    currentPage = it
+                PaginationCarousel(
+                    totalPages = totalPage,
+                    currentPage = currentPage
+                ) {
+                    pageContext.router.navigateTo("/author?page=$it")
+                    console.info(currentPage)
                 }
             }
 
@@ -91,6 +109,12 @@ fun Author() {
                     ) { SpanText("Recent Post") }
                     repeat(4) {
                         AuthorPopularRecentPost()
+                    }
+                }
+                Card {
+                    Calendar {
+                        selectedDate = it.toUTCWithTime().toString()
+                        console.info(selectedDate)
                     }
                 }
             }
