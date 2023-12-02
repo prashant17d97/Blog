@@ -7,7 +7,9 @@ plugins {
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.kobweb.application)
     alias(libs.plugins.kobwebx.markdown)
-    alias(libs.plugins.serialization.plugin)
+//    alias(libs.plugins.serialization.plugin)
+    kotlin("plugin.serialization") version "1.9.21"
+
 }
 
 group = "com.prashant.blog"
@@ -66,8 +68,8 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(compose.runtime)
-                implementation(libs.ktor.serialization)
                 implementation(libs.kotlinx.datetime)
+                implementation(libs.kotlinx.serialization)
             }
         }
 
@@ -78,13 +80,19 @@ kotlin {
                 implementation(libs.kobweb.silk)
                 implementation(libs.silk.icons.fa)
                 implementation(libs.kobwebx.markdown)
+//                implementation(libs.kotlinx.serialization)
+                implementation(libs.gson)
+
 //                implementation(npm("@js-joda/timezone", "2.3.0"))
             }
         }
         val jvmMain by getting {
             dependencies {
                 implementation(libs.kobweb.api)
+//                implementation(libs.kotlinx.serialization)
+                implementation(libs.kmongo.database.driver)
             }
         }
     }
 }
+

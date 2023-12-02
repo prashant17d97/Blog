@@ -2,20 +2,24 @@
 activity-compose = "1.8.1"
 appcompat = "1.6.1"
 core-ktx = "1.12.0"
-jetbrains-compose = "1.5.1"
-kobweb = "0.14.2"
-kotlin = "1.9.10"
-androidGradlePlugin = "8.1.2"
+gson = "2.10.1"
+jetbrains-compose = "1.5.11"
+kobweb = "0.15.2"
+kotlin = "1.9.21"
+androidGradlePlugin = "8.1.4"
 kotlinxDatetime = "0.4.1"
 kotlinxVersion = "1.7.3"
-kotlinxSerialization = "1.9.0"
 coilVersion = "2.4.0"
 ktorVersion = "2.1.3"
+kmongoCoroutine = "4.11.0"
+serialization = "1.6.1"
+
 
 [libraries]
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 kobweb-api = { module = "com.varabyte.kobweb:kobweb-api", version.ref = "kobweb" }
 kobweb-core = { module = "com.varabyte.kobweb:kobweb-core ", version.ref = "kobweb" }
 kobweb-silk = { module = "com.varabyte.kobweb:kobweb-silk", version.ref = "kobweb" }
@@ -32,8 +36,12 @@ ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref =
 ktor-client-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.ref = "ktorVersion" }
 ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktorVersion" }
 ktor-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktorVersion" }
-ktor-serialization = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktorVersion" }
 animation-core-android = { group = "androidx.compose.animation", name = "animation-core-android", version = "1.5.4" }
+
+#JVM
+kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+kmongo-database-driver = { module = "org.mongodb:mongodb-driver-kotlin-coroutine", version.ref = "kmongoCoroutine" }
+
 
 [plugins]
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrains-compose" }
@@ -43,4 +51,4 @@ kobwebx-markdown = { id = "com.varabyte.kobwebx.markdown", version.ref = "kobweb
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
-serialization-plugin = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinxSerialization" }
+serialization-plugin = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

@@ -1,11 +1,13 @@
 package com.prashant.blog.pages
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.prashant.blog.navigation.NavigationRoute
+import com.prashant.blog.network.rememberNetworkCall
 import com.prashant.blog.utils.commonfunctions.CommonFunctions.findKey
 import com.prashant.blog.utils.constants.ResourceConstants
 import com.prashant.blog.utils.navigation.navigateTo
@@ -39,19 +41,29 @@ import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.H4
 
 
-@Page
+@Page("author")
 @Composable
-fun Author() {
+fun AuthorPage() {
+    val networkCall = rememberNetworkCall()
+
+    LaunchedEffect(Unit){
+        val users=networkCall.getAuthorById("65678d293a7ebc81bf369386")
+        console.info("$users")
+    }
     val totalPage by remember { mutableStateOf(18) }
     var currentPage by remember {
         mutableStateOf(1)
     }
     val localDate = LocalDate.now(clockOrZone = ZoneId.SYSTEM)
-    var selectedDate by remember { mutableStateOf(LocalDate.of(
-        localDate.year().toInt(),
-        localDate.month().value().toInt(),
-        localDate.dayOfMonth().toInt()
-    ).toString()) }
+    var selectedDate by remember {
+        mutableStateOf(
+            LocalDate.of(
+                localDate.year().toInt(),
+                localDate.month().value().toInt(),
+                localDate.dayOfMonth().toInt()
+            ).toString()
+        )
+    }
 
     BlogLayout { _, pageContext ->
 

@@ -1,38 +1,51 @@
 package com.prashant.blog.api
 
-import com.ApiResponse
-import com.model.User
+import com.prashant.blog.sealeds.ApiResponse
+import com.prashant.blog.apiendpoints.ApiEndpointsConstant.GetUsers
+import com.prashant.blog.apiendpoints.ApiEndpointsConstant.json
+import com.prashant.blog.model.User
 import com.varabyte.kobweb.api.Api
 import com.varabyte.kobweb.api.ApiContext
 import com.varabyte.kobweb.api.http.setBodyText
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 
 val user = listOf(
     User(
-        id = 1,
+        _id = 1,
         name = "Prashant Singh"
     ),
     User(
-        id = 2,
+        _id = 2,
         name = "Android Developer"
     )
 )
 
-@Api("getusers")
+@Api(GetUsers)
 suspend fun getUsers(apiContext: ApiContext) {
-    try {
-        apiContext.res.setBodyText(
-            Json.encodeToString<ApiResponse>(
-                ApiResponse.Success(user)
+    val response = try {
+        Pair(
+            200, json.encodeToString(
+                ApiResponse.Success(
+                    response = user,
+                    responseMessage = "Successful",
+                    statusCode = 200
+                )
+
             )
         )
     } catch (exception: Exception) {
-        apiContext.res.setBodyText(
-            Json.encodeToString<ApiResponse>(
-                ApiResponse.Error(error = exception.message.toString())
+        Pair(
+            400, json.encodeToString(
+                ApiResponse.Error(
+                    errorMessage = exception.message.toString(),
+                    statusCode = 400
+                )
             )
         )
+    }
+    apiContext.res.apply {
+        status = response.first
+        setBodyText(response.second)
     }
 }

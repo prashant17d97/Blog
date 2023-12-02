@@ -1,11 +1,11 @@
-package com.model
+package com.prashant.blog.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class User(
+data class Author(
     @SerialName("_id")
-    val id:Int,
-    val name:String
+    val _id: String,
+    val name: String
 )
