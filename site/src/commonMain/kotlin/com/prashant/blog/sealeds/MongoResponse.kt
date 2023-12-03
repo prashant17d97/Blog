@@ -1,4 +1,4 @@
-package com.prashant.blog.repo
+package com.prashant.blog.sealeds
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

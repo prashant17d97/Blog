@@ -31,11 +31,13 @@ import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.silk.components.layout.SimpleGrid
 import com.varabyte.kobweb.silk.components.layout.numColumns
 import com.varabyte.kobweb.silk.components.text.SpanText
+import kotlinx.browser.document
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.H2
 import org.jetbrains.compose.web.dom.H5
 import org.jetbrains.compose.web.dom.P
 import org.jetbrains.compose.web.dom.Text
+import org.w3c.dom.Element
 
 @Page
 @Composable
@@ -77,7 +79,7 @@ fun New() {
         }
 
         Row(
-            modifier = Modifier.fillMaxWidth().margin(top = 60.px),
+            modifier = Modifier.id("loadMore").fillMaxWidth().margin(top = 60.px),
             horizontalArrangement = Arrangement.Center
         ) {
             H5(
@@ -85,8 +87,8 @@ fun New() {
                     .id("clickableText")
                     .textAlign(TextAlign.Center)
                     .onClick {
-                        //val targetElement = document.getElementById("loadMore")
-                        count++
+                        val targetElement = document.getElementById("loadMore")
+                        count += 1
                     }
                     .cursor(Cursor.Pointer).toAttrs()
             ) {
@@ -94,7 +96,9 @@ fun New() {
             }
 
         }
-
-
     }
+}
+
+fun Element?.smoothScroll() {
+    this?.scrollIntoView(js("{behavior: \"smooth\"}"))
 }

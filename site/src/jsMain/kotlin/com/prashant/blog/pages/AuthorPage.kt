@@ -6,9 +6,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.prashant.blog.model.AuthorModel
 import com.prashant.blog.navigation.NavigationRoute
 import com.prashant.blog.network.rememberNetworkCall
 import com.prashant.blog.utils.commonfunctions.CommonFunctions.findKey
+import com.prashant.blog.utils.commonfunctions.CommonFunctions.handleResponse
 import com.prashant.blog.utils.constants.ResourceConstants
 import com.prashant.blog.utils.navigation.navigateTo
 import com.prashant.blog.widgets.AuthorPopularRecentPost
@@ -45,10 +47,32 @@ import org.jetbrains.compose.web.dom.H4
 @Composable
 fun AuthorPage() {
     val networkCall = rememberNetworkCall()
+    val loaderVisibility by remember { mutableStateOf(true) }
+    LaunchedEffect(Unit) {
+        networkCall.getAuthor(
+            AuthorModel(
+                _id = "65678d293a7ebc81bf369386",
+                name = "Prashant Singh"
+            )
+        ).handleResponse(
+            onLoading = {
+                console.info("Author by loading: $it")
+            }, onSuccess = {
+                console.info("Author by body: ${it.data}")
+            }, onFailure = {
+                console.info("Author by body failure: $it")
+            })
 
-    LaunchedEffect(Unit){
-        val users=networkCall.getAuthorById("65678d293a7ebc81bf369386")
-        console.info("$users")
+        networkCall.retrievePost(
+            "656c7f73a9c9dd355aa8a62e"
+        ).handleResponse(onLoading = {
+            console.info("AuthorPage:$it")
+        }, onSuccess = {
+            console.info("AuthorPage:${it.data}")
+        }, onFailure = {
+            console.info("AuthorPage:$it")
+        })
+
     }
     val totalPage by remember { mutableStateOf(18) }
     var currentPage by remember {

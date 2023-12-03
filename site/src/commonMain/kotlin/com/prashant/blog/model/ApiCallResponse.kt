@@ -4,9 +4,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ApiResponseValue<Generic>(
+data class ApiCallResponse<Generic>(
     @SerialName("response")
-    val userData: Generic,
+    val data: Generic,
 
     @SerialName("responseMessage")
     val responseMessage: String,

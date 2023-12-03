@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Author(
+data class AuthorModel(
     @SerialName("_id")
     val _id: String,
     val name: String

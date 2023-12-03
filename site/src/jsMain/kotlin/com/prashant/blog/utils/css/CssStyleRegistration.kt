@@ -31,7 +31,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.silk.components.graphics.ImageStyle
-import com.varabyte.kobweb.silk.components.layout.DividerStyle
+import com.varabyte.kobweb.silk.components.layout.HorizontalDividerStyle
 import com.varabyte.kobweb.silk.components.style.StyleModifiers
 import com.varabyte.kobweb.silk.init.SilkStylesheet
 import com.varabyte.kobweb.silk.init.registerStyleBase
@@ -221,7 +221,7 @@ object CssStyleRegistration {
             }
         }
 
-        replaceComponentStyleBase(DividerStyle) {
+        replaceComponentStyleBase(HorizontalDividerStyle) {
             Modifier.margin(top = 1.5.cssRem, bottom = 0.5.cssRem)
                 .borderTop(1.px, LineStyle.Solid, colorMode.toPalette().border)
                 .fillMaxWidth(90.percent)

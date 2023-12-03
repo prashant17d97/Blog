@@ -58,7 +58,7 @@ import com.varabyte.kobweb.silk.components.icons.fa.FaBars
 import com.varabyte.kobweb.silk.components.icons.fa.FaMagnifyingGlass
 import com.varabyte.kobweb.silk.components.icons.fa.FaXmark
 import com.varabyte.kobweb.silk.components.icons.fa.IconSize
-import com.varabyte.kobweb.silk.components.layout.Divider
+import com.varabyte.kobweb.silk.components.layout.HorizontalDivider
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import kotlinx.browser.document
@@ -357,7 +357,7 @@ fun ExpandedMenu(
 
         }
 
-        Divider(modifier = Modifier.fillMaxWidth().height(1.px))
+        HorizontalDivider(modifier = Modifier.fillMaxWidth().height(1.px))
         SmallScreenMenuItems(onClick = onMenuItemClick)
     }
 }

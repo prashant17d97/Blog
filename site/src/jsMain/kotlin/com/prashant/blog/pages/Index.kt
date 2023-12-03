@@ -53,7 +53,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.core.PageContext
-import com.varabyte.kobweb.silk.components.layout.Divider
+import com.varabyte.kobweb.silk.components.layout.HorizontalDivider
 import com.varabyte.kobweb.silk.components.layout.SimpleGrid
 import com.varabyte.kobweb.silk.components.layout.numColumns
 import com.varabyte.kobweb.silk.components.text.SpanText
@@ -107,7 +107,7 @@ private fun SmallScreenHome() {
             HeadingViewAll(heading = New) {
 
             }
-            Divider(
+            HorizontalDivider(
                 modifier = Modifier.color(MaterialTheme.colorScheme.onContainer).fillMaxWidth()
                     .height(1.px)
             )
@@ -344,7 +344,7 @@ fun LargeScreenHome(pageContext: PageContext) {
                 HeadingViewAll(heading = New) {
 
                 }
-                Divider(
+                HorizontalDivider(
                     modifier = Modifier.color(MaterialTheme.colorScheme.onContainer)
                         .fillMaxWidth()
                         .height(1.px)

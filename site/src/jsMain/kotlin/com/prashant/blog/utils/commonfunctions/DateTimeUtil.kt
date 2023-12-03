@@ -1,6 +1,7 @@
 package com.prashant.blog.utils.commonfunctions
 
 import kotlinx.datetime.internal.JSJoda.DateTimeFormatter
+import kotlinx.datetime.internal.JSJoda.Instant
 import kotlinx.datetime.internal.JSJoda.LocalDate
 import kotlinx.datetime.internal.JSJoda.LocalDateTime
 import kotlinx.datetime.internal.JSJoda.LocalTime
@@ -47,4 +48,17 @@ object DateTimeUtil {
         return localDateTime.format(formatter)
     }
 
+    fun getCurrentTimestamp(): String {
+        val instant = LocalDateTime.ofInstant(Instant.now(), ZoneId.UTC)
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        return formatter.format(instant)
+    }
+
+    fun convertAndFormatTimestamp(utcTimestamp: String): String {
+        val instantUTC = Instant.parse(utcTimestamp)
+        val zonedDateTimeIST = instantUTC.atZone(ZoneId.SYSTEM)
+
+        val formatterIST = DateTimeFormatter.ofPattern("MMM dd, yyyy 'at' h:mm a")
+        return formatterIST.format(zonedDateTimeIST)
+    }
 }
