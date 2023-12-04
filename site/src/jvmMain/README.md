@@ -2,7 +2,7 @@
 
 ## Overview
 
-Blog is a backend service developed in Kotlin JVM to serve content for a website and mobile applications. It uses the MongoDB driver for database operations and the Kobweb API library for handling HTTP requests.
+This is a backend service developed in Kotlin JVM to serve content for a website and mobile applications. It uses the MongoDB driver for database operations and the Kobweb API library for handling HTTP requests.
 
 ### Project Details
 
