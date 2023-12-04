@@ -1,7 +1,7 @@
 package com.prashant.blog.repo
 
 import com.prashant.blog.model.AuthorModel
-import com.prashant.blog.model.HomeContent
+import com.prashant.blog.model.CategoryModel
 import com.prashant.blog.model.PostModel
 import com.prashant.blog.sealeds.MongoResponse
 
@@ -17,7 +17,7 @@ interface MongoRepository {
      *
      * @return A [MongoResponse] containing either successful retrieval or an error.
      */
-    suspend fun getHomeContent(): MongoResponse<HomeContent>
+    suspend fun getHomeContent(): MongoResponse<String>
 
     /**
      * Retrieves author content based on the provided [AuthorModel].
@@ -25,7 +25,7 @@ interface MongoRepository {
      * @param author The [AuthorModel] used to query the database.
      * @return A [MongoResponse] containing either successful retrieval or an error.
      */
-    suspend fun getAuthorContent(author: AuthorModel): MongoResponse<AuthorModel>
+    suspend fun addNewAuthor(author: AuthorModel): MongoResponse<Boolean>
 
     /**
      * Retrieves author content based on the provided author ID.
@@ -50,4 +50,14 @@ interface MongoRepository {
      * @return A [MongoResponse] containing either successful retrieval or an error.
      */
     suspend fun retrievePost(postId: String): MongoResponse<PostModel>
+
+    /**
+     * Adds a new category in database.
+     *
+     * @param category The [CategoryModel] representing the category to be added.
+     * @return A [MongoResponse] containing either successful retrieval or an error.
+     */
+    suspend fun createCategory(category: CategoryModel): MongoResponse<Boolean>
+    suspend fun retrieveCategoryById(categoryId: String): MongoResponse<CategoryModel>
+    suspend fun retrieveCategories(): MongoResponse<List<CategoryModel>>
 }

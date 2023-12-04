@@ -28,8 +28,18 @@ object CommonFunctions {
         when (this) {
             is JSApiResponse.Error -> onFailure(this.error)
             JSApiResponse.Idle -> onLoading(true)
-            is JSApiResponse.Success -> this.data?.let { onSuccess(it) }?:onFailure("Data is empty")
+            is JSApiResponse.Success -> this.data?.let { onSuccess(it) }
+                ?: onFailure("Data is empty")
         }
+    }
+
+    suspend fun <Generic> tryCatchBlock(
+        errorMessage: String? = null,
+        block: suspend () -> JSApiResponse<Generic>
+    ): JSApiResponse<Generic> = try {
+        block()
+    } catch (ex: Exception) {
+        JSApiResponse.Error(errorMessage ?: ex.message ?: "Something went wrong")
     }
 
 }

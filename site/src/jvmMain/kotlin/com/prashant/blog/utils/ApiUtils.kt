@@ -65,8 +65,8 @@ object ApiUtils {
      * @param elseErrorMessage The default error message if none is provided in [mongoResponse].
      * @return A Pair containing the HTTP status code and the corresponding response message.
      */
-    fun <Generic> handleMongoEmptyResponse(
-        mongoResponse: MongoResponse<Generic>,
+    fun handleMongoEmptyResponse(
+        mongoResponse: MongoResponse<Boolean>,
         successMessage: String,
         elseErrorMessage: String = ""
     ): Pair<Int, String> = when (mongoResponse) {
@@ -78,13 +78,40 @@ object ApiUtils {
         is MongoResponse.Success -> Pair(
             200,
             json.encodeToString(
-                JVMApiResponse.EmptyBodySuccess(
+                JVMApiResponse.Success(
+                    response = "",
                     responseMessage = successMessage,
                     statusCode = 200
                 )
             )
         )
     }
+
+
+    /*fun <Generic> handleMongoResponse(
+        mongoResponse: MongoResponse<Generic>,
+        successMessage: String,
+        elseErrorMessage: String = "",
+    ): Pair<Int, String> {
+        return when (mongoResponse) {
+            is MongoResponse.Error -> badMethodRequest(
+                code = 404,
+                errorMessage = mongoResponse.error ?: elseErrorMessage
+            )
+
+            is MongoResponse.Success -> Pair(
+                200,
+                Json.encodeToString(
+                    JVMApiResponse.Success(
+                        response = mongoResponse.data,
+                        responseMessage = successMessage,
+                        statusCode = 200
+                    )
+                )
+            )
+
+        }
+    }*/
 
     /**
      * Sets the HTTP response body for the current API context.
@@ -93,6 +120,7 @@ object ApiUtils {
      */
     fun ApiContext.setBody(response: Pair<Int, String>) {
         res.apply {
+            contentType = "application/json"
             status = response.first
             setBodyText(response.second)
         }
@@ -144,29 +172,3 @@ object ApiUtils {
         MongoResponse.Error(errorMessage ?: ex.localizedMessage ?: "Some error occurred")
     }
 }
-
-
-/*fun <Generic> handleMongoResponse(
-       mongoResponse: MongoResponse<Generic>,
-       successMessage: String,
-       elseErrorMessage: String = "",
-   ): Pair<Int, String> {
-       return when (mongoResponse) {
-           is MongoResponse.Error -> badMethodRequest(
-               code = 404,
-               errorMessage = mongoResponse.error ?: elseErrorMessage
-           )
-
-           is MongoResponse.Success -> Pair(
-               200,
-               Json.encodeToString(
-                   JVMApiResponse.Success(
-                       response = mongoResponse.data,
-                       responseMessage = successMessage,
-                       statusCode = 200
-                   )
-               )
-           )
-
-       }
-   }*/

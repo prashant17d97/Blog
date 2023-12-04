@@ -1,9 +1,10 @@
 package com.prashant.blog.api
 
-import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.GetAuthor
+import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.Author
 import com.prashant.blog.model.AuthorModel
 import com.prashant.blog.sealeds.JVMApiResponse
 import com.prashant.blog.sealeds.MongoResponse
+import com.prashant.blog.utils.ApiUtils
 import com.prashant.blog.utils.ApiUtils.badMethodRequest
 import com.prashant.blog.utils.ApiUtils.decodeFromString
 import com.prashant.blog.utils.ApiUtils.mongoDB
@@ -15,13 +16,14 @@ import com.varabyte.kobweb.api.ApiContext
 import com.varabyte.kobweb.api.http.HttpMethod
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.bson.codecs.ObjectIdGenerator
 
 /**
  * API handler for fetching author information. Supports both POST and GET methods.
  *
  * @param apiContext The [ApiContext] containing the request and response details.
  */
-@Api(GetAuthor)
+@Api(Author)
 suspend fun getAuthor(apiContext: ApiContext) {
 
     val response = when (apiContext.req.method) {
@@ -69,27 +71,24 @@ private suspend fun ApiContext.handleAuthorGetRequestById(): Pair<Int, String> {
  * @return A Pair containing the HTTP status code and the corresponding response message.
  */
 private suspend fun ApiContext.handleAuthorPostRequest(): Pair<Int, String> {
-    return tryCatchBlock("Error in fetching post") {
-        val authorRequest = this.req.body?.decodeToString()?.decodeFromString<AuthorModel>()
+    return tryCatchBlock {
+        val addNewAuthorRequest = this.req.body?.decodeToString()
 
-        if (authorRequest == null) {
-            badMethodRequest(errorMessage = "Author body is required! Bad request")
+        if (addNewAuthorRequest == null) {
+            badMethodRequest(
+                errorMessage = "Empty author body is not allowed! Bad request"
+            )
         } else {
-            when (val response = this.mongoDB().getAuthorContent(authorRequest)) {
-                is MongoResponse.Error -> saveErrorResponse(
-                    errorMessage = response.error ?: "Some error occurred."
-                )
+            val newAuthor = addNewAuthorRequest.decodeFromString<AuthorModel>()
+                .copy(_id = ObjectIdGenerator().generate().toString())
 
-                is MongoResponse.Success -> Pair(
-                    200,
-                    Json.encodeToString(
-                        JVMApiResponse.Success(
-                            response = response.data,
-                            responseMessage = "Author details fetched successfully",
-                            statusCode = 200
-                        )
-                    )
+            if (newAuthor.name.isNotEmpty()) {
+                ApiUtils.handleMongoEmptyResponse(
+                    mongoResponse = this.mongoDB().addNewAuthor(newAuthor),
+                    successMessage = "New Author created Successfully"
                 )
+            } else {
+                badMethodRequest(errorMessage = "Name is not allowed be empty.")
             }
         }
     }

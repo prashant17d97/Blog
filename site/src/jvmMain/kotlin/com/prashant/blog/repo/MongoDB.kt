@@ -1,12 +1,11 @@
 package com.prashant.blog.repo
 
 import com.mongodb.client.model.Filters
-import com.mongodb.client.model.Filters.and
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.prashant.blog.constanst.db.DatabaseConstants
 import com.prashant.blog.constanst.db.DatabaseConstants.DATABASE
 import com.prashant.blog.model.AuthorModel
-import com.prashant.blog.model.HomeContent
+import com.prashant.blog.model.CategoryModel
 import com.prashant.blog.model.PostModel
 import com.prashant.blog.sealeds.MongoResponse
 import com.prashant.blog.utils.ApiUtils.mongoTryCatch
@@ -14,7 +13,7 @@ import com.varabyte.kobweb.api.data.add
 import com.varabyte.kobweb.api.init.InitApi
 import com.varabyte.kobweb.api.init.InitApiContext
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.toList
 
 /**
  * Initializes MongoDB configuration and adds the MongoDB instance to the [InitApiContext] data.
@@ -42,13 +41,15 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
         database.getCollection<AuthorModel>(DatabaseConstants.AuthorCollection)
     private val postCollection =
         database.getCollection<PostModel>(DatabaseConstants.PostCollection)
+    private val categoryCollection =
+        database.getCollection<CategoryModel>(DatabaseConstants.CategoryCollection)
 
     /**
      * Retrieves home content from the MongoDB database.
      *
      * @return A [MongoResponse] containing either successful retrieval or an error.
      */
-    override suspend fun getHomeContent(): MongoResponse<HomeContent> {
+    override suspend fun getHomeContent(): MongoResponse<String> {
         return mongoTryCatch {
             MongoResponse.Success(
                 null
@@ -62,15 +63,10 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
      * @param author The [AuthorModel] used to query the database.
      * @return A [MongoResponse] containing either successful retrieval or an error.
      */
-    override suspend fun getAuthorContent(author: AuthorModel): MongoResponse<AuthorModel> {
+    override suspend fun addNewAuthor(author: AuthorModel): MongoResponse<Boolean> {
         return mongoTryCatch {
             MongoResponse.Success(
-                authorCollection.find(
-                    and(
-                        Filters.eq(AuthorModel::_id.name, author._id),
-                        Filters.eq(AuthorModel::name.name, author.name)
-                    )
-                ).firstOrNull()
+                authorCollection.insertOne(author).wasAcknowledged()
             )
         }
     }
@@ -110,10 +106,37 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
      */
     override suspend fun retrievePost(postId: String): MongoResponse<PostModel> {
         context.logger.info("retrievePost: $postId")
-        return mongoTryCatch {
+        return mongoTryCatch("Post not found!") {
             MongoResponse.Success(
                 postCollection.find(Filters.eq(AuthorModel::_id.name, postId)).first()
             )
         }
     }
+
+    override suspend fun createCategory(category: CategoryModel): MongoResponse<Boolean> {
+        return mongoTryCatch {
+            MongoResponse.Success(categoryCollection.insertOne(category).wasAcknowledged())
+        }
+    }
+
+    override suspend fun retrieveCategoryById(categoryId: String): MongoResponse<CategoryModel> {
+        return mongoTryCatch("Category not found") {
+            MongoResponse.Success(
+                categoryCollection.find(
+                    Filters.eq(
+                        CategoryModel::_id.name,
+                        categoryId
+                    )
+                ).first()
+            )
+        }
+    }
+
+    override suspend fun retrieveCategories(): MongoResponse<List<CategoryModel>> {
+        return mongoTryCatch("Categories not found") {
+            MongoResponse.Success(categoryCollection.find().toList())
+        }
+    }
+
+
 }

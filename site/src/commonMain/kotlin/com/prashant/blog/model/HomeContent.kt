@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class HomeContent(
     val _id: String,
     val newPosts: List<PostModel> = listOf(PostModel(), PostModel(), PostModel()),
-    val categories: List<CategoryModel> = listOf(CategoryModel(), CategoryModel(), CategoryModel(), CategoryModel()),
+//    val categories: List<CategoryModel> = listOf(CategoryModel(), CategoryModel(), CategoryModel(), CategoryModel()),
     val popularPosts: List<PostModel> = listOf(PostModel(), PostModel(), PostModel(), PostModel(), PostModel(), PostModel(), PostModel()),
     val randoMPosts: PostModel = PostModel(),
     val essentialsPosts: List<PostModel> = listOf(PostModel(), PostModel()),

@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 data class PostModel(
     val _id: String = "",
     val author: String = "",
+    val authorId: String = "",
     val createdAt: String = "",
     val title: String? = null,
     val subtitle: String? = null,
@@ -14,7 +15,9 @@ data class PostModel(
     val category: String? = null,
     val popular: Boolean = false,
     val main: Boolean = false,
-    val sponsored: Boolean = false
+    val sponsored: Boolean = false,
+    val likes: Int = 0,
+    val views: Int = 0,
 ) {
     val validateMembers: Pair<Boolean, String>
         get() {
