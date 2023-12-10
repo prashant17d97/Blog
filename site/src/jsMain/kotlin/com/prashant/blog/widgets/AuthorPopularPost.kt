@@ -1,6 +1,7 @@
 package com.prashant.blog.widgets
 
 import androidx.compose.runtime.Composable
+import com.prashant.blog.model.PostModel
 import com.prashant.blog.utils.constants.ResourceConstants
 import com.prashant.blog.utils.constants.ResourceConstants.contentDescription
 import com.varabyte.kobweb.compose.css.Cursor
@@ -25,7 +26,7 @@ import org.jetbrains.compose.web.dom.Text
 
 @Composable
 fun AuthorPopularRecentPost(
-    src: String = ResourceConstants.FooterSocialIcons.SuggestionOne,
+    postModel: PostModel,
     onPostClick: () -> Unit = {}
 ) {
 
@@ -35,8 +36,8 @@ fun AuthorPopularRecentPost(
         horizontalArrangement = Arrangement.Start
     ) {
         Img(
-            src = src,
-            alt = src.contentDescription,
+            src = postModel.thumbnail,
+            alt = postModel.thumbnail.contentDescription,
             attrs = Modifier
                 .classNames(ResourceConstants.CSSIds.cssImgClassId)
                 .borderRadius(5.px)
@@ -45,11 +46,11 @@ fun AuthorPopularRecentPost(
         )
 
         Column(modifier = Modifier.weight(1f).padding(leftRight = 5.px, topBottom = 10.px)) {
-            H6 { Text("DESIGN PROCESS") }
+            H6 { Text(postModel.category) }
 
             H6 {
                 Text(
-                    "Our 15 favorite websites from August ",
+                    postModel.title,
 //                modifier = Modifier.id("clickableText")
                 )
             }

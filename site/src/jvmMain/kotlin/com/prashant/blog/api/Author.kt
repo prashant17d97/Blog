@@ -1,6 +1,7 @@
 package com.prashant.blog.api
 
 import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.Author
+import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.Id
 import com.prashant.blog.model.AuthorModel
 import com.prashant.blog.sealeds.JVMApiResponse
 import com.prashant.blog.sealeds.MongoResponse
@@ -41,25 +42,47 @@ suspend fun getAuthor(apiContext: ApiContext) {
  */
 private suspend fun ApiContext.handleAuthorGetRequestById(): Pair<Int, String> {
     return tryCatchBlock(errorMessage = "Error in fetching Author") {
-        val authorId = this.req.params["_id"]
+        val authorId = this.req.params[Id]
+        val authorsPosts = this.req.params["posts"]
+        val isRequestsForPost = authorsPosts == "Yes"
+
         if (authorId == null) {
             badMethodRequest(errorMessage = "Author ID is required! Bad request")
         } else {
-            when (val response = this.mongoDB().getAuthorContentById(authorId)) {
-                is MongoResponse.Error -> saveErrorResponse(
-                    errorMessage = response.error ?: "Some error occurred."
-                )
+            if (!isRequestsForPost) {
+                when (val response = this.mongoDB().getAuthorContentById(authorId)) {
+                    is MongoResponse.Error -> saveErrorResponse(
+                        errorMessage = response.error ?: "Some error occurred."
+                    )
 
-                is MongoResponse.Success -> Pair(
-                    200,
-                    Json.encodeToString(
-                        JVMApiResponse.Success(
-                            response = response.data,
-                            responseMessage = "Author details fetched successfully",
-                            statusCode = 200
+                    is MongoResponse.Success -> Pair(
+                        200,
+                        Json.encodeToString(
+                            JVMApiResponse.Success(
+                                response = response.data,
+                                responseMessage = "Author details fetched successfully",
+                                statusCode = 200
+                            )
                         )
                     )
-                )
+                }
+            } else {
+                when (val response = this.mongoDB().findAuthorsPosts(authorId)) {
+                    is MongoResponse.Error -> saveErrorResponse(
+                        errorMessage = response.error ?: "Some error occurred."
+                    )
+
+                    is MongoResponse.Success -> Pair(
+                        200,
+                        Json.encodeToString(
+                            JVMApiResponse.Success(
+                                response = response.data,
+                                responseMessage = "Posts fetched successfully",
+                                statusCode = 200
+                            )
+                        )
+                    )
+                }
             }
         }
     }

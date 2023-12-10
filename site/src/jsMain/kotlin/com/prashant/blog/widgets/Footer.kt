@@ -1,6 +1,7 @@
 package com.prashant.blog.widgets
 
 import androidx.compose.runtime.Composable
+import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.HOME
 import com.prashant.blog.utils.constants.Constants
 import com.prashant.blog.utils.constants.ResourceConstants
 import com.prashant.blog.utils.constants.ResourceConstants.CSSIds.cssImgClassId
@@ -24,7 +25,6 @@ import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.size
 import com.varabyte.kobweb.compose.ui.modifiers.textAlign
 import com.varabyte.kobweb.compose.ui.toAttrs
-import com.varabyte.kobweb.core.PageContext
 import com.varabyte.kobweb.silk.components.text.SpanText
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
@@ -40,8 +40,7 @@ import org.jetbrains.compose.web.dom.Img
  */
 @Composable
 fun Footer(
-    isBreakpointActive: Boolean,
-    pageContext: PageContext
+    isBreakpointActive: Boolean
 ) {
 
     if (isBreakpointActive) {
@@ -121,7 +120,7 @@ private fun LargerScreenFooter() {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            A(href = "http://localhost:8080/") {
+            A(href = HOME) {
                 Img(
                     src = ResourceConstants.FooterSocialIcons.SiteIcon,
                     alt = ResourceConstants.FooterSocialIcons.SiteIcon.contentDescription,
@@ -131,7 +130,7 @@ private fun LargerScreenFooter() {
                         .toAttrs()
                 )
             }
-            SocialMediaIcons {}
+            SocialMediaIcons(socialLink = emptyList())
             H6 {
                 SpanText(
                     text = "All Rights Reserved 2023 layers", modifier = Modifier

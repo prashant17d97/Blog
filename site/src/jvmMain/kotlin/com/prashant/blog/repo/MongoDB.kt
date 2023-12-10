@@ -1,11 +1,14 @@
 package com.prashant.blog.repo
 
 import com.mongodb.client.model.Filters
+import com.mongodb.client.model.Sorts
+import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.prashant.blog.constanst.db.DatabaseConstants
 import com.prashant.blog.constanst.db.DatabaseConstants.DATABASE
 import com.prashant.blog.model.AuthorModel
 import com.prashant.blog.model.CategoryModel
+import com.prashant.blog.model.PostCommentRequest
 import com.prashant.blog.model.PostModel
 import com.prashant.blog.sealeds.MongoResponse
 import com.prashant.blog.utils.ApiUtils.mongoTryCatch
@@ -39,10 +42,11 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
     private val database = client.getDatabase(DATABASE)
     private val authorCollection =
         database.getCollection<AuthorModel>(DatabaseConstants.AuthorCollection)
-    private val postCollection =
-        database.getCollection<PostModel>(DatabaseConstants.PostCollection)
+    private val postCollection = database.getCollection<PostModel>(DatabaseConstants.PostCollection)
     private val categoryCollection =
         database.getCollection<CategoryModel>(DatabaseConstants.CategoryCollection)
+    private val postComments =
+        database.getCollection<PostCommentRequest>(DatabaseConstants.PostComments)
 
     /**
      * Retrieves home content from the MongoDB database.
@@ -124,8 +128,7 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
             MongoResponse.Success(
                 categoryCollection.find(
                     Filters.eq(
-                        CategoryModel::_id.name,
-                        categoryId
+                        CategoryModel::_id.name, categoryId
                     )
                 ).first()
             )
@@ -138,5 +141,73 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
         }
     }
 
+    override suspend fun findAuthorsPosts(authorId: String): MongoResponse<List<PostModel>> {
+        return mongoTryCatch("Error in fetching author's posts!") {
+            MongoResponse.Success(
+                postCollection.find(Filters.eq(PostModel::authorId.name, authorId)).toList()
+            )
+        }
+    }
 
+    override suspend fun fetchAllPost(): MongoResponse<List<PostModel>> {
+        return mongoTryCatch {
+            MongoResponse.Success(
+                postCollection.find().sort(Sorts.descending("createdAt")).toList()
+            )
+        }
+    }
+
+    override suspend fun addComment(postCommentRequest: PostCommentRequest): MongoResponse<Boolean> {
+        return mongoTryCatch {
+            MongoResponse.Success(postComments.insertOne(postCommentRequest).wasAcknowledged())
+        }
+    }
+
+    override suspend fun getComment(postId: String): MongoResponse<List<PostCommentRequest>> {
+        return mongoTryCatch {
+            MongoResponse.Success(
+                postComments.find(
+                    Filters.eq(
+                        PostCommentRequest::postId.name,
+                        postId
+                    )
+                ).toList()
+            )
+        }
+    }
+
+    override suspend fun updateChildComment(postCommentRequest: PostCommentRequest): MongoResponse<Boolean> {
+        return mongoTryCatch {
+            MongoResponse.Success(
+                postComments.updateOne(
+                    Filters.eq(PostCommentRequest::_id.name, postCommentRequest._id), mutableListOf(
+                        Updates.set(
+                            PostCommentRequest::userName.name,
+                            postCommentRequest.userName
+                        ),
+                        Updates.set(
+                            PostCommentRequest::userEmail.name,
+                            postCommentRequest.userEmail
+                        ),
+                        Updates.set(
+                            PostCommentRequest::commentDate.name,
+                            postCommentRequest.commentDate
+                        ),
+                        Updates.set(
+                            PostCommentRequest::comment.name,
+                            postCommentRequest.comment
+                        ),
+                        Updates.set(
+                            PostCommentRequest::postId.name,
+                            postCommentRequest.postId
+                        ),
+                        Updates.set(
+                            PostCommentRequest::childComments.name,
+                            postCommentRequest.childComments
+                        ),
+                    )
+                ).wasAcknowledged()
+            )
+        }
+    }
 }

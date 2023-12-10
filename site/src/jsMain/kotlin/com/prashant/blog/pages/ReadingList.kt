@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.Type
 import com.prashant.blog.navigation.NavigationRoute
 import com.prashant.blog.utils.navigation.navigateTo
 import com.prashant.blog.widgets.BlogLayout
@@ -53,7 +54,9 @@ fun ReadingList() {
             repeat(8) {
                 ReadingListItem {
                     pageContext.navigateTo(NavigationRoute.New.buildUrl {
-                        addQueryParam("category", "latest")
+                        addQueryParam(
+                            Type, "latest"
+                        )
                     })
                     console.info("Item clicked index: ${window.history.state}")
                 }

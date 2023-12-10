@@ -8,14 +8,12 @@ import org.jetbrains.compose.web.dom.Span
 @Composable
 fun FaCustomIcon(
     modifier: Modifier = Modifier,
-    iconName: String = "fa-angle-right",
-    style: String = "fa-solid"
+    iconName: String = "angle-right",
+    style: String = "solid",
+    classname: String = "",
+    size: String = "lg",
 ) {
     Span(attrs = modifier.toAttrs {
-        classes("fa", iconName)
-        classes(style)
-        classes("fa-lg")
+        classes("fa-$classname", "fa-$iconName", "fa-$style", "fa-$size")
     })
-
-
 }

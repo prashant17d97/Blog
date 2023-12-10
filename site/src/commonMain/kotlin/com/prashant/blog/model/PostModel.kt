@@ -8,11 +8,12 @@ data class PostModel(
     val author: String = "",
     val authorId: String = "",
     val createdAt: String = "",
-    val title: String? = null,
-    val subtitle: String? = null,
-    val thumbnail: String? = null,
-    val content: String? = null,
-    val category: String? = null,
+    val title: String = "",
+    val subtitle: String = "",
+    val thumbnail: String = "",
+    val content: String = "",
+    val category: String = "",
+    val categoryId: String = "",
     val popular: Boolean = false,
     val main: Boolean = false,
     val sponsored: Boolean = false,
@@ -25,11 +26,11 @@ data class PostModel(
 
             // Check for non-empty or non-null values for each field
             if (author.isEmpty()) invalidFields.add("author")
-            if (title.isNullOrBlank()) invalidFields.add("title")
-            if (subtitle.isNullOrBlank()) invalidFields.add("subtitle")
-            if (thumbnail.isNullOrBlank()) invalidFields.add("thumbnail")
-            if (content.isNullOrBlank()) invalidFields.add("content")
-            if (category.isNullOrBlank()) invalidFields.add("category")
+            if (title.isBlank()) invalidFields.add("title")
+            if (subtitle.isBlank()) invalidFields.add("subtitle")
+            if (thumbnail.isBlank()) invalidFields.add("thumbnail")
+            if (content.isBlank()) invalidFields.add("content")
+            if (category.isBlank()) invalidFields.add("category")
 
             // Add additional checks if needed for other fields
 

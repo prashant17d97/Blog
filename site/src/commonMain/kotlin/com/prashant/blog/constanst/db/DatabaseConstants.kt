@@ -8,5 +8,6 @@ object DatabaseConstants {
     const val AuthorCollection = "AuthorCollection"
     const val CategoryCollection = "CategoryCollection"
     const val PostCollection = "PostCollection"
+    const val PostComments = "PostComments"
 
 }

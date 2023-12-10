@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.HOME
 import com.prashant.blog.navigation.NavigationRoute
 import com.prashant.blog.navigation.RouteAction.*
 import com.prashant.blog.navigation.menuLists
@@ -150,7 +151,7 @@ private fun LargeScreenHeader(onMenuItemClick: (menu: NavigationRoute) -> Unit) 
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Link(path = "/") {
+            Link(path = HOME) {
                 Img(
                     src = SiteIcon,
                     alt = SiteIcon.contentDescription,

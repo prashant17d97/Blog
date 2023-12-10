@@ -1,7 +1,7 @@
 package com.prashant.blog.utils.css
 
 import androidx.compose.runtime.Composable
-import com.prashant.blog.model.TopComment
+import com.prashant.blog.model.PostComment
 import com.prashant.blog.utils.constants.ResourceConstants
 import com.prashant.blog.utils.css.enums.ControlStyle
 import com.prashant.blog.utils.css.enums.EditorControl
@@ -32,11 +32,11 @@ import org.w3c.dom.HTMLTextAreaElement
 import kotlin.js.Date
 
 object CssAttributesUtils {
-    fun List<TopComment>.findLastId(): Int {
+    fun List<PostComment>.findLastId(): String {
         return if (isEmpty()) {
-            0
+            "0"
         } else {
-            this[lastIndex].id
+            this[lastIndex]._id
         }
     }
 
@@ -55,8 +55,8 @@ object CssAttributesUtils {
 
     @Composable
     fun Modifier.textColor(boolean: Boolean): Modifier {
-        return this.color(MaterialTheme.colorScheme.action.takeIf { boolean }
-            ?: MaterialTheme.colorScheme.text)
+        return this.color(MaterialTheme.colorScheme.secondary.takeIf { boolean }
+            ?: MaterialTheme.colorScheme.action)
     }
 
     @Composable
@@ -181,10 +181,5 @@ object CssAttributesUtils {
 
     fun parseSwitchText(posts: List<String>): String {
         return if (posts.size == 1) "1 Post Selected" else "${posts.size} Posts Selected"
-    }
-
-    fun validateEmail(email: String): Boolean {
-        val regex = "^[A-Za-z](.*)(@)(.+)(\\.)(.+)"
-        return regex.toRegex().matches(email)
     }
 }

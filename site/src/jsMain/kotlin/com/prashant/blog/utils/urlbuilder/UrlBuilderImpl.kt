@@ -1,5 +1,8 @@
 package com.prashant.blog.utils.urlbuilder
-class UrlBuilderImpl(private val baseUrl: String = "/") : UrlBuilder {
+
+import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.HOME
+
+class UrlBuilderImpl(private val baseUrl: String = HOME) : UrlBuilder {
     private val queryParams = mutableMapOf<String, String>()
     private val pathSegments = mutableListOf<String>()
 
@@ -17,8 +20,8 @@ class UrlBuilderImpl(private val baseUrl: String = "/") : UrlBuilder {
         val urlBuilder = StringBuilder(baseUrl)
 
         if (pathSegments.isNotEmpty()) {
-            urlBuilder.append("/")
-            urlBuilder.append(pathSegments.joinToString("/"))
+            urlBuilder.append(HOME)
+            urlBuilder.append(pathSegments.joinToString(HOME))
         }
 
         if (queryParams.isNotEmpty()) {

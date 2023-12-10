@@ -68,6 +68,6 @@ fun BlogLayout(
         )
 
         // Display the footer based on the breakpoint.
-        Footer(isBreakpointActive = isBreakPoint < Breakpoint.MD, pageContext = pageContext)
+        Footer(isBreakpointActive = isBreakPoint < Breakpoint.MD)
     }
 }

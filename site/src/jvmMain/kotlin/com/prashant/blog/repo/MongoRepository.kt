@@ -2,6 +2,7 @@ package com.prashant.blog.repo
 
 import com.prashant.blog.model.AuthorModel
 import com.prashant.blog.model.CategoryModel
+import com.prashant.blog.model.PostCommentRequest
 import com.prashant.blog.model.PostModel
 import com.prashant.blog.sealeds.MongoResponse
 
@@ -60,4 +61,10 @@ interface MongoRepository {
     suspend fun createCategory(category: CategoryModel): MongoResponse<Boolean>
     suspend fun retrieveCategoryById(categoryId: String): MongoResponse<CategoryModel>
     suspend fun retrieveCategories(): MongoResponse<List<CategoryModel>>
+    suspend fun findAuthorsPosts(authorId: String): MongoResponse<List<PostModel>>
+    suspend fun fetchAllPost(): MongoResponse<List<PostModel>>
+
+    suspend fun addComment(postCommentRequest: PostCommentRequest): MongoResponse<Boolean>
+    suspend fun getComment(postId: String): MongoResponse<List<PostCommentRequest>>
+    suspend fun updateChildComment(postCommentRequest: PostCommentRequest): MongoResponse<Boolean>
 }

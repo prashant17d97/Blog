@@ -1,6 +1,7 @@
 package com.prashant.blog.api
 
 import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.Category
+import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.Id
 import com.prashant.blog.model.CategoryModel
 import com.prashant.blog.sealeds.JVMApiResponse
 import com.prashant.blog.sealeds.MongoResponse
@@ -54,7 +55,7 @@ private suspend fun ApiContext.createCategory(): Pair<Int, String> {
 
 private suspend fun ApiContext.fetchCategory(): Pair<Int, String> {
     return tryCatchBlock {
-        val categoryGetRequest = this.req.params["_id"]
+        val categoryGetRequest = this.req.params[Id]
 
         if (categoryGetRequest.isNullOrEmpty()) {
             when (val mongoResponse = mongoDB().retrieveCategories()) {

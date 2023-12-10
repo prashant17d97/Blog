@@ -1,6 +1,8 @@
 package com.prashant.blog.widgets
 
 import androidx.compose.runtime.Composable
+import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.authorLink
+import com.prashant.blog.model.AuthorModel
 import com.prashant.blog.utils.constants.ResourceConstants.CSSIds.cssImgClassId
 import com.prashant.theme.MaterialTheme
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
@@ -27,10 +29,8 @@ import org.jetbrains.compose.web.dom.Text
 @Composable
 fun PostAuthorView(
     modifier: Modifier = Modifier,
-    author: String,
+    author: AuthorModel,
     noActionPerformed: Boolean = true,
-    authorImage: String,
-    authorLink: String = "/author",
 ) {
     Column(
         modifier = modifier.fillMaxWidth().padding(10.px),
@@ -38,25 +38,25 @@ fun PostAuthorView(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Img(
-            src = authorImage,
+            src = author.userImage,
             attrs = Modifier.margin(20.px).borderRadius(50.percent).size(60.px)
                 .classNames(cssImgClassId).toAttrs()
         )
 
         if (noActionPerformed) {
-            Link(path = authorLink) {
+            Link(path = authorLink(author._id)) {
                 H3(attrs = Modifier.color(MaterialTheme.colorScheme.action).toAttrs()) {
-                    Text(author)
+                    Text(author.name)
                 }
             }
         } else {
             H3(attrs = Modifier.color(MaterialTheme.colorScheme.secondary).toAttrs()) {
-                Text(author)
+                Text(author.name)
             }
         }
         P {
             SpanText(text = "Follow me on my social handles below")
         }
-        SocialMediaIcons(modifier = Modifier.margin(10.px)) {}
+        SocialMediaIcons(modifier = Modifier.margin(10.px), socialLink = author.socialLinks)
     }
 }

@@ -1,5 +1,6 @@
 package com.prashant.blog.navigation
 
+import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.PopularPost
 import com.prashant.blog.utils.constants.ResourceConstants.MenuItems
 import com.prashant.blog.utils.urlbuilder.UrlBuilder
 import com.prashant.blog.utils.urlbuilder.UrlBuilderImpl
@@ -7,8 +8,8 @@ import com.prashant.blog.utils.urlbuilder.UrlBuilderImpl
 sealed class NavigationRoute(val name: String, val routeData: Route) {
     data object Popular : NavigationRoute(
         name = MenuItems.Popular, routeData = Route(
-            route = "/${MenuItems.Popular.lowercase()}",
-            action = RouteAction.PromptAction
+            route = PopularPost(MenuItems.Popular),
+            action = RouteAction.Navigate
         )
     )
 
@@ -27,6 +28,7 @@ sealed class NavigationRoute(val name: String, val routeData: Route) {
             action = RouteAction.Navigate
         )
     )
+
     data object Author : NavigationRoute(
         name = MenuItems.Author,
         routeData = Route(

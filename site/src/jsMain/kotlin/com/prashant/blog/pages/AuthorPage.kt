@@ -6,11 +6,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.Id
+import com.prashant.blog.model.AuthorModel
+import com.prashant.blog.model.AuthorModel.Companion.getEmptyBody
+import com.prashant.blog.model.PostModel
 import com.prashant.blog.navigation.NavigationRoute
 import com.prashant.blog.network.rememberNetworkCall
-import com.prashant.blog.utils.commonfunctions.CommonFunctions.findKey
 import com.prashant.blog.utils.commonfunctions.CommonFunctions.handleResponse
-import com.prashant.blog.utils.constants.ResourceConstants
 import com.prashant.blog.utils.navigation.navigateTo
 import com.prashant.blog.widgets.AuthorPopularRecentPost
 import com.prashant.blog.widgets.BlogLayout
@@ -31,6 +33,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
+import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.layout.SimpleGrid
 import com.varabyte.kobweb.silk.components.layout.numColumns
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
@@ -45,38 +48,24 @@ import org.jetbrains.compose.web.dom.H4
 @Page("author")
 @Composable
 fun AuthorPage() {
+    var authorModel: AuthorModel by remember { mutableStateOf(getEmptyBody) }
+    var postModel: List<PostModel> by remember { mutableStateOf(emptyList()) }
+    val pageContext = rememberPageContext()
     val networkCall = rememberNetworkCall()
-    //val loaderVisibility by remember { mutableStateOf(true) }
-    LaunchedEffect(Unit) {
-        /*networkCall.createNewAuthor(
-            AuthorModel(
-                _id = "65678d293a7ebc81bf369386",
-                name = "Prashant Singh",
-                userImage = ""
-            )
-        ).handleResponse(
-            onLoading = {
-                console.info("Author by loading: $it")
-            }, onSuccess = {
-                console.info("Author by body: ${it.responseMessage}")
-            }, onFailure = {
-                console.info("Author by body failure: $it")
-            })*/
 
-        networkCall.retrievePost(
-            "656d6488c0baf863a951682b"
-        ).handleResponse(onLoading = {
-            console.info("AuthorPage: $it")
-        }, onSuccess = {
-            console.info("AuthorPage: ${it.responseMessage}")
-        }, onFailure = {
-            console.info("AuthorPage: $it")
-        })
-
-    }
     val totalPage by remember { mutableStateOf(18) }
-    var currentPage by remember {
+    val currentPage by remember {
         mutableStateOf(1)
+    }
+    var postModels: List<PostModel> by remember { mutableStateOf(emptyList()) }
+    LaunchedEffect(Unit) {
+        networkCall.fetchAllPost().handleResponse(onLoading = {
+
+        }, onSuccess = {
+            postModels = it.data
+        }, onFailure = {
+
+        })
     }
     val localDate = LocalDate.now(clockOrZone = ZoneId.SYSTEM)
     var selectedDate by remember {
@@ -89,14 +78,32 @@ fun AuthorPage() {
         )
     }
 
+    LaunchedEffect(Unit) {
+        val authorId = pageContext.route.params[Id]
+        authorId?.let {
+            networkCall.getAuthorById(it).handleResponse(
+                onLoading = {},
+                onSuccess = { authorModelResponse ->
+                    authorModel = authorModelResponse.data
+                },
+                onFailure = {})
+
+            networkCall.getAuthorsPosts(it).handleResponse(
+                onLoading = {},
+                onSuccess = { postsList ->
+                    console.info(
+                        "${postsList.responseMessage}," +
+                                "${postsList.data}"
+                    )
+                    postModel = postsList.data
+                },
+                onFailure = {
+                    console.info(it)
+                })
+        }
+    }
+
     BlogLayout { _, pageContext ->
-
-        val pageQuery = pageContext.route
-        val page = pageQuery.queryParams.keys.findKey(
-            "page"
-        )
-        currentPage = pageQuery.queryParams[page]?.toInt() ?: 1
-
 
         Row(modifier = Modifier.fillMaxWidth().padding(leftRight = 10.px).gap(10.px)) {
 
@@ -104,10 +111,8 @@ fun AuthorPage() {
             Column(modifier = Modifier.weight(1.4f).gap(10.px)) {
                 Card(modifier = Modifier.fillMaxWidth()) {
                     PostAuthorView(
-                        authorImage = ResourceConstants.FooterSocialIcons.SuggestionTwo,
+                        author = authorModel,
                         noActionPerformed = false,
-                        author = "Prashant",
-                        authorLink = "/author"
                     )
                 }
 
@@ -115,12 +120,8 @@ fun AuthorPage() {
                     numColumns(rememberBreakpoint().getColumnCount()),
                     modifier = Modifier.gap(15.px)
                 ) {
-                    repeat(3) {
-                        VerticalBlogCard(src = ResourceConstants.FooterSocialIcons.SuggestionOne) {
-                            pageContext.navigateTo(
-                                NavigationRoute.Post
-                            )
-                        }
+                    postModel.forEach { postModel ->
+                        VerticalBlogCard(postModel, pageContext)
                     }
                 }
 
@@ -148,8 +149,8 @@ fun AuthorPage() {
                     H4(
                         attrs = Modifier.margin(bottom = 15.px).toAttrs()
                     ) { SpanText("Popular Post") }
-                    repeat(4) {
-                        AuthorPopularRecentPost()
+                    postModel.forEach {
+                        AuthorPopularRecentPost(it)
                     }
                 }
 
@@ -161,8 +162,8 @@ fun AuthorPage() {
                     H4(
                         attrs = Modifier.margin(bottom = 15.px).toAttrs()
                     ) { SpanText("Recent Post") }
-                    repeat(4) {
-                        AuthorPopularRecentPost()
+                    postModels.forEach {
+                        AuthorPopularRecentPost(it)
                     }
                 }
                 Card {

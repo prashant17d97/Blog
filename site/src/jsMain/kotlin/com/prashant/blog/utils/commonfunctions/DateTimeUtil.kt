@@ -8,6 +8,7 @@ import kotlinx.datetime.internal.JSJoda.LocalTime
 import kotlinx.datetime.internal.JSJoda.ZoneId
 import kotlinx.datetime.internal.JSJoda.ZoneOffset
 import kotlinx.datetime.internal.JSJoda.ZonedDateTime
+import kotlin.js.Date
 
 object DateTimeUtil {
     fun parseLocalDateWithTimeToLocalDateTime(localDateWithTime: String): LocalDateTime {
@@ -54,11 +55,28 @@ object DateTimeUtil {
         return formatter.format(instant)
     }
 
-    fun convertAndFormatTimestamp(utcTimestamp: String): String {
-        val instantUTC = Instant.parse(utcTimestamp)
+    fun String.convertAndFormatTimestamp(): String {
+        val instantUTC = Instant.parse(this)
         val zonedDateTimeIST = instantUTC.atZone(ZoneId.SYSTEM)
 
         val formatterIST = DateTimeFormatter.ofPattern("MMM dd, yyyy 'at' h:mm a")
         return formatterIST.format(zonedDateTimeIST)
     }
+
+    fun Long.parseDateString() = Date(this).toLocaleDateString()
+    fun String.parseDateString(): String {
+        val date = Date(this)
+        val options = dateLocaleOptions {
+            year = "numeric"
+            month = "long"
+            day = "numeric"
+            hour = "numeric"
+            minute = "numeric"
+            hour12 = true
+//            formatMatcher = "MMM dd, yyyy 'at' h:mm a"
+        }
+        return date.toLocaleString("en-US", options = options)
+
+    }
+
 }

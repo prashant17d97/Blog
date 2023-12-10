@@ -3,6 +3,8 @@ package com.prashant.blog.utils.commonfunctions
 import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.json
 import com.prashant.blog.model.ApiCallResponse
 import com.prashant.blog.model.JSApiResponse
+import com.prashant.blog.utils.constants.ResourceConstants
+import kotlinx.browser.window
 
 object CommonFunctions {
 
@@ -20,9 +22,9 @@ object CommonFunctions {
         return this?.let { json.decodeFromString(it) }
     }
 
-    fun <Generic> JSApiResponse<Generic>.handleResponse(
+    suspend fun <Generic> JSApiResponse<Generic>.handleResponse(
         onLoading: (Boolean) -> Unit,
-        onSuccess: (ApiCallResponse<Generic>) -> Unit,
+        onSuccess: suspend (ApiCallResponse<Generic>) -> Unit,
         onFailure: (String) -> Unit
     ) {
         when (this) {
@@ -42,4 +44,27 @@ object CommonFunctions {
         JSApiResponse.Error(errorMessage ?: ex.message ?: "Something went wrong")
     }
 
+    fun String.getSocialIcon(): String {
+        val socialMediaIcons = ResourceConstants.FooterSocialIcons.socialMediaIcons
+
+        for (icon in socialMediaIcons) {
+            if (icon.contains(this)) {
+                return icon
+            }
+        }
+        // If no matching icon is found, you might want to return a default value.
+        return ResourceConstants.FooterSocialIcons.SiteIcon
+    }
+
+    val String.isEmailValid: Boolean
+        get() {
+            val regex = "^[A-Za-z](.*)(@)(.+)(\\.)(.+)"
+            return regex.toRegex().matches(this)
+        }
+
+    fun timeOut(timeOut: Int, onFinished: () -> Unit) {
+        window.setTimeout({
+            onFinished.invoke()
+        }, timeOut)
+    }
 }
