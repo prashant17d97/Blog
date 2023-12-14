@@ -32,6 +32,7 @@ import com.prashant.blog.widgets.HorizontalBlogCard
 import com.prashant.blog.widgets.NewBlogItems
 import com.prashant.blog.widgets.VerticalBlogCard
 import com.prashant.theme.MaterialTheme
+import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.css.ScrollBehavior
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
@@ -46,6 +47,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.boxShadow
 import com.varabyte.kobweb.compose.ui.modifiers.classNames
 import com.varabyte.kobweb.compose.ui.modifiers.color
+import com.varabyte.kobweb.compose.ui.modifiers.cursor
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
@@ -55,6 +57,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.grid
 import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxHeight
+import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.overflow
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.scrollBehavior
@@ -142,15 +145,25 @@ fun ScreenContainer(
     onPostClick: (postId: String) -> Unit
 ) {
     if (isBreakPoint) {
-        SmallScreenHome(postModel = postModel, pageContext = pageContext, onPostClick = onPostClick)
+        SmallScreenHome(
+            postModel = postModel,
+            pageContext = pageContext,
+            onPostClick = onPostClick
+        )
     } else {
-        LargeScreenHome(postModel = postModel, pageContext = pageContext, onPostClick = onPostClick)
+        LargeScreenHome(
+            postModel = postModel,
+            pageContext = pageContext,
+            onPostClick = onPostClick
+        )
     }
 }
 
 @Composable
 private fun SmallScreenHome(
-    postModel: List<PostModel>, pageContext: PageContext, onPostClick: (postId: String) -> Unit
+    postModel: List<PostModel>,
+    pageContext: PageContext,
+    onPostClick: (postId: String) -> Unit
 ) {
     val readingList = listOf("UI Design", "UX Design", "SEO", "Popular", "Essentials")
 
@@ -162,17 +175,16 @@ private fun SmallScreenHome(
 
         Box(
             modifier = Modifier.classNames(cssImgClassId).width(100.percent).height(auto)
-                .borderRadius(5.px), contentAlignment = Alignment.TopStart
+                .borderRadius(5.px).padding(leftRight = 5.px), contentAlignment = Alignment.TopCenter
         ) {
             if (postModel.isNotEmpty()) {
                 Img(
                     src = postModel.first().thumbnail,
                     alt = Pic.contentDescription,
-                    attrs = Modifier.width(100.percent)
-                        .borderRadius(5.px).height(auto).classNames(cssImgClassId)
-                        .display(DisplayStyle.Block)
-                        .zIndex(0)
-                        .toAttrs()
+                    attrs = Modifier.classNames(cssImgClassId).borderRadius(10.px)
+                        .styleModifier {
+                            property("aspect-ratio", "16/9")
+                        }.toAttrs()
                 )
 
                 Column(
@@ -182,19 +194,15 @@ private fun SmallScreenHome(
                 ) {
                     AuthorNameWithCategory(
                         author = Pair(
-                            postModel.first().author,
-                            postModel.first().authorId
+                            postModel.first().author, postModel.first().authorId
                         ), category = Pair(
-                            postModel.first().category,
-                            postModel.first().categoryId
-                        ),
-                        color = Color.rgb(0xFFFFFF)
+                            postModel.first().category, postModel.first().categoryId
+                        ), color = Color.rgb(0xFFFFFF)
                     )
-                    H2(
-                        attrs = Modifier.color(
+                    H2(attrs = Modifier.onClick { onPostClick(postModel.first()._id) }
+                        .cursor(Cursor.Pointer).color(
                             color = Color.rgb(0xFFFFFF)
-                        ).toAttrs()
-                    ) {
+                        ).toAttrs()) {
                         SpanText(text = postModel.first().title)
                     }
                     H6(
@@ -207,7 +215,7 @@ private fun SmallScreenHome(
                 }
             }
         }
-        Column(modifier = Modifier.fillMaxWidth().padding(leftRight = 10.px)) {
+        Column(modifier = Modifier.fillMaxWidth().padding(10.px)) {
             HeadingViewAll(heading = New) {
                 pageContext.router.navigateTo(NavigationRoute.New.routeData.route)
             }
@@ -272,7 +280,7 @@ private fun SmallScreenHome(
             )
 
             SimpleGrid(
-                numColumns(base = 2), modifier = Modifier.fillMaxWidth()
+                numColumns(base = 1), modifier = Modifier.fillMaxWidth()
             ) {
                 repeat(4) {
                     Card(modifier = Modifier.margin(5.px).padding(10.px)) {
@@ -345,7 +353,7 @@ private fun SmallScreenHome(
             )
 
             SimpleGrid(
-                numColumns(base = 2), modifier = Modifier.fillMaxWidth()
+                numColumns(base = 1), modifier = Modifier.fillMaxWidth()
             ) {
                 repeat(4) {
                     Card(modifier = Modifier.margin(5.px).padding(10.px)) {
@@ -369,8 +377,9 @@ private fun SmallScreenHome(
 
 @Composable
 fun LargeScreenHome(
-    postModel: List<PostModel>, onPostClick: (postId: String) -> Unit, pageContext: PageContext
-) {
+    postModel: List<PostModel>, onPostClick: (postId: String) -> Unit, pageContext: PageContext,
+
+    ) {
     val readingList = listOf("UI Design", "UX Design", "SEO", "Popular", "Essentials")
     Column(modifier = Modifier.fillMaxWidth()) {
 
@@ -383,7 +392,7 @@ fun LargeScreenHome(
 
             Box(
                 modifier = Modifier.classNames(cssImgClassId).width(100.percent).height(auto)
-                    .borderRadius(5.px).margin(right = 45.px), contentAlignment = Alignment.TopStart
+                    .borderRadius(5.px).margin(leftRight = 15.px), contentAlignment = Alignment.TopStart
             ) {
                 if (postModel.isNotEmpty()) {
                     Img(
@@ -402,19 +411,15 @@ fun LargeScreenHome(
                     ) {
                         AuthorNameWithCategory(
                             author = Pair(
-                                postModel.first().author,
-                                postModel.first().authorId
+                                postModel.first().author, postModel.first().authorId
                             ), category = Pair(
-                                postModel.first().category,
-                                postModel.first().categoryId
-                            ),
-                            color = Color.rgb(0xFFFFFF)
+                                postModel.first().category, postModel.first().categoryId
+                            ), color = Color.rgb(0xFFFFFF)
                         )
-                        H2(
-                            attrs = Modifier.color(
+                        H2(attrs = Modifier.onClick { onPostClick(postModel.first()._id) }
+                            .cursor(Cursor.Pointer).color(
                                 color = Color.rgb(0xFFFFFF)
-                            ).toAttrs()
-                        ) {
+                            ).toAttrs()) {
                             SpanText(text = postModel.first().title)
                         }
                         H6(
@@ -428,7 +433,7 @@ fun LargeScreenHome(
                 }
             }
             Column(
-                modifier = Modifier.width(50.percent).padding(right = 10.px),
+                modifier = Modifier.width(50.percent).padding(right = 10.px, left = 20.px),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start
             ) {

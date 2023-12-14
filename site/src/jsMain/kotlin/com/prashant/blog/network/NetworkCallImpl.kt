@@ -152,10 +152,13 @@ internal class NetworkCallImpl : NetworkCall {
         }
     }
 
-    override suspend fun getAuthorsPosts(authorId: String): JSApiResponse<List<PostModel>> {
+    override suspend fun getAuthorsPosts(
+        authorId: String,
+        date: String?
+    ): JSApiResponse<List<PostModel>> {
         return try {
             val result = window.api.tryGet(
-                apiPath = ApiEndpointConstants.GetAuthorsPost(authorId),
+                apiPath = ApiEndpointConstants.GetAuthorsPost(authorId, date),
             )?.decodeToString()
             if (result != null) {
                 JSApiResponse.Success(result.parseData())
@@ -172,7 +175,7 @@ internal class NetworkCallImpl : NetworkCall {
     override suspend fun fetchAllPost(type: String?): JSApiResponse<List<PostModel>> {
         return try {
             val result = window.api.tryGet(
-                apiPath = POST.takeIf { type == null||type != Popular } ?: PostType(type!!),
+                apiPath = POST.takeIf { type == null || type != Popular } ?: PostType(type!!),
             )?.decodeToString()
             if (result != null) {
                 JSApiResponse.Success(result.parseData())

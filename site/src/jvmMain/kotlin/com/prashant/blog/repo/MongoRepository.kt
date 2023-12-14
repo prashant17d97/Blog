@@ -61,7 +61,7 @@ interface MongoRepository {
     suspend fun createCategory(category: CategoryModel): MongoResponse<Boolean>
     suspend fun retrieveCategoryById(categoryId: String): MongoResponse<CategoryModel>
     suspend fun retrieveCategories(): MongoResponse<List<CategoryModel>>
-    suspend fun findAuthorsPosts(authorId: String): MongoResponse<List<PostModel>>
+    suspend fun findAuthorsPosts(authorId: String, date:String): MongoResponse<List<PostModel>>
     suspend fun fetchAllPost(): MongoResponse<List<PostModel>>
 
     suspend fun addComment(postCommentRequest: PostCommentRequest): MongoResponse<Boolean>

@@ -1,6 +1,8 @@
 package com.prashant.blog.api
 
 import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.Author
+import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.AuthorPost
+import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.DateParam
 import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.Id
 import com.prashant.blog.model.AuthorModel
 import com.prashant.blog.sealeds.JVMApiResponse
@@ -43,8 +45,9 @@ suspend fun getAuthor(apiContext: ApiContext) {
 private suspend fun ApiContext.handleAuthorGetRequestById(): Pair<Int, String> {
     return tryCatchBlock(errorMessage = "Error in fetching Author") {
         val authorId = this.req.params[Id]
-        val authorsPosts = this.req.params["posts"]
-        val isRequestsForPost = authorsPosts == "Yes"
+        val authorsPosts = this.req.params[AuthorPost]
+        val date = this.req.params[DateParam]
+        val isRequestsForPost = authorsPosts == "true"
 
         if (authorId == null) {
             badMethodRequest(errorMessage = "Author ID is required! Bad request")
@@ -67,7 +70,7 @@ private suspend fun ApiContext.handleAuthorGetRequestById(): Pair<Int, String> {
                     )
                 }
             } else {
-                when (val response = this.mongoDB().findAuthorsPosts(authorId)) {
+                when (val response = this.mongoDB().findAuthorsPosts(authorId, date ?: "")) {
                     is MongoResponse.Error -> saveErrorResponse(
                         errorMessage = response.error ?: "Some error occurred."
                     )

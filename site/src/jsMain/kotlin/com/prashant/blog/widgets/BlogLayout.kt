@@ -13,6 +13,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.overflow
+import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.scrollBehavior
 import com.varabyte.kobweb.core.PageContext
 import com.varabyte.kobweb.core.rememberPageContext
@@ -61,7 +62,7 @@ fun BlogLayout(
             modifier = columnModifier.fillMaxSize()
                 .scrollBehavior(ScrollBehavior.Smooth)
                 .overflow { y(Overflow.Scroll) }.maxWidth(Constants.MaxWidth)
-                .margin(topBottom = 60.px),
+                .margin(topBottom = 60.px).padding(leftRight = 10.px),
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment,
             content = { content(isBreakPoint < Breakpoint.MD, pageContext) }

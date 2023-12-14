@@ -17,7 +17,7 @@ interface NetworkCall {
     suspend fun createCategory(category: CategoryModel): JSApiResponse<Boolean>
     suspend fun retrieveCategoryById(categoryId: String): JSApiResponse<CategoryModel>
     suspend fun retrieveCategories(): JSApiResponse<List<CategoryModel>>
-    suspend fun getAuthorsPosts(authorId: String): JSApiResponse<List<PostModel>>
+    suspend fun getAuthorsPosts(authorId: String,date:String?): JSApiResponse<List<PostModel>>
     suspend fun fetchAllPost(type:String?=null): JSApiResponse<List<PostModel>>
     suspend fun addComment(postCommentRequest: PostCommentRequest): JSApiResponse<String>
     suspend fun getComment(postId: String): JSApiResponse<List<PostComment>>

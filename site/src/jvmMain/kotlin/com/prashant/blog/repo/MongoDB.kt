@@ -141,10 +141,18 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
         }
     }
 
-    override suspend fun findAuthorsPosts(authorId: String): MongoResponse<List<PostModel>> {
+    override suspend fun findAuthorsPosts(
+        authorId: String,
+        date: String
+    ): MongoResponse<List<PostModel>> {
         return mongoTryCatch("Error in fetching author's posts!") {
             MongoResponse.Success(
-                postCollection.find(Filters.eq(PostModel::authorId.name, authorId)).toList()
+                if (date.isEmpty()) {
+                    postCollection.find(Filters.eq(PostModel::authorId.name, authorId)).toList()
+                } else {
+                    postCollection.find(Filters.eq(PostModel::authorId.name, authorId)).toList()
+                        .filter { it.createdAt.contains(date, true) }
+                }
             )
         }
     }

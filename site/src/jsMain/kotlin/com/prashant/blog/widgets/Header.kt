@@ -78,7 +78,6 @@ import org.jetbrains.compose.web.css.vh
 import org.jetbrains.compose.web.dom.Img
 import org.jetbrains.compose.web.dom.Input
 import org.jetbrains.compose.web.dom.P
-import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
 
 
@@ -209,15 +208,12 @@ private fun LargeScreenHeader(onMenuItemClick: (menu: NavigationRoute) -> Unit) 
                                     }
                                     attr("placeholder", "Search")
                                 })
-                        Span(attrs = Modifier.visibility(Visibility.Visible.takeIf { isSearching }
+
+                        FaCustomIcon(modifier = Modifier.visibility(Visibility.Visible.takeIf { isSearching }
                             ?: Visibility.Hidden).onClick {
                             isSearching = false
                             animatedValue = 3
-                        }.toAttrs {
-                            classes("fa", "fa-arrow-right")
-                            classes("fa-thin")
-                            classes("fa-lg")
-                        })
+                        }, iconName = "arrow-right", style = "thin")
                     }
                 }
             }

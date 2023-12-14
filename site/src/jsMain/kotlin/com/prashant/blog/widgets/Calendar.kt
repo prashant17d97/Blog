@@ -42,10 +42,11 @@ import org.jetbrains.compose.web.dom.Text
 /**
  * A composable Calendar component that allows the selection of dates.
  *
- * @param onSelectedDate Callback to handle the selection of a date.
+ * @param onReload Callback to handle the reload of a date.
+ * @param onDateChange Callback to handle the selection of a date.
  */
 @Composable
-fun Calendar(localDate: LocalDate, onSelectedDate: (LocalDate) -> Unit) {
+fun Calendar(localDate: LocalDate, onReload: () -> Unit, onDateChange: (LocalDate) -> Unit) {
     var selectedMonth by remember { mutableIntStateOf(localDate.month().value().toInt()) }
     var selectedYear by remember { mutableIntStateOf(localDate.year().toInt()) }
     var selectedDay by remember { mutableIntStateOf(localDate.dayOfMonth().toInt()) }
@@ -76,11 +77,12 @@ fun Calendar(localDate: LocalDate, onSelectedDate: (LocalDate) -> Unit) {
             selectedDay = localDate.dayOfMonth().toInt()
             selectedMonth = localDate.month().value().toInt()
             selectedYear = localDate.year().toInt()
-            onSelectedDate(LocalDate.of(selectedYear, selectedMonth, selectedDay))
+//            onSelectedDate(LocalDate.of(selectedYear, selectedMonth, selectedDay))
+            onReload.invoke()
         },
         onDayClick = {
             selectedDay = it
-            onSelectedDate(LocalDate.of(selectedYear, selectedMonth, selectedDay))
+            onDateChange(LocalDate.of(selectedYear, selectedMonth, selectedDay))
         }
     )
 }
@@ -125,7 +127,7 @@ private fun CalendarContainer(
         CalendarHeader(
             month = month,
             year = year,
-            visibility = !(selectedMonth == month && year == selectedYear),
+            visibility = !(selectedMonth == month && year == selectedYear && currentDate.dayOfMonth().toInt() == selectedDay),
             onNextClick = onNextClick,
             onPreviousClick = onPreviousClick,
             onReload = onReload
@@ -177,7 +179,7 @@ private fun CalendarHeader(
 
             FaCustomIcon(
                 modifier = Modifier.cursor(Cursor.Pointer).onClick { onPreviousClick.invoke() },
-                iconName = "fa-angle-left"
+                iconName = "angle-left"
             )
 
             H5 {

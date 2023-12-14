@@ -6,7 +6,8 @@ object ApiEndpointConstants {
     val json = Json { ignoreUnknownKeys = true }
     const val Author = "author"
     val GetAuthorFromId = { authorId: String -> "$Author?$Id=$authorId" }
-    val GetAuthorsPost = { authorId: String -> "$Author?$Id=$authorId&posts=Yes" }
+    val GetAuthorsPost =
+        { authorId: String, date: String? -> "$Author?$Id=$authorId&$AuthorPost=true&$DateParam=$date" }
     const val GetUsers = "users"
     const val CreatePost = "createpost"
     const val POST = "post"
@@ -28,6 +29,8 @@ object ApiEndpointConstants {
 
     //Queries Param
     const val Id = "_id"
+    const val DateParam = "date"
+    const val AuthorPost = "posts"
     const val Type = "type"
     const val Popular = "Popular"
 

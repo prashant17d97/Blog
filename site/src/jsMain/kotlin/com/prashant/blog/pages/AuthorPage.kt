@@ -49,7 +49,6 @@ import org.jetbrains.compose.web.dom.H4
 @Composable
 fun AuthorPage() {
     var authorModel: AuthorModel by remember { mutableStateOf(getEmptyBody) }
-    var postModel: List<PostModel> by remember { mutableStateOf(emptyList()) }
     val pageContext = rememberPageContext()
     val networkCall = rememberNetworkCall()
 
@@ -58,53 +57,36 @@ fun AuthorPage() {
         mutableStateOf(1)
     }
     var postModels: List<PostModel> by remember { mutableStateOf(emptyList()) }
-    LaunchedEffect(Unit) {
-        networkCall.fetchAllPost().handleResponse(onLoading = {
 
-        }, onSuccess = {
-            postModels = it.data
-        }, onFailure = {
-
-        })
-    }
     val localDate = LocalDate.now(clockOrZone = ZoneId.SYSTEM)
-    var selectedDate by remember {
+    var selectedDate: String by remember {
         mutableStateOf(
-            LocalDate.of(
-                localDate.year().toInt(),
-                localDate.month().value().toInt(),
-                localDate.dayOfMonth().toInt()
-            ).toString()
+            ""
         )
     }
-
+    val authorId = pageContext.route.params[Id]
     LaunchedEffect(Unit) {
-        val authorId = pageContext.route.params[Id]
         authorId?.let {
-            networkCall.getAuthorById(it).handleResponse(
-                onLoading = {},
-                onSuccess = { authorModelResponse ->
+            networkCall.getAuthorById(it)
+                .handleResponse(onLoading = {}, onSuccess = { authorModelResponse ->
                     authorModel = authorModelResponse.data
-                },
-                onFailure = {})
+                }, onFailure = {})
+        }
+    }
 
-            networkCall.getAuthorsPosts(it).handleResponse(
-                onLoading = {},
-                onSuccess = { postsList ->
-                    console.info(
-                        "${postsList.responseMessage}," +
-                                "${postsList.data}"
-                    )
-                    postModel = postsList.data
-                },
-                onFailure = {
+    LaunchedEffect(selectedDate) {
+        authorId?.let {
+            networkCall.getAuthorsPosts(it, selectedDate)
+                .handleResponse(onLoading = {}, onSuccess = { postsList ->
+                    postModels = postsList.data
+                }, onFailure = {
                     console.info(it)
                 })
         }
     }
 
     BlogLayout { _, pageContext ->
-
+        val authorId = pageContext.route.params[Id]
         Row(modifier = Modifier.fillMaxWidth().padding(leftRight = 10.px).gap(10.px)) {
 
             //Left profile & article Column
@@ -120,7 +102,7 @@ fun AuthorPage() {
                     numColumns(rememberBreakpoint().getColumnCount()),
                     modifier = Modifier.gap(15.px)
                 ) {
-                    postModel.forEach { postModel ->
+                    postModels.forEach { postModel ->
                         VerticalBlogCard(postModel, pageContext)
                     }
                 }
@@ -128,12 +110,10 @@ fun AuthorPage() {
                 PaginationCarousel(
                     totalPages = totalPage, currentPage = currentPage
                 ) {
-                    pageContext.navigateTo(
-                        NavigationRoute.Author.buildUrl {
-                            addQueryParam("page", it.toString())
-                            addQueryParam("date", selectedDate)
-                        }
-                    )
+                    pageContext.navigateTo(NavigationRoute.Author.buildUrl {
+                        addQueryParam("page", it.toString())
+                        addQueryParam("date", selectedDate)
+                    })
                 }
             }
 
@@ -149,7 +129,7 @@ fun AuthorPage() {
                     H4(
                         attrs = Modifier.margin(bottom = 15.px).toAttrs()
                     ) { SpanText("Popular Post") }
-                    postModel.forEach {
+                    postModels.forEach {
                         AuthorPopularRecentPost(it)
                     }
                 }
@@ -167,9 +147,9 @@ fun AuthorPage() {
                     }
                 }
                 Card {
-                    Calendar(localDate) {
+                    Calendar(localDate,
+                        onReload = { selectedDate = "" }) {
                         selectedDate = it.toString()
-                        console.info(selectedDate)
                     }
                 }
             }
