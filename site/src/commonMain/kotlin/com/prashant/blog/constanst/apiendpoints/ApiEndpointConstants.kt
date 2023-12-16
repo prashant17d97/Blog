@@ -8,7 +8,6 @@ object ApiEndpointConstants {
     val GetAuthorFromId = { authorId: String -> "$Author?$Id=$authorId" }
     val GetAuthorsPost =
         { authorId: String, date: String? -> "$Author?$Id=$authorId&$AuthorPost=true&$DateParam=$date" }
-    const val GetUsers = "users"
     const val CreatePost = "createpost"
     const val POST = "post"
     const val PostSearch = "search"
