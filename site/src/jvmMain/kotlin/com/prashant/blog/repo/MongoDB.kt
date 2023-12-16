@@ -6,6 +6,7 @@ import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.prashant.blog.constanst.db.DatabaseConstants
 import com.prashant.blog.constanst.db.DatabaseConstants.DATABASE
+import com.prashant.blog.constanst.db.DatabaseConstants.MongoConnectionString
 import com.prashant.blog.model.AuthorModel
 import com.prashant.blog.model.CategoryModel
 import com.prashant.blog.model.PostCommentRequest
@@ -38,7 +39,7 @@ fun initMongoDB(context: InitApiContext) {
  * @param context The [InitApiContext] used for logging and other contextual operations.
  */
 class MongoDB(private val context: InitApiContext) : MongoRepository {
-    private val client = MongoClient.create()
+    private val client = MongoClient.create(System.getenv(MongoConnectionString))
     private val database = client.getDatabase(DATABASE)
     private val authorCollection =
         database.getCollection<AuthorModel>(DatabaseConstants.AuthorCollection)

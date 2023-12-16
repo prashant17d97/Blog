@@ -1,6 +1,7 @@
 import com.varabyte.kobweb.gradle.application.util.configAsKobwebApplication
 import kotlinx.html.link
 import kotlinx.html.script
+import kotlinx.html.title
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -20,7 +21,7 @@ kobweb {
     app {
         index {
             head.add {
-
+                title = "Debug Desk"
                 //External JavaScripts
                 script {
                     src =
