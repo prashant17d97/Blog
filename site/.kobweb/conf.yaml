@@ -1,5 +1,5 @@
 site:
-  title: "Blog"
+  title: "Debug Desk"
 
 server:
   files:
@@ -10,5 +10,10 @@ server:
     prod:
       script: "build/dist/js/productionExecutable/blog.js"
       siteRoot: ".kobweb/site"
+  cors:
+    hosts:
+      - name: "debug-desk.onrender.com"
+        schemes:
+          - "https"
 
   port: 8080
