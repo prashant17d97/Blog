@@ -6,9 +6,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.HOME
 import com.prashant.blog.navigation.NavigationRoute
-import com.prashant.blog.navigation.RouteAction.*
+import com.prashant.blog.navigation.RouteAction.Navigate
+import com.prashant.blog.navigation.RouteAction.PromptAction
 import com.prashant.blog.navigation.menuLists
+import com.prashant.blog.utils.commonfunctions.CommonFunctions.gainFocus
 import com.prashant.blog.utils.constants.Constants
 import com.prashant.blog.utils.constants.ResourceConstants.CSSIds.cssImgClassId
 import com.prashant.blog.utils.constants.ResourceConstants.CSSIds.cssInputId
@@ -18,6 +21,7 @@ import com.prashant.blog.utils.navigation.navigateTo
 import com.prashant.theme.MaterialTheme
 import com.varabyte.kobweb.compose.css.CSSTransition
 import com.varabyte.kobweb.compose.css.Cursor
+import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.TransitionProperty
 import com.varabyte.kobweb.compose.css.Visibility
 import com.varabyte.kobweb.compose.css.transitionTimingFunction
@@ -31,12 +35,14 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.border
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
+import com.varabyte.kobweb.compose.ui.modifiers.boxShadow
 import com.varabyte.kobweb.compose.ui.modifiers.classNames
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.cursor
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxHeight
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
 import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.id
 import com.varabyte.kobweb.compose.ui.modifiers.margin
@@ -55,11 +61,14 @@ import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.PageContext
 import com.varabyte.kobweb.silk.components.icons.fa.FaBars
-import com.varabyte.kobweb.silk.components.icons.fa.FaMagnifyingGlass
+import com.varabyte.kobweb.silk.components.icons.fa.FaMoon
+import com.varabyte.kobweb.silk.components.icons.fa.FaSun
 import com.varabyte.kobweb.silk.components.icons.fa.FaXmark
 import com.varabyte.kobweb.silk.components.icons.fa.IconSize
-import com.varabyte.kobweb.silk.components.layout.Divider
+import com.varabyte.kobweb.silk.components.icons.fa.IconStyle
+import com.varabyte.kobweb.silk.components.layout.HorizontalDivider
 import com.varabyte.kobweb.silk.components.navigation.Link
+import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
@@ -74,31 +83,29 @@ import org.jetbrains.compose.web.css.ms
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
+import org.jetbrains.compose.web.dom.H1
 import org.jetbrains.compose.web.dom.Img
 import org.jetbrains.compose.web.dom.Input
 import org.jetbrains.compose.web.dom.P
-import org.jetbrains.compose.web.dom.Span
 import org.jetbrains.compose.web.dom.Text
 
 
-/**
- * Composable function for rendering the header of the user interface.
- *
- * This composable displays a header with two icons, using Jetpack Compose's `Row` and `Modifier` functions.
- *
- * @see androidx.compose.foundation.layout.Row
- * @param modifier Modifier for customizing the layout of the header.
- * @param verticalAlignment The vertical alignment of the content within the header.
- * @param horizontalArrangement The horizontal arrangement of content within the header.
- */
-
 @Composable
-fun Header(isBreakPoint: Boolean, pageContext: PageContext) {
-    var colorMode by ColorMode.currentState
-    HeaderContainer(isBreakPoint = isBreakPoint) { navigationRoute ->
+fun Header(
+    isBreakPoint: Boolean,
+    pageContext: PageContext,
+    onColorMode: () -> Unit,
+    onSearch: (searchString: String) -> Unit,
+) {
+
+    HeaderContainer(isBreakPoint = isBreakPoint, onSearch = onSearch, onLogoClick = {
+        pageContext.router.navigateTo(
+            HOME
+        )
+    }) { navigationRoute ->
         val route = navigationRoute.routeData
         if (navigationRoute == NavigationRoute.DarkMode) {
-            colorMode = colorMode.opposite
+            onColorMode()
         } else {
             when (route.action) {
                 Navigate -> pageContext.navigateTo(route.route)
@@ -113,12 +120,17 @@ fun Header(isBreakPoint: Boolean, pageContext: PageContext) {
 @Composable
 private fun HeaderContainer(
     isBreakPoint: Boolean,
-    onMenuItemClick: (menu: NavigationRoute) -> Unit
+    onSearch: (searchString: String) -> Unit,
+    onLogoClick: () -> Unit,
+    onMenuItemClick: (menu: NavigationRoute) -> Unit,
 ) {
     if (isBreakPoint) {
-        SmallScreenHeader(onMenuItemClick = onMenuItemClick)
+        SmallScreenHeader(onMenuItemClick = onMenuItemClick, onLogoClick = onLogoClick)
     } else {
-        LargeScreenHeader(onMenuItemClick = onMenuItemClick)
+        LargeScreenHeader(
+            onMenuItemClick = onMenuItemClick,
+            onSearch = onSearch
+        )
     }
 }
 
@@ -126,7 +138,10 @@ private fun HeaderContainer(
  * Composable function to display the header for large screens.
  */
 @Composable
-private fun LargeScreenHeader(onMenuItemClick: (menu: NavigationRoute) -> Unit) {
+private fun LargeScreenHeader(
+    onMenuItemClick: (menu: NavigationRoute) -> Unit,
+    onSearch: (searchString: String) -> Unit
+) {
     var isSearching by remember {
         mutableStateOf(false)
     }
@@ -138,6 +153,8 @@ private fun LargeScreenHeader(onMenuItemClick: (menu: NavigationRoute) -> Unit) 
     var animatedValue by remember {
         mutableStateOf(3)
     }
+
+    var darkMode by ColorMode.currentState
     val transParent = MaterialTheme.colorScheme.unspecified
     Row(
         modifier = Modifier.fillMaxWidth().maxWidth(Constants.MaxWidth).margin(top = 20.px)
@@ -150,7 +167,7 @@ private fun LargeScreenHeader(onMenuItemClick: (menu: NavigationRoute) -> Unit) 
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Link(path = "/") {
+            Link(path = HOME) {
                 Img(
                     src = SiteIcon,
                     alt = SiteIcon.contentDescription,
@@ -158,6 +175,7 @@ private fun LargeScreenHeader(onMenuItemClick: (menu: NavigationRoute) -> Unit) 
                         .toAttrs()
                 )
             }
+
             LargeScreenMenuItems(onMenuClick = onMenuItemClick)
         }
 
@@ -166,13 +184,22 @@ private fun LargeScreenHeader(onMenuItemClick: (menu: NavigationRoute) -> Unit) 
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End
         ) {
+
             Box(
-                modifier = Modifier.margin(leftRight = 10.px).padding(15.px).height(80.percent)
+                modifier = Modifier.margin(left = 10.px, right = 25.px).padding(15.px)
+                    .height(80.percent)
                     .width(animatedValue.em).borderRadius(40.px).styleModifier {
                         transitionTimingFunction(AnimationTimingFunction.Linear)
                     }.transition(CSSTransition(property = "width", duration = 300.ms))
-                    .backgroundColor(MaterialTheme.colorScheme.container.copyf(alpha = 0.8f)),
-                contentAlignment = Alignment.Center
+                    .backgroundColor(MaterialTheme.colorScheme.container.copyf(alpha = 0.8f))
+                    .boxShadow(
+                        offsetX = 0.px,
+                        offsetY = 0.px,
+                        blurRadius = 10.px,
+                        spreadRadius = 4.px,
+                        color = MaterialTheme.colorScheme.action.copyf(alpha = 0.25f),
+                        inset = false
+                    ), contentAlignment = Alignment.Center
             ) {
                 Row(
                     modifier = Modifier.fillMaxSize(),
@@ -181,12 +208,13 @@ private fun LargeScreenHeader(onMenuItemClick: (menu: NavigationRoute) -> Unit) 
 
                 ) {
                     if (!isSearching) {
-                        FaMagnifyingGlass(size = IconSize.XL,
-                            modifier = Modifier.visibility(Visibility.Visible.takeIf { !isSearching }
-                                ?: Visibility.Hidden).onClick {
+                        FaCustomIcon(
+                            modifier = Modifier.visibility(!isSearching).onClick {
                                 isSearching = true
                                 animatedValue = 25
-                            })
+                                document.getElementById(cssInputId)?.gainFocus()
+                            }, iconName = "magnifying-glass", size = "lg"
+                        )
                     } else {
                         Input(InputType.Search,
                             attrs = Modifier.fillMaxWidth()
@@ -194,42 +222,58 @@ private fun LargeScreenHeader(onMenuItemClick: (menu: NavigationRoute) -> Unit) 
                                 .color(MaterialTheme.colorScheme.text).margin(right = 10.px)
                                 .padding(0.px).id(cssInputId).onKeyDown {
                                     if (it.key == "Enter") {
+                                        onSearch(searching)
                                         searching = ""
                                         document.getElementById(cssInputId)?.clearFocus()
                                     }
                                 }.border {
                                     color(transParent)
-                                }
-
-                                .weight(1f).toAttrs {
+                                }.weight(1f).toAttrs {
                                     value(searching)
                                     onInput {
                                         searching = it.value
                                     }
                                     attr("placeholder", "Search")
                                 })
-                        Span(attrs = Modifier.visibility(Visibility.Visible.takeIf { isSearching }
+
+                        FaCustomIcon(modifier = Modifier.visibility(Visibility.Visible.takeIf { isSearching }
                             ?: Visibility.Hidden).onClick {
                             isSearching = false
                             animatedValue = 3
-                        }.toAttrs {
-                            classes("fa", "fa-arrow-right")
-                            classes("fa-thin")
-                            classes("fa-lg")
-                        })
+                        }, iconName = "arrow-right")
                     }
                 }
             }
+            if (darkMode.isLight) {
+                FaMoon(
+                    size = IconSize.XXL,
+                    style = IconStyle.FILLED,
+                    modifier = Modifier.boxShadow(
+                        offsetX = 0.px,
+                        offsetY = 0.px,
+                        blurRadius = 10.px,
+                        spreadRadius = 4.px,
+                        color = MaterialTheme.colorScheme.action.copyf(alpha = 0.25f),
+                        inset = false
+                    ).onClick {
+                        onMenuItemClick.invoke(NavigationRoute.DarkMode)
+                    })
+            } else {
+                FaSun(
+                    size = IconSize.XXL,
+                    style = IconStyle.FILLED,
+                    modifier = Modifier.boxShadow(
+                        offsetX = 0.px,
+                        offsetY = 0.px,
+                        blurRadius = 10.px,
+                        spreadRadius = 4.px,
+                        color = MaterialTheme.colorScheme.action.copyf(alpha = 0.25f),
+                        inset = false
+                    ).onClick {
+                        onMenuItemClick.invoke(NavigationRoute.DarkMode)
 
-            /*Button(onClick = {
-                        colorMode = colorMode.opposite
-                    }) {
-                        when (colorMode) {
-                            ColorMode.LIGHT -> FaMoon()
-                            ColorMode.DARK -> FaSun()
-                        }
-                    }*/
-
+                    })
+            }
         }
     }
 }
@@ -239,7 +283,8 @@ private fun LargeScreenHeader(onMenuItemClick: (menu: NavigationRoute) -> Unit) 
  */
 @Composable
 private fun SmallScreenHeader(
-    onMenuItemClick: (menu: NavigationRoute) -> Unit
+    onMenuItemClick: (menu: NavigationRoute) -> Unit,
+    onLogoClick: () -> Unit,
 ) {
     var visibility by remember {
         mutableStateOf(true)
@@ -255,7 +300,7 @@ private fun SmallScreenHeader(
 
     val coroutineScope = rememberCoroutineScope()
 
-    Collapsed(visibility = visibility, translateCollapsedX) {
+    Collapsed(visibility = visibility, translateCollapsedX, onLogoClick = onLogoClick) {
         translateCollapsedX = (-100).percent
         coroutineScope.launch {
             delay(200)
@@ -263,7 +308,12 @@ private fun SmallScreenHeader(
             visibility = !visibility
         }
     }
-    ExpandedMenu(visibility = !visibility, translateX, onMenuItemClick = onMenuItemClick) {
+    ExpandedMenu(
+        visibility = !visibility,
+        translateX,
+        onMenuItemClick = onMenuItemClick,
+        onLogoClick = onLogoClick
+    ) {
         translateX = (-100).percent
         coroutineScope.launch {
             delay(200)
@@ -283,7 +333,10 @@ private fun SmallScreenHeader(
  */
 @Composable
 private fun Collapsed(
-    visibility: Boolean, translateX: CSSSizeValue<CSSUnit.percent>, onClick: () -> Unit
+    visibility: Boolean,
+    translateX: CSSSizeValue<CSSUnit.percent>,
+    onLogoClick: () -> Unit,
+    onClick: () -> Unit,
 ) {
 
     var translateY by remember {
@@ -295,7 +348,7 @@ private fun Collapsed(
     }
     Row(modifier = Modifier.fillMaxWidth().padding(20.px).zIndex(1).position(Position.Absolute)
         .translateX(translateX).transition(CSSTransition(property = "translate", duration = 300.ms))
-        .backgroundColor(MaterialTheme.colorScheme.unspecified.copyf(alpha = 0.5f))
+        .backgroundColor(MaterialTheme.colorScheme.onContainer.copyf(alpha = 0.8f))
         .visibility(Visibility.Visible.takeIf { visibility } ?: Visibility.Hidden),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start) {
@@ -308,8 +361,11 @@ private fun Collapsed(
             src = SiteIcon,
             alt = SiteIcon.contentDescription,
             attrs = Modifier.classNames(cssImgClassId).size(40.px).borderRadius(50.percent)
-                .margin(leftRight = 20.px).toAttrs()
+                .onClick { onLogoClick() }.margin(leftRight = 10.px).toAttrs()
         )
+        H1(
+            attrs = Modifier.onClick { onLogoClick() }.fontWeight(FontWeight.Bold).toAttrs()
+        ) { SpanText("Debug Desk") }
 
     }
 }
@@ -326,14 +382,15 @@ fun ExpandedMenu(
     visibility: Boolean,
     translateX: CSSSizeValue<CSSUnit.percent>,
     onMenuItemClick: (menu: NavigationRoute) -> Unit,
+    onLogoClick: () -> Unit,
     onClick: () -> Unit,
 ) {
 
-    Column(modifier = Modifier.width(60.percent).height(75.vh)
+    Column(modifier = Modifier.width(60.percent).height(100.vh)
         .visibility(Visibility.Visible.takeIf { visibility } ?: Visibility.Hidden)
         .translateX(translateX).transition(CSSTransition(property = "translate", duration = 300.ms))
-        .backgroundColor(MaterialTheme.colorScheme.unspecified.copyf(alpha = 0.5f)).zIndex(1)
-        .position(Position.Absolute).transition(
+        .backgroundColor(MaterialTheme.colorScheme.onContainer).zIndex(5).position(Position.Absolute)
+        .transition(
             CSSTransition(
                 property = TransitionProperty.Inherit, duration = 300.ms
             )
@@ -352,12 +409,12 @@ fun ExpandedMenu(
                 src = SiteIcon,
                 alt = SiteIcon.contentDescription,
                 attrs = Modifier.classNames(cssImgClassId).size(40.px).borderRadius(50.percent)
-                    .toAttrs()
+                    .onClick { onLogoClick() }.toAttrs()
             )
 
         }
 
-        Divider(modifier = Modifier.fillMaxWidth().height(1.px))
+        HorizontalDivider(modifier = Modifier.fillMaxWidth().height(1.px))
         SmallScreenMenuItems(onClick = onMenuItemClick)
     }
 }

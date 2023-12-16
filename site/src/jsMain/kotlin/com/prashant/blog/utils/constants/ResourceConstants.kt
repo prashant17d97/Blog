@@ -16,8 +16,19 @@ object ResourceConstants {
         const val SuggestionOne = "/iconresources/SuggestionOne.png"
         const val SuggestionTwo = "/iconresources/SuggestionTwo.png"
         const val EssentialsCard = "/iconresources/EssentialsCard.png"
-
         val socialMediaIcons = listOf(Facebook, Twitter, Instagram, Vk, Pintrest)
+    }
+
+    object Icons{
+        const val bold = "/iconresources/bold.svg"
+        const val italic = "/iconresources/italic.svg"
+        const val link = "/iconresources/link.svg"
+        const val title = "/iconresources/title.svg"
+        const val subtitle = "/iconresources/subtitle.svg"
+        const val quote = "/iconresources/quote.svg"
+        const val code = "/iconresources/code.svg"
+        const val image = "/iconresources/image.svg"
+        const val checkmark = "/iconresources/checkmark.svg"
     }
 
     object CSSIds {
@@ -28,6 +39,23 @@ object ResourceConstants {
         const val cssHoverAttribute = ":hover"
         const val cssFocusAttribute = ":focus"
         const val cssSurfaceId = "surface"
+
+        const val usernameInput = "usernameInput"
+        const val passwordInput = "passwordInput"
+        const val svgParent = "svgParent"
+        const val vectorIcon = "vectorIcon"
+        const val navigationText = "navigationText"
+        const val editor = "editor"
+        const val editorPreview = "editorPreview"
+        const val titleInput = "titleInput"
+        const val subtitleInput = "subtitleInput"
+        const val thumbnailInput = "thumbnailInput"
+        const val linkHrefInput = "linkHrefInput"
+        const val linkTitleInput = "linkTitleInput"
+        const val adminSearchBar = "adminSearchBar"
+        const val emailInput = "emailInput"
+        const val postContent = "postContent"
+        const val gradientOverlay = "gradient-overlay"
     }
 
     object MenuItems {

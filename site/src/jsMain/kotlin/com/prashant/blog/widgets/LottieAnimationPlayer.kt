@@ -23,6 +23,8 @@ import org.jetbrains.compose.web.dom.TagElement
  * @param direction The playback direction (Forward or Reverse).
  * @param hover Set to true to enable hover interaction.
  * @param playMode The play mode (Normal or Bounce).
+ *
+ * @sample LottieAnimationPlayer(src = "https://lottie.host/ab2d0b41-6e0e-436e-9d1c-000ee26a2f87/qE0MnnMaj1.json)
  */
 @Composable
 fun LottieAnimationPlayer(

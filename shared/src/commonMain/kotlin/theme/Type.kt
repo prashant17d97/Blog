@@ -15,37 +15,37 @@ import core.font
 fun fontFamily(): FontFamily {
 
     return /*FontFamily.Default*/FontFamily(
-    font(
-        res = VigaRegularFont,
-        fontWeight = FontWeight.Normal,
-        fontStyle = FontStyle.Normal
-    ),
-    font(
-        res = VigaRegularFont,
-        fontWeight = FontWeight.SemiBold,
-        fontStyle = FontStyle.Normal
-    ),
-    font(
-        res = VigaRegularFont,
-        fontWeight = FontWeight.Bold,
-        fontStyle = FontStyle.Normal
-    ),
-    font(
-        res = VigaRegularFont,
-        fontWeight = FontWeight.ExtraBold,
-        fontStyle = FontStyle.Normal
-    ),
-    font(
-        res = VigaRegularFont,
-        fontWeight = FontWeight.Light,
-        fontStyle = FontStyle.Normal
-    ),
-    font(
-        res = VigaRegularFont,
-        fontWeight = FontWeight.ExtraLight,
-        fontStyle = FontStyle.Normal
+        font(
+            res = VigaRegularFont,
+            fontWeight = FontWeight.Normal,
+            fontStyle = FontStyle.Normal
+        ),
+        font(
+            res = VigaRegularFont,
+            fontWeight = FontWeight.SemiBold,
+            fontStyle = FontStyle.Normal
+        ),
+        font(
+            res = VigaRegularFont,
+            fontWeight = FontWeight.Bold,
+            fontStyle = FontStyle.Normal
+        ),
+        font(
+            res = VigaRegularFont,
+            fontWeight = FontWeight.ExtraBold,
+            fontStyle = FontStyle.Normal
+        ),
+        font(
+            res = VigaRegularFont,
+            fontWeight = FontWeight.Light,
+            fontStyle = FontStyle.Normal
+        ),
+        font(
+            res = VigaRegularFont,
+            fontWeight = FontWeight.ExtraLight,
+            fontStyle = FontStyle.Normal
+        )
     )
-)
 }
 
 
@@ -57,8 +57,8 @@ fun AppTypo() = Typography(
         fontSize = 57.sp,
         lineHeight = 64.sp,
         letterSpacing = 0.5.sp,
+    ),
 
-        ),
     displayMedium = TextStyle(
         fontFamily = fontFamily(),
         fontWeight = FontWeight.SemiBold,

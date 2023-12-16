@@ -98,7 +98,7 @@ private fun PaginationCarousel(
             PaginationButton(
                 isButtonRequire = isButtonRequire && range.first != 1,
                 icon = {
-                    FaCustomIcon(iconName = "fa-angle-left")
+                    FaCustomIcon(iconName = "angle-left")
                 }) {
                 backwardClick()
             }

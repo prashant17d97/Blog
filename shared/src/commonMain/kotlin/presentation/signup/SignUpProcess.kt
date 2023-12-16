@@ -53,8 +53,12 @@ import presentation.CommonElements.NinjaButton
 import presentation.CommonElements.cornerShape
 import presentation.CommonElements.globalClip
 import presentation.CommonElements.shadowElevation
-import presentation.GradiantWithImageColumn
-import presentation.signup.CurrentProcessesPosition.*
+import presentation.signup.CurrentProcessesPosition.FillBio
+import presentation.signup.CurrentProcessesPosition.Location
+import presentation.signup.CurrentProcessesPosition.PaymentMethod
+import presentation.signup.CurrentProcessesPosition.PhotoPreview
+import presentation.signup.CurrentProcessesPosition.UploadPhoto
+import presentation.widgets.GradiantWithImageColumn
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable

@@ -23,7 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,56 +49,16 @@ import core.ResourcePath.Drawable.iconProfile
 import core.ResourcePath.Drawable.iconVisibility
 import core.ResourcePath.Drawable.iconVisibilityOff
 import core.ResourcePath.Drawable.loginLogo
-import io.ktor.client.HttpClient
-import io.ktor.client.request.get
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.bodyAsText
-import kotlinx.coroutines.delay
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 import navigation.Screens
-import network.ApiResponse
-import network.model.User
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import presentation.CommonElements.NinjaButton
 import presentation.CommonElements.shadowElevation
+import presentation.widgets.GradiantWithImageColumn
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun LoginScreen(navHostController: NavHostController) {
-    var isLoading by remember {
-        mutableStateOf(true)
-    }
-
-    var users by remember {
-        mutableStateOf<List<User>?>(null)
-    }
-
-    LaunchedEffect(Unit) {
-        delay(5000)
-        val response = fetchUser()
-
-        val user = response?.bodyAsText()?.let { Json.decodeFromString<ApiResponse>(it) }
-        isLoading = when (user) {
-            is ApiResponse.Error -> {
-                false
-            }
-
-            ApiResponse.Idle -> {
-                true
-            }
-
-            is ApiResponse.Success -> {
-                users = user.data
-                false
-            }
-
-            else -> false
-        }
-
-    }
-
     val focusManager = LocalFocusManager.current
     var isLogin by remember { mutableStateOf(true) }
     var isVisible by remember { mutableStateOf(false) }
@@ -111,7 +70,7 @@ fun LoginScreen(navHostController: NavHostController) {
     }
 
     var email by remember {
-        mutableStateOf(users?.get(1)?.name ?: "")
+        mutableStateOf("")
     }
     var password by remember {
         mutableStateOf("")
@@ -131,8 +90,7 @@ fun LoginScreen(navHostController: NavHostController) {
         Spacer(modifier = Modifier.height(10.dp))
 
         Text(text = ResourcePath.String.loginToAccount.takeIf { isLogin }
-            ?: ResourcePath.String.signUpFree,
-            style = MaterialTheme.typography.headlineSmall)
+            ?: ResourcePath.String.signUpFree, style = MaterialTheme.typography.headlineSmall)
 
         Column(
             verticalArrangement = Arrangement.spacedBy(
@@ -166,7 +124,7 @@ fun LoginScreen(navHostController: NavHostController) {
                         errorContainerColor = MaterialTheme.colorScheme.surface,
 
                         ),
-                    value = users?.get(0)?.name ?: name,
+                    value = name,
                     onValueChange = {
                         name = it
                     })
@@ -195,7 +153,7 @@ fun LoginScreen(navHostController: NavHostController) {
                     disabledContainerColor = MaterialTheme.colorScheme.surface,
                     errorContainerColor = MaterialTheme.colorScheme.surface,
                 ),
-                value = users?.get(1)?.name ?: email,
+                value = email,
                 onValueChange = {
                     email = it
                 })
@@ -208,7 +166,8 @@ fun LoginScreen(navHostController: NavHostController) {
             },
                 trailingIcon = {
                     Image(painter = painterResource(iconVisibilityOff.takeIf { isVisible }
-                        ?: iconVisibility), contentDescription = iconLock.contentDescription,
+                        ?: iconVisibility),
+                        contentDescription = iconLock.contentDescription,
                         modifier = Modifier.clickable {
                             isVisible = !isVisible
                         })
@@ -371,16 +330,11 @@ fun LoginScreen(navHostController: NavHostController) {
             Spacer(modifier = Modifier.height(10.dp))
         }
         Text(textDecoration = TextDecoration.Underline,
-            text = ResourcePath.String.createAccountButton.takeIf { isLogin } ?: ResourcePath.String.alreadyHaveAnAccount,
+            text = ResourcePath.String.createAccountButton.takeIf { isLogin }
+                ?: ResourcePath.String.alreadyHaveAnAccount,
             style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.primary),
             modifier = Modifier.clickable {
                 isLogin = !isLogin
             })
     }
-}
-
-
-suspend fun fetchUser(): HttpResponse? {
-    val client = HttpClient()
-    return client.get("http://192.168.1.5:8080/api/getusers")
 }

@@ -1,45 +1,56 @@
 package com.prashant.blog.pages
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import com.prashant.blog.widgets.BlogLayout
+import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.Id
+import com.prashant.blog.model.AuthorModel
+import com.prashant.blog.model.AuthorModel.Companion.getEmptyBody
+import com.prashant.blog.model.PostComment
+import com.prashant.blog.model.PostModel
+import com.prashant.blog.navigation.NavigationRoute
+import com.prashant.blog.network.rememberNetworkCall
+import com.prashant.blog.repo.rememberCommentProcessor
+import com.prashant.blog.utils.commonfunctions.CommonFunctions.handleResponse
+import com.prashant.blog.utils.commonfunctions.DateTimeUtil.getCurrentTimestamp
+import com.prashant.blog.utils.commonfunctions.DateTimeUtil.parseDateString
+import com.prashant.blog.utils.constants.ResourceConstants
+import com.prashant.blog.utils.navigation.navigateTo
+import com.prashant.blog.utils.navigation.navigateToWithParam
 import com.prashant.blog.widgets.AuthorNameWithCategory
+import com.prashant.blog.widgets.BlogLayout
 import com.prashant.blog.widgets.CommentsThread
 import com.prashant.blog.widgets.HeadingViewAll
 import com.prashant.blog.widgets.HorizontalLikeView
 import com.prashant.blog.widgets.PostAuthorView
 import com.prashant.blog.widgets.PostComment
+import com.prashant.blog.widgets.PostContent
 import com.prashant.blog.widgets.VerticalBlogCard
 import com.prashant.blog.widgets.VerticalLikeView
-import com.prashant.blog.model.ChildComment
-import com.prashant.blog.model.TopComment
-import com.prashant.blog.repo.GlobalRepository
-import com.prashant.blog.repo.rememberGlobalRepository
-import com.prashant.blog.utils.css.CssAttributesUtils.findLastId
-import com.prashant.blog.utils.constants.ResourceConstants
-import com.prashant.blog.utils.constants.ResourceConstants.FooterSocialIcons.SuggestionOne
-import com.prashant.blog.utils.constants.ResourceConstants.FooterSocialIcons.SuggestionTwo
+import com.prashant.theme.MaterialTheme
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
-import com.varabyte.kobweb.compose.ui.modifiers.flexGrow
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
-import com.varabyte.kobweb.core.PageContext
 import com.varabyte.kobweb.silk.components.layout.SimpleGrid
 import com.varabyte.kobweb.silk.components.layout.numColumns
 import com.varabyte.kobweb.silk.components.text.SpanText
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.H1
 import org.jetbrains.compose.web.dom.H4
@@ -47,205 +58,180 @@ import org.jetbrains.compose.web.dom.H4
 @Page
 @Composable
 fun Post() {
-    val repository = rememberGlobalRepository()
-    BlogLayout { isBreakPoint, pageContext ->
+    val repository = rememberCommentProcessor()
+    val networkCall = rememberNetworkCall()
+    var postModel: PostModel by remember { mutableStateOf(PostModel(content = "")) }
+    var authorModel: AuthorModel by remember { mutableStateOf(getEmptyBody) }
+    val topComment by repository.comments.collectAsState()
+    var isReplying by remember {
+        mutableStateOf(false)
+    }
+    var postId: String? by remember { mutableStateOf(null) }
+    var postModels: List<PostModel> by remember { mutableStateOf(emptyList()) }
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(Unit) {
+        if (postId?.isNotEmpty() == true && postId != null) {
+            networkCall.retrievePost(postId = postId!!).handleResponse(onSuccess = { response ->
+                postModel = response.data
+                delay(50)
+                try {
+                    js("hljs.highlightAll()") as Unit
+                } catch (e: Exception) {
+                    println(e.message)
+                }
+            }) {
+                console.info("Error: $it")
+            }
 
-        Column(modifier = Modifier.margin(top = 10.px).padding(leftRight = 10.px)) {
+            postId?.let { repository.getCommentFrontEnd(it) }
+        }
+        networkCall.fetchAllPost().handleResponse(onSuccess = {
+            postModels = it.data
+        }) {
+
+        }
+    }
+
+    LaunchedEffect(postModel) {
+        if (postModel.authorId.isNotEmpty()) {
+            networkCall.getAuthorById(postModel.authorId)
+                .handleResponse(onSuccess = { authorModel = it.data }
+                ) {}
+        }
+    }
+    BlogLayout { isBreakPoint, pageContext ->
+        postId = pageContext.route.params[Id]
+        Column(
+            modifier = Modifier.margin(top = 10.px).fillMaxWidth(),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start
+        ) {
             H1 {
-                SpanText(text = "10 Reason to Build Your Website with US!")
+                SpanText(text = postModel.title)
             }
             H4(attrs = Modifier.margin(topBottom = 10.px).toAttrs()) {
-                SpanText(text = "People's quest for creating website has easily taken us to a new era of site development. Where, with the availability of robust page building tools, creating websites has become a lot more fun(especially for non-developer)")
+                SpanText(text = postModel.subtitle)
             }
             AuthorNameWithCategory(
-                modifier = Modifier.margin(topBottom = 20.px),
-                author = "Prashant",
-                category = "Prashant",
-                categoryLink = "Prashant"
+                modifier = Modifier.margin(top = 20.px),
+                author = Pair(postModel.author, postModel.authorId),
+                category = Pair(postModel.category, postModel.categoryId)
             )
+            SpanText(
+                modifier = Modifier.fillMaxWidth().margin(bottom = 20.px)
+                    .color(MaterialTheme.colorScheme.text),
+                text = postModel.createdAt.parseDateString()
+            )
+            if (isBreakPoint) {
+                SmallScreen(
+                    postModel = postModel
+                )
+            } else {
+                LargeScreen(postModel = postModel)
+            }
+
+            PostAuthorView(
+                author = authorModel,
+            )
+            HeadingViewAll(
+                modifier = Modifier.margin(topBottom = 20.px),
+                heading = "You might also like....",
+                headingSecond = "More"
+            ) {
+                pageContext.navigateTo(NavigationRoute.New.routeData.route)
+            }
+
+            SimpleGrid(
+                numColumns(base = 1.takeIf { isBreakPoint } ?: 2),
+                modifier = Modifier.fillMaxWidth().margin(bottom = 20.px).gap(10.px)
+            ) {
+                postModels.forEach { postModel ->
+                    VerticalBlogCard(postModel = postModel) {
+                        pageContext.navigateToWithParam(
+                            NavigationRoute.Post,
+                            mapOf(Id to it)
+                        )
+                    }
+                }
+            }
+
         }
 
-        if (isBreakPoint) {
-            SmallScreen(isBreakPoint, pageContext, repository)
-        } else {
-            LargeScreen(pageContext, repository)
+        if (topComment.isNotEmpty()) {
+            CommentsThread(
+                repository = repository,
+                padding = 15,
+                isBreakPoint = isBreakPoint,
+                isReplying = isReplying,
+                onClick = { isReplying = it }
+            ) { isReplying = it }
         }
+        if (!isReplying) {
+            PostComment(
+                padding = 15,
+                isBreakpoint = isBreakPoint,
+                onIsReplyingChange = { isReplying = it }
+            ) { comment, name, email ->
+                if (comment.isNotEmpty() && name.isNotEmpty() && email.isNotEmpty()) {
+                    scope.launch {
+                        repository.addCommentFrontEnd(
+                            PostComment(
+                                _id = "",
+                                userName = name,
+                                userImage = ResourceConstants.FooterSocialIcons.RandomImg,
+                                userEmail = email,
+                                commentDate = getCurrentTimestamp(),
+                                comment = comment,
+                                postId = postModel._id,
+                                childComments = arrayListOf()
+                            )
+                        )
+                    }
+                }
+            }
+        }
+
     }
 }
 
 @Composable
 private fun SmallScreen(
-    isBreakpoint: Boolean,
-    pageContext: PageContext,
-    repository: GlobalRepository
+    postModel: PostModel
 ) {
-    val topComment by repository.comments.collectAsState()
-    var isReplying by remember {
-        mutableStateOf(false)
-    }
-    Column(modifier = Modifier.flexGrow(1f)) {
-
+    Column(modifier = Modifier.fillMaxWidth()) {
         HorizontalLikeView(modifier = Modifier.margin(20.px)) {}
+
         //Post data
-        PostAuthorView(
-            authorImage = SuggestionTwo,
-            author = "Prashant",
+        PostContent(
+            modifier = Modifier, postContent = postModel
         )
-        HeadingViewAll(
-            modifier = Modifier.margin(topBottom = 20.px).padding(leftRight = 10.px),
-            heading = "You might also like....",
-            headingSecond = "More"
-        ) {
-            console.log("Click for more")
-        }
 
-        Column(modifier = Modifier.fillMaxWidth().padding(leftRight = 10.px)) {
-            VerticalBlogCard(src = SuggestionOne) {}
-            VerticalBlogCard(src = SuggestionTwo) {}
-
-        }
-
-        if (topComment.isNotEmpty()) {
-            CommentsThread(
-                repository = repository,
-                padding = 10,
-                widthPercent = 100,
-                onClick = { isReplying = it }) { parentCommentId ->
-                if (isReplying) {
-                    PostComment(
-                        heading = "Leave a reply",
-                        isReply = true,
-                        padding = 10,
-                        isBreakpoint = isBreakpoint
-                    ) { comment, name, email ->
-                        console.info("Reply Before Small:---$comment-->, $name---> $email")
-                        if (comment.isNotEmpty() && name.isNotEmpty() && email.isNotEmpty()) {
-                            repository.addChildComment(
-                                ChildComment(
-                                    userName = name,
-                                    userImage = ResourceConstants.FooterSocialIcons.RandomImg,
-                                    userEmail = email,
-                                    commentDate = "November 02 2023 at 8:30 AM",
-                                    comment = comment
-                                ), id = parentCommentId
-                            )
-                        }
-                        console.info("Reply After Small:---$comment-->, $name---> $email")
-                        isReplying = false
-                    }
-                }
-            }
-        }
-        if (!isReplying) {
-            PostComment(
-                padding = 10,
-                isBreakpoint = isBreakpoint,
-            ) { comment, name, email ->
-                if (comment.isNotEmpty() && name.isNotEmpty() && email.isNotEmpty()) {
-                    repository.addComment(
-                        TopComment(
-                            id = topComment.findLastId() + 1,
-                            userName = name,
-                            userImage = ResourceConstants.FooterSocialIcons.RandomImg,
-                            userEmail = email,
-                            commentDate = "November 02 2023 at 8:30 AM",
-                            comment = comment,
-                            childComments = arrayListOf()
-                        )
-                    )
-                    console.info("$comment-->, $name---> $email")
-                }
-            }
-        }
     }
 
 }
 
 @Composable
-fun LargeScreen(pageContext: PageContext, repository: GlobalRepository) {
-    val topComment by repository.comments.collectAsState()
-
-    var isReplying by remember {
-        mutableStateOf(false)
-    }
+fun LargeScreen(
+    postModel: PostModel
+) {
 
     Column(
-        modifier = Modifier.fillMaxWidth().padding(10.px), verticalArrangement = Arrangement.Top,
+        modifier = Modifier.fillMaxWidth().padding(10.px),
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(modifier = Modifier.fillMaxWidth().margin(top = 30.px), horizontalArrangement = Arrangement.End) {
+        Row(
+            modifier = Modifier.fillMaxWidth().margin(topBottom = 30.px),
+            horizontalArrangement = Arrangement.End
+        ) {
+            //Post data
+            PostContent(
+                modifier = Modifier, postContent = postModel
+            )
             VerticalLikeView(modifier = Modifier.width(100.px)) {}
 
         }
-        PostAuthorView(
-            authorImage = SuggestionTwo,
-            author = "Prashant",
-        )
-        HeadingViewAll(
-            modifier = Modifier.margin(topBottom = 20.px),
-            heading = "You might also like....",
-            headingSecond = "More"
-        ) {
-            console.info("Click for more")
-        }
 
-        SimpleGrid(
-            numColumns(base = 2), modifier = Modifier.fillMaxWidth().margin(bottom = 20.px)
-                .gap(10.px)
-        ) {
-
-            VerticalBlogCard(src = SuggestionOne) {}
-            VerticalBlogCard(src = SuggestionTwo) {}
-
-        }
-
-        if (topComment.isNotEmpty()) {
-            CommentsThread(
-                repository = repository,
-                onClick = { isReplying = it }) { parentCommentId ->
-                if (isReplying) {
-                    PostComment(
-                        heading = "Leave a reply",
-                        isReply = true,
-                        isBreakpoint = true
-                    ) { comment, name, email ->
-                        console.info("Reply Before:---$comment-->, $name---> $email")
-
-                        repository.addChildComment(
-                            childComment = ChildComment(
-                                userName = name,
-                                userImage = ResourceConstants.FooterSocialIcons.RandomImg,
-                                userEmail = email,
-                                commentDate = "November 02 2023 at 8:30 AM",
-                                comment = comment
-                            ),
-                            id = parentCommentId
-                        )
-                        console.info("Reply:---$comment-->, $name---> $email")
-                        isReplying = false
-                    }
-                }
-            }
-        }
-        if (!isReplying) {
-            PostComment { comment, name, email ->
-                console.info("Before:-----$comment-->, $name---> $email")
-                if (comment.isNotEmpty() && name.isNotEmpty() && email.isNotEmpty()) {
-                    repository.addComment(
-                        TopComment(
-                            id = topComment.findLastId() + 1,
-                            userName = name,
-                            userImage = ResourceConstants.FooterSocialIcons.RandomImg,
-                            userEmail = email,
-                            commentDate = "November 02 2023 at 8:30 AM",
-                            comment = comment,
-                            childComments = arrayListOf()
-                        )
-                    )
-                    console.info("After:-----$comment-->, $name---> $email")
-                }
-            }
-        }
     }
 
 }
