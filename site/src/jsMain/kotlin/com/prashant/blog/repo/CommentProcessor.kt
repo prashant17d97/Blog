@@ -5,12 +5,13 @@ import com.prashant.blog.model.PostComment
 import com.prashant.blog.model.PostCommentRequest
 import kotlinx.coroutines.flow.StateFlow
 
-interface WebRepository {
+interface CommentProcessor {
     val comments: StateFlow<List<PostComment>>
-    suspend fun addComment(postComment: PostComment)
+    suspend fun addCommentFrontEnd(postComment: PostComment)
     suspend fun addChildComment(parentIndex: Int, childComment: ChildComment, id: String)
     fun updateReplyChatWindow(selectedIndex: Int)
-    suspend fun addComment(postCommentRequest: PostCommentRequest)
-    suspend fun getComment(postId: String)
-    suspend fun updateChildComment(postCommentRequest: PostCommentRequest)
+    suspend fun addCommentFrontEnd(postCommentRequest: PostCommentRequest)
+    suspend fun getCommentFrontEnd(postId: String)
+    suspend fun updateChildCommentFrontEnd(postCommentRequest: PostCommentRequest)
+
 }

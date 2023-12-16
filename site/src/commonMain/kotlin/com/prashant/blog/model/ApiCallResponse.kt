@@ -14,3 +14,12 @@ data class ApiCallResponse<Generic>(
     @SerialName("statusCode")
     val statusCode: Int
 )
+
+@Serializable
+data class ApiErrorCallResponse(
+    @SerialName("errorMessage")
+    val errorMessage: String = "Some error occurred",
+
+    @SerialName("statusCode")
+    val statusCode: Int = 400
+)

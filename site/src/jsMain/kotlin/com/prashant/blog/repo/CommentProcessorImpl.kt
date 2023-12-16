@@ -10,7 +10,7 @@ import com.prashant.blog.utils.commonfunctions.CommonFunctions.handleResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class WebRepositoryImpl : WebRepository {
+class CommentProcessorImpl : CommentProcessor {
 
     private val networkCall = NetworkCallImpl()
 
@@ -18,10 +18,10 @@ class WebRepositoryImpl : WebRepository {
     override val comments: StateFlow<List<PostComment>>
         get() = _comments
 
-    override suspend fun addComment(postComment: PostComment) {
+    override suspend fun addCommentFrontEnd(postComment: PostComment) {
         console.info("TopComments: $postComment")
         _comments.tryEmit(_comments.value + postComment)
-        addComment(
+        addCommentFrontEnd(
             postCommentRequest = PostCommentRequest(
                 _id = "",
                 userName = postComment.userName,
@@ -46,7 +46,7 @@ class WebRepositoryImpl : WebRepository {
             }
         })
         val comment = comments.value[parentIndex]
-        updateChildComment(
+        updateChildCommentFrontEnd(
             postCommentRequest = PostCommentRequest(
                 _id = comment._id,
                 userName = comment.userName,
@@ -68,37 +68,36 @@ class WebRepositoryImpl : WebRepository {
         })
     }
 
-    override suspend fun addComment(postCommentRequest: PostCommentRequest) {
-        networkCall.addComment(postCommentRequest).handleResponse(onLoading = {},
-            onSuccess = { console.info(it.responseMessage) },
-            onFailure = {
-                console.info("Error in adding Comment : $it")
-            })
+    override suspend fun addCommentFrontEnd(postCommentRequest: PostCommentRequest) {
+        networkCall.addComment(postCommentRequest).handleResponse(onSuccess = { console.info(it.responseMessage) }
+        ) {
+            console.info("Error in adding Comment : $it")
+        }
     }
 
-    override suspend fun getComment(postId: String) {
-        networkCall.getComment(postId).handleResponse(onLoading = {}, onSuccess = {
+    override suspend fun getCommentFrontEnd(postId: String) {
+        networkCall.getComment(postId).handleResponse(onSuccess = {
             _comments.tryEmit(it.data)
-        }, onFailure = {
+        }) {
             console.info("Error in getting Comment : $it")
-        })
+        }
     }
 
-    override suspend fun updateChildComment(postCommentRequest: PostCommentRequest) {
+    override suspend fun updateChildCommentFrontEnd(postCommentRequest: PostCommentRequest) {
         networkCall.updateChildComment(postCommentRequest)
-            .handleResponse(onLoading = {}, onSuccess = {
+            .handleResponse(onSuccess = {
                 console.info(it.responseMessage)
-                getComment(postCommentRequest.postId)
-            }, onFailure = {
+                getCommentFrontEnd(postCommentRequest.postId)
+            }) {
                 console.info("Error in updating Comment : $it")
-            })
+            }
     }
 }
 
 @Composable
-fun rememberGlobalRepository(
-): WebRepository {
+fun rememberCommentProcessor(
+): CommentProcessor {
     return remember {
-        WebRepositoryImpl()
+        CommentProcessorImpl()
     }
 }

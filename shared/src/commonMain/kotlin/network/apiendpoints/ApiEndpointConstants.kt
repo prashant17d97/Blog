@@ -1,4 +1,4 @@
-package com.prashant.blog.constanst.apiendpoints
+package network.apiendpoints
 
 import kotlinx.serialization.json.Json
 
@@ -11,7 +11,6 @@ object ApiEndpointConstants {
     const val GetUsers = "users"
     const val CreatePost = "createpost"
     const val POST = "post"
-    const val PostSearch = "search"
     const val PopularPOST = "popularpost"
     const val AddComment = "addcomment"
     const val GetComment = "comments"
@@ -25,23 +24,19 @@ object ApiEndpointConstants {
 
     const val Login = "login"
     private const val ReadingList = "readinglist"
-    private const val New = "new"
 
     const val HOME = "/"
 
     //Queries Param
     const val Id = "_id"
     const val DateParam = "date"
-    const val Page = "page"
     const val AuthorPost = "posts"
     const val Type = "type"
-    const val Title = "title"
     const val Popular = "Popular"
 
     val PostType = { postType: String -> "$POST?$Type=$postType" }
-    val PostsByTitle = { titles: String -> "$PostSearch?$Title=$titles" }
     val PopularPost = { postType: String -> "new?$Type=$postType" }
 
     val authorLink = { authorId: String -> "/$Author?$Id=$authorId" }
-    val categoryLink = { categoryId: String -> "/$New?$Category=$categoryId" }
+    val categoryLink = { categoryId: String -> "/$ReadingList?$Id=$categoryId" }
 }

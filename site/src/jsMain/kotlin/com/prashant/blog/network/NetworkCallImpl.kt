@@ -14,8 +14,10 @@ import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.GetPostFrom
 import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.POST
 import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.Popular
 import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.PostType
+import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.PostsByTitle
 import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.UpdateComment
 import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.json
+import com.prashant.blog.model.ApiErrorCallResponse
 import com.prashant.blog.model.AuthorModel
 import com.prashant.blog.model.CategoryModel
 import com.prashant.blog.model.JSApiResponse
@@ -38,12 +40,12 @@ internal class NetworkCallImpl : NetworkCall {
             if (result != null) {
                 JSApiResponse.Success(result.parseData())
             } else {
-                JSApiResponse.Error(result.parseData<String>() ?: "Some error occurred")
+                JSApiResponse.Error(result.parseData())
             }
 
         } catch (ex: Exception) {
             console.info("Call ${ex.cause}")
-            JSApiResponse.Error(ex.message ?: "Some error occurred")
+            JSApiResponse.Error(ApiErrorCallResponse())
         }
     }
 
@@ -55,12 +57,12 @@ internal class NetworkCallImpl : NetworkCall {
             if (result != null) {
                 JSApiResponse.Success(result.parseData())
             } else {
-                JSApiResponse.Error(result.parseData<String>() ?: "Some error occurred")
+                JSApiResponse.Error(result.parseData())
             }
 
         } catch (ex: Exception) {
             console.info("Call $ex")
-            JSApiResponse.Error(ex.message ?: "Some error occurred")
+            JSApiResponse.Error(ApiErrorCallResponse())
         }
     }
 
@@ -73,13 +75,13 @@ internal class NetworkCallImpl : NetworkCall {
             if (result != null) {
                 JSApiResponse.Success(result.parseData())
             } else {
-                JSApiResponse.Error(result.parseData<String>() ?: "Some error occurred")
+                JSApiResponse.Error(result.parseData())
             }
 
 
         } catch (ex: Exception) {
             console.info("Call $ex")
-            JSApiResponse.Error(ex.message ?: "Some error occurred")
+            JSApiResponse.Error(ApiErrorCallResponse())
         }
     }
 
@@ -91,12 +93,12 @@ internal class NetworkCallImpl : NetworkCall {
             if (result != null) {
                 JSApiResponse.Success(result.parseData())
             } else {
-                JSApiResponse.Error(result.parseData<String>() ?: "Some error occurred")
+                JSApiResponse.Error(result.parseData())
             }
 
         } catch (ex: Exception) {
             console.info("Call $ex")
-            JSApiResponse.Error(ex.message ?: "Some error occurred")
+            JSApiResponse.Error(ApiErrorCallResponse())
         }
     }
 
@@ -109,16 +111,16 @@ internal class NetworkCallImpl : NetworkCall {
             if (result != null) {
                 JSApiResponse.Success(result.parseData())
             } else {
-                JSApiResponse.Error(result.parseData<String>() ?: "Some error occurred")
+                JSApiResponse.Error(result.parseData())
             }
 
         } catch (ex: Exception) {
             console.info("Call $ex")
-            JSApiResponse.Error(ex.message ?: "Some error occurred")
+            JSApiResponse.Error(ApiErrorCallResponse())
         }
     }
 
-    override suspend fun retrieveCategoryById(categoryId: String): JSApiResponse<CategoryModel> {
+    override suspend fun getCategoryById(categoryId: String): JSApiResponse<CategoryModel> {
         return try {
             val result = window.api.tryGet(
                 apiPath = GetCategoryFromId(categoryId),
@@ -126,12 +128,12 @@ internal class NetworkCallImpl : NetworkCall {
             if (result != null) {
                 JSApiResponse.Success(result.parseData())
             } else {
-                JSApiResponse.Error(result.parseData<String>() ?: "Some error occurred")
+                JSApiResponse.Error(result.parseData())
             }
 
         } catch (ex: Exception) {
             console.info("Call $ex")
-            JSApiResponse.Error(ex.message ?: "Some error occurred")
+            JSApiResponse.Error(ApiErrorCallResponse())
         }
     }
 
@@ -143,12 +145,12 @@ internal class NetworkCallImpl : NetworkCall {
             if (result != null) {
                 JSApiResponse.Success(result.parseData())
             } else {
-                JSApiResponse.Error(result.parseData<String>() ?: "Some error occurred")
+                JSApiResponse.Error(result.parseData())
             }
 
         } catch (ex: Exception) {
             console.info("Call $ex")
-            JSApiResponse.Error(ex.message ?: "Some error occurred")
+            JSApiResponse.Error(ApiErrorCallResponse())
         }
     }
 
@@ -163,12 +165,12 @@ internal class NetworkCallImpl : NetworkCall {
             if (result != null) {
                 JSApiResponse.Success(result.parseData())
             } else {
-                JSApiResponse.Error(result.parseData<String>() ?: "Some error occurred")
+                JSApiResponse.Error(result.parseData())
             }
 
         } catch (ex: Exception) {
             console.info("Call $ex")
-            JSApiResponse.Error(ex.message ?: "Some error occurred")
+            JSApiResponse.Error(ApiErrorCallResponse())
         }
     }
 
@@ -180,14 +182,16 @@ internal class NetworkCallImpl : NetworkCall {
             if (result != null) {
                 JSApiResponse.Success(result.parseData())
             } else {
-                JSApiResponse.Error(result.parseData<String>() ?: "Some error occurred")
+                JSApiResponse.Error(result.parseData())
             }
 
         } catch (ex: Exception) {
             console.info("Call $ex")
-            JSApiResponse.Error(ex.message ?: "Some error occurred")
+            JSApiResponse.Error(ApiErrorCallResponse())
         }
     }
+
+
 
     override suspend fun addComment(postCommentRequest: PostCommentRequest): JSApiResponse<String> {
         return try {
@@ -198,12 +202,12 @@ internal class NetworkCallImpl : NetworkCall {
             if (result != null) {
                 JSApiResponse.Success(result.parseData())
             } else {
-                JSApiResponse.Error(result.parseData<String>() ?: "Some error occurred")
+                JSApiResponse.Error(result.parseData())
             }
 
         } catch (ex: Exception) {
             console.info("Call $ex")
-            JSApiResponse.Error(ex.message ?: "Some error occurred")
+            JSApiResponse.Error(ApiErrorCallResponse())
         }
     }
 
@@ -215,12 +219,12 @@ internal class NetworkCallImpl : NetworkCall {
             if (result != null) {
                 JSApiResponse.Success(result.parseData())
             } else {
-                JSApiResponse.Error(result.parseData<String>() ?: "Some error occurred")
+                JSApiResponse.Error(result.parseData())
             }
 
         } catch (ex: Exception) {
             console.info("Call $ex")
-            JSApiResponse.Error(ex.message ?: "Some error occurred")
+            JSApiResponse.Error(ApiErrorCallResponse())
         }
     }
 
@@ -233,12 +237,46 @@ internal class NetworkCallImpl : NetworkCall {
             if (result != null) {
                 JSApiResponse.Success(result.parseData())
             } else {
-                JSApiResponse.Error(result.parseData<String>() ?: "Some error occurred")
+                JSApiResponse.Error(result.parseData())
             }
 
         } catch (ex: Exception) {
             console.info("Call $ex")
-            JSApiResponse.Error(ex.message ?: "Some error occurred")
+            JSApiResponse.Error(ApiErrorCallResponse())
+        }
+    }
+
+    override suspend fun getPostsByName(title: String): JSApiResponse<List<PostModel>> {
+        return try {
+            val result = window.api.tryGet(
+                apiPath = PostsByTitle(title),
+            )?.decodeToString()
+            if (result != null) {
+                JSApiResponse.Success(result.parseData())
+            } else {
+                JSApiResponse.Error(result.parseData())
+            }
+
+        } catch (ex: Exception) {
+            console.info("Call $ex")
+            JSApiResponse.Error(ApiErrorCallResponse())
+        }
+    }
+
+    override suspend fun getCategory(): JSApiResponse<List<CategoryModel>> {
+        return try {
+            val result = window.api.tryGet(
+                apiPath = Category,
+            )?.decodeToString()
+            if (result != null) {
+                JSApiResponse.Success(result.parseData())
+            } else {
+                JSApiResponse.Error(result.parseData())
+            }
+
+        } catch (ex: Exception) {
+            console.info("Call $ex")
+            JSApiResponse.Error(ApiErrorCallResponse())
         }
     }
 }

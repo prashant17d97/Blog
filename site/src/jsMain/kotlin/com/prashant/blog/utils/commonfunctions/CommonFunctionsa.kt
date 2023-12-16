@@ -2,9 +2,11 @@ package com.prashant.blog.utils.commonfunctions
 
 import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.json
 import com.prashant.blog.model.ApiCallResponse
+import com.prashant.blog.model.ApiErrorCallResponse
 import com.prashant.blog.model.JSApiResponse
 import com.prashant.blog.utils.constants.ResourceConstants
 import kotlinx.browser.window
+import org.w3c.dom.Element
 
 object CommonFunctions {
 
@@ -23,15 +25,13 @@ object CommonFunctions {
     }
 
     suspend fun <Generic> JSApiResponse<Generic>.handleResponse(
-        onLoading: (Boolean) -> Unit,
         onSuccess: suspend (ApiCallResponse<Generic>) -> Unit,
-        onFailure: (String) -> Unit
+        onFailure: (ApiErrorCallResponse) -> Unit
     ) {
         when (this) {
-            is JSApiResponse.Error -> onFailure(this.error)
-            JSApiResponse.Idle -> onLoading(true)
+            is JSApiResponse.Error -> this.errorCallResponse?.let { onFailure(it) }
             is JSApiResponse.Success -> this.data?.let { onSuccess(it) }
-                ?: onFailure("Data is empty")
+                ?: onFailure(ApiErrorCallResponse())
         }
     }
 
@@ -41,7 +41,7 @@ object CommonFunctions {
     ): JSApiResponse<Generic> = try {
         block()
     } catch (ex: Exception) {
-        JSApiResponse.Error(errorMessage ?: ex.message ?: "Something went wrong")
+        JSApiResponse.Error(ApiErrorCallResponse())
     }
 
     fun String.getSocialIcon(): String {
@@ -66,5 +66,11 @@ object CommonFunctions {
         window.setTimeout({
             onFinished.invoke()
         }, timeOut)
+    }
+
+    fun Element.gainFocus() {
+        val dynElement: dynamic = this
+        // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus
+        dynElement.focus(focusVisible = false)
     }
 }

@@ -17,8 +17,8 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.modifiers.background
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
+import com.varabyte.kobweb.compose.ui.modifiers.boxShadow
 import com.varabyte.kobweb.compose.ui.modifiers.cursor
-import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.gap
 import com.varabyte.kobweb.compose.ui.modifiers.margin
@@ -120,20 +120,21 @@ private fun CalendarContainer(
 
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.px),
+        modifier = Modifier.fillMaxWidth().padding(16.px),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CalendarHeader(
             month = month,
             year = year,
-            visibility = !(selectedMonth == month && year == selectedYear && currentDate.dayOfMonth().toInt() == selectedDay),
+            visibility = !(selectedMonth == month && year == selectedYear && currentDate.dayOfMonth()
+                .toInt() == selectedDay),
             onNextClick = onNextClick,
             onPreviousClick = onPreviousClick,
             onReload = onReload
         )
         SimpleGrid(
-            numColumns(7), modifier = Modifier.weight(1f)
+            numColumns(7), modifier = Modifier.weight(1f).gap(5.px)
         ) {
             repeat(days.size) { index ->
                 val day = days[index]
@@ -241,11 +242,10 @@ private fun CalendarDay(
     isSelected: Boolean,
     onDayClick: (Int) -> Unit
 ) {
+
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .size(40.px)
-            .margin(4.px)
+            .size(35.px)
             .borderRadius(50.percent)
             .cursor(Cursor.Pointer)
             .background(
@@ -258,6 +258,27 @@ private fun CalendarDay(
                 } else {
                     colorScheme.onContainer
                 },
+            ).then(
+                if (isSelected) {
+                    Modifier.boxShadow(
+                        0.px,
+                        0.px,
+                        10.px,
+                        6.px,
+                        color = (if (isSelected && isCurrentDate && day > 0) {
+                            Color.rgb(0xC46EB4)
+                        } else if (isSelected && day > 0) {
+                            colorScheme.action
+                        } else if (isCurrentDate && day > 0) {
+                            colorScheme.secondary
+                        } else {
+                            colorScheme.onContainer
+                        }).copyf(alpha = 0.7f),
+                        inset = false
+                    )
+                } else {
+                    Modifier
+                }
             )
             .onClick {
                 onDayClick(day)

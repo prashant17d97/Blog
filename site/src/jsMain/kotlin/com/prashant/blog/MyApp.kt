@@ -1,11 +1,11 @@
 package com.prashant.blog
 
 import androidx.compose.runtime.Composable
+import com.prashant.blog.utils.constants.ResourceConstants.CSSIds.cssSurfaceId
 import com.prashant.blog.utils.css.CssStyleRegistration.cssStyleRegistration
 import com.prashant.blog.utils.css.CssStyleRegistration.palette
 import com.prashant.blog.utils.css.CssStyleRegistration.registerWidgets
 import com.prashant.blog.utils.css.CssStyleRegistration.replaceExistingComponentStyle
-import com.prashant.blog.utils.constants.ResourceConstants.CSSIds.cssSurfaceId
 import com.prashant.blog.utils.localstorage.LocalStorageKeys.COLOR_MODE_KEY
 import com.prashant.blog.utils.localstorage.rememberLocalStorage
 import com.varabyte.kobweb.compose.ui.modifiers.classNames

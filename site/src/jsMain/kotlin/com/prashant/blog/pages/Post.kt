@@ -15,11 +15,13 @@ import com.prashant.blog.model.PostComment
 import com.prashant.blog.model.PostModel
 import com.prashant.blog.navigation.NavigationRoute
 import com.prashant.blog.network.rememberNetworkCall
-import com.prashant.blog.repo.rememberGlobalRepository
+import com.prashant.blog.repo.rememberCommentProcessor
 import com.prashant.blog.utils.commonfunctions.CommonFunctions.handleResponse
 import com.prashant.blog.utils.commonfunctions.DateTimeUtil.getCurrentTimestamp
 import com.prashant.blog.utils.commonfunctions.DateTimeUtil.parseDateString
 import com.prashant.blog.utils.constants.ResourceConstants
+import com.prashant.blog.utils.navigation.navigateTo
+import com.prashant.blog.utils.navigation.navigateToWithParam
 import com.prashant.blog.widgets.AuthorNameWithCategory
 import com.prashant.blog.widgets.BlogLayout
 import com.prashant.blog.widgets.CommentsThread
@@ -56,7 +58,7 @@ import org.jetbrains.compose.web.dom.H4
 @Page
 @Composable
 fun Post() {
-    val repository = rememberGlobalRepository()
+    val repository = rememberCommentProcessor()
     val networkCall = rememberNetworkCall()
     var postModel: PostModel by remember { mutableStateOf(PostModel(content = "")) }
     var authorModel: AuthorModel by remember { mutableStateOf(getEmptyBody) }
@@ -69,8 +71,7 @@ fun Post() {
     val scope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         if (postId?.isNotEmpty() == true && postId != null) {
-            networkCall.retrievePost(postId = postId!!).handleResponse(onLoading = {
-            }, onSuccess = { response ->
+            networkCall.retrievePost(postId = postId!!).handleResponse(onSuccess = { response ->
                 postModel = response.data
                 delay(50)
                 try {
@@ -78,32 +79,30 @@ fun Post() {
                 } catch (e: Exception) {
                     println(e.message)
                 }
-            }, onFailure = {
+            }) {
                 console.info("Error: $it")
-            })
+            }
 
-            postId?.let { repository.getComment(it) }
+            postId?.let { repository.getCommentFrontEnd(it) }
         }
-        networkCall.fetchAllPost().handleResponse(onLoading = {
-
-        }, onSuccess = {
+        networkCall.fetchAllPost().handleResponse(onSuccess = {
             postModels = it.data
-        }, onFailure = {
+        }) {
 
-        })
+        }
     }
 
     LaunchedEffect(postModel) {
         if (postModel.authorId.isNotEmpty()) {
-            networkCall.getAuthorById(postModel.authorId).handleResponse(onLoading = {},
-                onSuccess = { authorModel = it.data },
-                onFailure = {})
+            networkCall.getAuthorById(postModel.authorId)
+                .handleResponse(onSuccess = { authorModel = it.data }
+                ) {}
         }
     }
     BlogLayout { isBreakPoint, pageContext ->
         postId = pageContext.route.params[Id]
         Column(
-            modifier = Modifier.margin(top = 10.px).fillMaxWidth().padding(leftRight = 10.px),
+            modifier = Modifier.margin(top = 10.px).fillMaxWidth(),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
@@ -139,15 +138,20 @@ fun Post() {
                 heading = "You might also like....",
                 headingSecond = "More"
             ) {
-                pageContext.router.navigateTo(NavigationRoute.New.routeData.route)
+                pageContext.navigateTo(NavigationRoute.New.routeData.route)
             }
 
             SimpleGrid(
                 numColumns(base = 1.takeIf { isBreakPoint } ?: 2),
                 modifier = Modifier.fillMaxWidth().margin(bottom = 20.px).gap(10.px)
             ) {
-                postModels.forEach {
-                    VerticalBlogCard(postModel = it, pageContext = pageContext)
+                postModels.forEach { postModel ->
+                    VerticalBlogCard(postModel = postModel) {
+                        pageContext.navigateToWithParam(
+                            NavigationRoute.Post,
+                            mapOf(Id to it)
+                        )
+                    }
                 }
             }
 
@@ -157,11 +161,10 @@ fun Post() {
             CommentsThread(
                 repository = repository,
                 padding = 15,
-                widthPercent = 100,
                 isBreakPoint = isBreakPoint,
                 isReplying = isReplying,
-                onClick = { isReplying = it },
-                onReplyValueChange = { isReplying = it })
+                onClick = { isReplying = it }
+            ) { isReplying = it }
         }
         if (!isReplying) {
             PostComment(
@@ -171,7 +174,7 @@ fun Post() {
             ) { comment, name, email ->
                 if (comment.isNotEmpty() && name.isNotEmpty() && email.isNotEmpty()) {
                     scope.launch {
-                        repository.addComment(
+                        repository.addCommentFrontEnd(
                             PostComment(
                                 _id = "",
                                 userName = name,

@@ -50,7 +50,7 @@ actual fun font(res: String, fontWeight: FontWeight, fontStyle: FontStyle): Font
 }
 
 private fun fontNameFromPath(path: String): String {
-    val parts = path.split(HOME)
+    val parts = path.split("/")
     val fileName = parts.last()
     return fileName.substringBeforeLast(".")
 }

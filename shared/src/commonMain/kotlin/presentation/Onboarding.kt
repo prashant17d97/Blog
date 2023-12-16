@@ -15,6 +15,7 @@ import core.ResourcePath.Drawable.contentDescription
 import core.Size
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import presentation.widgets.GradiantWithImageColumn
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable

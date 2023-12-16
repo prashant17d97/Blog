@@ -4,12 +4,14 @@ import androidx.compose.runtime.Composable
 import com.prashant.blog.utils.constants.Constants
 import com.prashant.blog.utils.constants.ResourceConstants
 import com.prashant.blog.utils.constants.ResourceConstants.CSSIds.cssImgClassId
+import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.classNames
+import com.varabyte.kobweb.compose.ui.modifiers.cursor
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxHeight
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
@@ -26,15 +28,14 @@ import org.jetbrains.compose.web.dom.Img
 @Composable
 fun CategoryViewItem(text: String, onClick: () -> Unit) {
     Column(
-        modifier = Modifier.width(Constants.HomeReadingListItemWidth)
+        modifier = Modifier.width(Constants.HomeReadingListItemWidth).cursor(Cursor.Pointer)
             .onClick { onClick.invoke() },
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Img(
             src = ResourceConstants.FooterSocialIcons.ReadingCard,
-            attrs = Modifier.classNames(cssImgClassId)
-                .minWidth(Constants.HomeReadingListImgWidth)
+            attrs = Modifier.classNames(cssImgClassId).minWidth(Constants.HomeReadingListImgWidth)
                 .minHeight(Constants.HomeReadingListImgHeight)
                 .maxWidth(Constants.HomeReadingListImgWidth)
                 .maxHeight(Constants.HomeReadingListImgHeight)

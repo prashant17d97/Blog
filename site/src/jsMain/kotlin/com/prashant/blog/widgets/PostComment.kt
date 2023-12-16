@@ -57,9 +57,7 @@ fun PostComment(
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     val modifier = if (isBreakpoint) {
-        Modifier.width(97.percent).margin(
-            top = 60.px, leftRight = 10.px, bottom = 20.px
-        )
+        Modifier.fillMaxWidth()
     } else {
         Modifier.width(60.percent).margin(
             top = 60.px
@@ -74,7 +72,7 @@ fun PostComment(
                 blurRadius = 10.px,
                 color = MaterialTheme.colorScheme.unspecified.copyf(alpha = 0.5f)
             ).borderRadius(Constants.borderRadiusLarge).padding(padding.px)
-            .padding(topBottom = 40.px, leftRight = 60.px)
+            .padding(topBottom = 40.px, leftRight = 60.px.takeIf { !isBreakpoint } ?: 20.px)
             .margin(topBottom = 20.px), contentAlignment = Alignment.Center
     ) {
         Column(
@@ -126,7 +124,7 @@ fun PostComment(
                             attr("placeholder", "Email")
                         })
             }
-            Row(modifier = Modifier.gap(20.px), verticalAlignment = Alignment.CenterVertically) {
+            Column(modifier = Modifier.gap(20.px), horizontalAlignment = Alignment.Start) {
                 if (!isReply) {
                     ButtonsWidgets.CapsuleButton(modifier = Modifier.backgroundColor(MaterialTheme.colorScheme.action),
                         onClick = {

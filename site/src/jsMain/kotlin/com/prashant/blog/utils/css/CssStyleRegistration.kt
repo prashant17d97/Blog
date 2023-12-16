@@ -33,6 +33,7 @@ import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.silk.components.graphics.ImageStyle
 import com.varabyte.kobweb.silk.components.layout.HorizontalDividerStyle
 import com.varabyte.kobweb.silk.components.style.StyleModifiers
+import com.varabyte.kobweb.silk.init.MutableSilkConfig
 import com.varabyte.kobweb.silk.init.SilkStylesheet
 import com.varabyte.kobweb.silk.init.registerStyleBase
 import com.varabyte.kobweb.silk.theme.MutableSilkTheme
@@ -56,6 +57,7 @@ import org.jetbrains.compose.web.css.px
 
 object CssStyleRegistration {
 
+    private var config: MutableSilkConfig? = null
 
     //Member Variables
     private const val BRAND_KEY = "blog"
@@ -137,8 +139,10 @@ object CssStyleRegistration {
 
         registerStyleBase(cssSelector = "h3",
             extraModifiers = Modifier,
-            init = { TEXT_FONT.fontSize(28.px).fontWeight(FontWeight.Bold)
-                .margin(bottom = 6.px) })
+            init = {
+                TEXT_FONT.fontSize(28.px).fontWeight(FontWeight.Bold)
+                    .margin(bottom = 6.px)
+            })
 
         registerStyle(cssInputId) {
             cssRule(suffix = cssFocusAttribute) {
@@ -155,7 +159,7 @@ object CssStyleRegistration {
                 .margin(bottom = 2.px)
         }
         registerStyleBase(
-            cssSelector =".${ResourceConstants.CSSIds.cssCardId}"
+            cssSelector = ".${ResourceConstants.CSSIds.cssCardId}"
         ) {
             Modifier.color(colorScheme.text)
         }

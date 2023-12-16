@@ -99,8 +99,8 @@ val menuLists = listOf(
     NavigationRoute.Popular,
     NavigationRoute.New,
     NavigationRoute.ReadingList,
-    NavigationRoute.Topics,
-    NavigationRoute.Subscribe,
+//    NavigationRoute.Topics,
+//    NavigationRoute.Subscribe,
     NavigationRoute.DarkMode
 )
 

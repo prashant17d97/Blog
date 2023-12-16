@@ -1,12 +1,14 @@
 package com.prashant.blog.widgets
 
 import androidx.compose.runtime.Composable
+import com.prashant.blog.model.PostModel
 import com.prashant.blog.utils.constants.Constants
 import com.prashant.blog.utils.constants.ResourceConstants
 import com.prashant.blog.utils.constants.ResourceConstants.CSSIds.cssImgClassId
 import com.prashant.blog.utils.constants.ResourceConstants.contentDescription
 import com.prashant.theme.MaterialTheme
 import com.varabyte.kobweb.compose.css.CSSFloat
+import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -17,6 +19,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.boxShadow
 import com.varabyte.kobweb.compose.ui.modifiers.classNames
 import com.varabyte.kobweb.compose.ui.modifiers.color
+import com.varabyte.kobweb.compose.ui.modifiers.cursor
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.float
 import com.varabyte.kobweb.compose.ui.modifiers.height
@@ -34,15 +37,18 @@ import org.jetbrains.compose.web.dom.Img
 
 @Composable
 fun HorizontalBlogCard(
-    isImageInRight: Boolean = true, onClick: () -> Unit
+    postModel: PostModel,
+    isImageInRight: Boolean = true,
+    onPostModel: (postId: String) -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().onClick { onClick.invoke() }.margin(0.px).boxShadow(
-            blurRadius = 10.px,
-            color = MaterialTheme.colorScheme.unspecified.copyf(alpha = 0.5f)
-        ).backgroundColor(MaterialTheme.colorScheme.container).borderRadius(
-            Constants.borderRadiusLarge
-        ), verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.SpaceBetween
+        modifier = Modifier.fillMaxWidth().onClick { onPostModel.invoke(postModel._id) }
+            .margin(0.px).cursor(Cursor.Pointer).boxShadow(
+                blurRadius = 10.px,
+                color = MaterialTheme.colorScheme.unspecified.copyf(alpha = 0.5f)
+            ).backgroundColor(MaterialTheme.colorScheme.container).borderRadius(
+                Constants.borderRadiusLarge
+            ), verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.SpaceBetween
     ) {
         if (isImageInRight) {
             Column(
@@ -50,15 +56,23 @@ fun HorizontalBlogCard(
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.Start
             ) {
-                H5(attrs = Modifier.color(MaterialTheme.colorScheme.onContainer).toAttrs()) {
-                    SpanText(text = "View all new")
+
+                AuthorNameWithCategory(
+                    author = Pair(postModel.author, postModel.authorId),
+                    category = Pair(postModel.category, postModel.categoryId),
+                )
+                H5(
+                    attrs = Modifier.cursor(Cursor.Pointer)
+                        .color(MaterialTheme.colorScheme.onContainer).toAttrs()
+                ) {
+                    SpanText(text = postModel.title)
                 }
                 H4 {
-                    SpanText(text = "View all new")
+                    SpanText(text = postModel.subtitle)
                 }
             }
             Img(
-                src = ResourceConstants.FooterSocialIcons.RandomImg,
+                src = postModel.thumbnail,
                 alt = ResourceConstants.FooterSocialIcons.RandomImg.contentDescription,
                 attrs = Modifier.classNames(cssImgClassId).padding(0.px).borderRadius(
                     Constants.borderRadiusLarge
@@ -66,7 +80,7 @@ fun HorizontalBlogCard(
             )
         } else {
             Img(
-                src = ResourceConstants.FooterSocialIcons.RandomImg,
+                src = postModel.thumbnail,
                 alt = ResourceConstants.FooterSocialIcons.RandomImg.contentDescription,
                 attrs = Modifier.classNames(cssImgClassId).padding(0.px).borderRadius(
                     Constants.borderRadiusLarge
@@ -78,11 +92,18 @@ fun HorizontalBlogCard(
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.Start
             ) {
-                H5(attrs = Modifier.color(MaterialTheme.colorScheme.onContainer).toAttrs()) {
-                    SpanText(text = "View all new")
+                AuthorNameWithCategory(
+                    author = Pair(postModel.author, postModel.authorId),
+                    category = Pair(postModel.category, postModel.categoryId),
+                )
+                H5(
+                    attrs = Modifier.cursor(Cursor.Pointer)
+                        .color(MaterialTheme.colorScheme.onContainer).toAttrs()
+                ) {
+                    SpanText(text = postModel.title)
                 }
                 H4 {
-                    SpanText(text = "View all new")
+                    SpanText(text = postModel.subtitle)
                 }
             }
 

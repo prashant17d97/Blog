@@ -1,13 +1,16 @@
 package com.prashant.blog.model
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class CategoryModel(
-    val _id: String? = null,
+    @SerialName("_id")
+    val _id: String = "",
     val thumbnail: String,
     val category: String,
-){
+    val description: String,
+) {
     val validateMembers: Pair<Boolean, String>
         get() {
             val invalidFields = mutableListOf<String>()

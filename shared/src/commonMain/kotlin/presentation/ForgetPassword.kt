@@ -29,6 +29,7 @@ import navigation.Screens
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import presentation.CommonElements.NinjaButton
+import presentation.widgets.GradiantWithImageColumn
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable

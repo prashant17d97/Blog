@@ -348,7 +348,7 @@ fun CreateScreen() {
                                         )
                                     )
                                     if (result) {
-                                        context.router.navigateTo("Screen.AdminSuccess.postUpdated()")
+                                        context.navigateTo("Screen.AdminSuccess.postUpdated()")
                                     }
                                 } else {
                                     val result = addPost(
@@ -366,7 +366,7 @@ fun CreateScreen() {
                                         )
                                     )
                                     if (result) {
-                                        context.router.navigateTo("Screen.AdminSuccess.route")
+                                        context.navigateTo("Screen.AdminSuccess.route")
                                     }
                                 }
                             }*/

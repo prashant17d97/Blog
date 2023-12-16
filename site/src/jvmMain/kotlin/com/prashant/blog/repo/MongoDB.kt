@@ -157,6 +157,14 @@ class MongoDB(private val context: InitApiContext) : MongoRepository {
         }
     }
 
+    override suspend fun findPostsByTitle(title: String): MongoResponse<List<PostModel>> {
+        return mongoTryCatch("Error in fetching author's posts!") {
+            MongoResponse.Success(
+                postCollection.find().toList().filter { it.title.contains(title, true) }
+            )
+        }
+    }
+
     override suspend fun fetchAllPost(): MongoResponse<List<PostModel>> {
         return mongoTryCatch {
             MongoResponse.Success(

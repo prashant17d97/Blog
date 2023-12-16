@@ -11,6 +11,13 @@ class UrlBuilderImpl(private val baseUrl: String = HOME) : UrlBuilder {
         return this
     }
 
+    override fun addQueryParamMap(keyValueMap:Map<String,String>): UrlBuilder {
+        keyValueMap.forEach {
+            queryParams[it.key] = it.value
+        }
+        return this
+    }
+
     override fun addPathSegment(path: String): UrlBuilder {
         pathSegments.add(path)
         return this

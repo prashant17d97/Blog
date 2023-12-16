@@ -6,12 +6,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants
+import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.Category
 import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.Type
+import com.prashant.blog.model.CategoryModel
 import com.prashant.blog.model.PostModel
+import com.prashant.blog.navigation.NavigationRoute
 import com.prashant.blog.network.rememberNetworkCall
 import com.prashant.blog.utils.commonfunctions.CommonFunctions.capitalize
-import com.prashant.blog.utils.commonfunctions.CommonFunctions.findKey
 import com.prashant.blog.utils.commonfunctions.CommonFunctions.handleResponse
+import com.prashant.blog.utils.navigation.navigateToWithParam
 import com.prashant.blog.widgets.BlogLayout
 import com.prashant.blog.widgets.VerticalBlogCard
 import com.varabyte.kobweb.compose.css.Cursor
@@ -44,44 +48,84 @@ import org.jetbrains.compose.web.dom.Text
 fun New() {
     var count by remember { mutableStateOf(1) }
     var postType: String? by remember { mutableStateOf(null) }
+    var categoryId: String? by remember { mutableStateOf(null) }
+    var category: CategoryModel? by remember { mutableStateOf(null) }
 
     val networkCall = rememberNetworkCall()
     var postModels: List<PostModel> by remember { mutableStateOf(emptyList()) }
     LaunchedEffect(postType) {
-        networkCall.fetchAllPost(postType).handleResponse(onLoading = {
+        if (postType?.isEmpty() == true && categoryId?.isEmpty() == true) {
+            networkCall.fetchAllPost().handleResponse(onSuccess = {
+                postModels = it.data
+            }) {
 
-        }, onSuccess = {
-            postModels = it.data
-        }, onFailure = {
+            }
+        } else if (postType?.isNotEmpty() == true) {
+            networkCall.fetchAllPost(postType).handleResponse(onSuccess = {
+                postModels = it.data
+            }) {
 
-        })
+            }
+        }
+
+        categoryId?.let {
+            networkCall.getCategoryById(it).handleResponse(
+                onSuccess = { cat ->
+                    category = cat.data
+                },
+                onFailure = { }
+            )
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        if (postType == null && categoryId == null) {
+            networkCall.fetchAllPost().handleResponse(onSuccess = {
+                postModels = it.data
+            }) {
+
+            }
+        }
+    }
+
+    LaunchedEffect(category) {
+        if (category != null) {
+            networkCall.fetchAllPost(postType).handleResponse(onSuccess = {
+                postModels = it.data
+            }) {
+
+            }
+        }
     }
     BlogLayout(
-        columnModifier = Modifier.padding(top = 30.px, leftRight = 10.px),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) { isBreakPoint, pageContext ->
 
-        val pageQuery = pageContext.route
-        val type = pageQuery.queryParams.keys.findKey(
-            Type
-        )
-
-        val categoryValue = pageQuery.queryParams[type]
-        postType = categoryValue?.capitalize()?: "New"
+        val type = pageContext.route.params[Type]
+        categoryId = pageContext.route.params[Category]
+        postType = type?.capitalize()
 
         H2 {
-            SpanText(postType?:"New")
+            SpanText(postType ?: category?.category ?: "New")
         }
         P {
-            SpanText("Our latest web design tips, tricks, insights, and resources, hot off the presses.")
+            SpanText(
+                category?.description
+                    ?: "Our latest web design tips, tricks, insights, and resources, hot off the presses."
+            )
 
         }
         SimpleGrid(numColumns(base = 1.takeIf { isBreakPoint } ?: 2),
             modifier = Modifier.fillMaxWidth().padding(top = 30.px).gap(10.px)) {
             if (postModels.isNotEmpty()) {
                 postModels.forEach { post ->
-                    VerticalBlogCard(post, pageContext)
+                    VerticalBlogCard(post) {
+                        pageContext.navigateToWithParam(
+                            NavigationRoute.Post,
+                            mapOf(ApiEndpointConstants.Id to it)
+                        )
+                    }
                 }
             }
         }

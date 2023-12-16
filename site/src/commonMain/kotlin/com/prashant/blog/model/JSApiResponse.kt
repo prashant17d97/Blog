@@ -4,16 +4,18 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class JSApiResponse<out Generic> {
-    @Serializable
-    @SerialName("idle")
-    data object Idle : JSApiResponse<Nothing>()
+sealed class JSApiResponse<Generic>(
+    val data: ApiCallResponse<Generic>? = null,
+    val errorCallResponse: ApiErrorCallResponse? = null,
+) {
 
-    @Serializable
     @SerialName("success")
-    data class Success<Generic>(val data: ApiCallResponse<Generic>?) : JSApiResponse<Generic>()
+    class Success<Generic>(apiCallResponse: ApiCallResponse<Generic>?) : JSApiResponse<Generic>(
+        data = apiCallResponse,
+    )
 
-    @Serializable
     @SerialName("error")
-    data class Error(val error: String) : JSApiResponse<Nothing>()
+    class Error<Generic>(errorCallResponse: ApiErrorCallResponse?) : JSApiResponse<Generic>(
+        errorCallResponse = errorCallResponse,
+    )
 }

@@ -162,7 +162,7 @@ fun AddButton() {
                 .borderRadius(r = 14.px)
                 .cursor(Cursor.Pointer)
                 .onClick {
-                    context.router.navigateTo(Screen.AdminCreate.route)
+                    context.navigateTo(Screen.AdminCreate.route)
                 }
                 .styleModifier {
                     property("pointer-events", "auto")

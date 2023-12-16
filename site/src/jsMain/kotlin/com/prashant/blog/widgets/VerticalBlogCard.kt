@@ -1,12 +1,9 @@
 package com.prashant.blog.widgets
 
 import androidx.compose.runtime.Composable
-import com.prashant.blog.constanst.apiendpoints.ApiEndpointConstants.Id
 import com.prashant.blog.model.PostModel
-import com.prashant.blog.navigation.NavigationRoute
 import com.prashant.blog.utils.constants.ResourceConstants.CSSIds.cssImgClassId
 import com.prashant.blog.utils.constants.ResourceConstants.contentDescription
-import com.prashant.blog.utils.navigation.navigateTo
 import com.prashant.theme.MaterialTheme
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.ObjectFit
@@ -27,7 +24,6 @@ import com.varabyte.kobweb.compose.ui.modifiers.objectFit
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.toAttrs
-import com.varabyte.kobweb.core.PageContext
 import com.varabyte.kobweb.silk.components.text.SpanText
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.H3
@@ -36,14 +32,13 @@ import org.jetbrains.compose.web.dom.Img
 import org.jetbrains.compose.web.dom.P
 
 @Composable
-fun VerticalBlogCard(postModel: PostModel, pageContext: PageContext) {
+fun VerticalBlogCard(
+    postModel: PostModel,
+    onPostClick: (id: String) -> Unit = {}
+) {
     Column(
         modifier = Modifier.fillMaxWidth().onClick {
-            pageContext.navigateTo(
-                NavigationRoute.Post.buildUrl {
-                    addQueryParam(Id, postModel._id)
-                }
-            )
+            onPostClick(postModel._id)
         },
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.Start

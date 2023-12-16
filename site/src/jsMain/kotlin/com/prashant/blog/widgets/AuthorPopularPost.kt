@@ -27,11 +27,12 @@ import org.jetbrains.compose.web.dom.Text
 @Composable
 fun AuthorPopularRecentPost(
     postModel: PostModel,
-    onPostClick: () -> Unit = {}
+    onPostClick: (String) -> Unit
 ) {
 
     Row(
-        Modifier.fillMaxWidth().gap(10.px).onClick { onPostClick.invoke() }.cursor(Cursor.Pointer),
+        Modifier.fillMaxWidth().gap(10.px).onClick { onPostClick.invoke(postModel._id) }
+            .cursor(Cursor.Pointer),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
@@ -51,7 +52,6 @@ fun AuthorPopularRecentPost(
             H6 {
                 Text(
                     postModel.title,
-//                modifier = Modifier.id("clickableText")
                 )
             }
 
